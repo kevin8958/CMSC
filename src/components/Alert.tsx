@@ -1,11 +1,16 @@
-'use client';
+"use client";
 
-import { FC, useEffect, useState, useRef } from 'react';
-import classNames from 'classnames';
-import { LuCircleAlert, LuInfo, LuCircleX, LuCircleCheck } from 'react-icons/lu';
-import { IoClose } from 'react-icons/io5';
-import { motion } from 'framer-motion';
-import Typography from '../foundation/Typography';
+import { useEffect, useState, useRef } from "react";
+import classNames from "classnames";
+import {
+  LuCircleAlert,
+  LuInfo,
+  LuCircleX,
+  LuCircleCheck,
+} from "react-icons/lu";
+import { IoClose } from "react-icons/io5";
+import { motion } from "framer-motion";
+import Typography from "../foundation/Typography";
 
 /**
  * 상태별 아이콘 매핑
@@ -20,35 +25,39 @@ const ICONS: Record<Common.AlertState, any> = {
 /**
  * variant + state 조합별 색상 클래스 매핑
  */
-const COLOR_CLASSES: Record<Common.AlertVariant, Record<Common.AlertState, string>> = {
+const COLOR_CLASSES: Record<
+  Common.AlertVariant,
+  Record<Common.AlertState, string>
+> = {
   contain: {
-    danger: 'bg-danger text-primary-100',
-    warning: 'bg-warning text-primary-100',
-    info: 'bg-info text-primary-100',
-    success: 'bg-success text-primary-100',
+    danger: "bg-danger text-primary-100",
+    warning: "bg-warning text-primary-100",
+    info: "bg-info text-primary-100",
+    success: "bg-success text-primary-100",
   },
   outline: {
-    danger: 'text-danger border border-danger bg-transparent',
-    warning: 'text-warning border border-warning bg-transparent',
-    info: 'text-info border border-info bg-transparent',
-    success: 'text-success border border-success bg-transparent',
+    danger: "text-danger border border-danger bg-transparent",
+    warning: "text-warning border border-warning bg-transparent",
+    info: "text-info border border-info bg-transparent",
+    success: "text-success border border-success bg-transparent",
   },
 };
 
-const Alert: FC<Common.AlertProps> = ({
-  classes,
-  variant = 'contain',
-  state = 'info',
-  title,
-  message,
-  showClose = false,
-  time,
-  repeat = false,
-  loading,
-  icon,
-  hideIcon = false,
-  onClose,
-}) => {
+const Alert = (props: Common.AlertProps) => {
+  const {
+    classes,
+    variant = "contain",
+    state = "info",
+    title,
+    message,
+    showClose = false,
+    time,
+    repeat = false,
+    loading,
+    icon,
+    hideIcon = false,
+    onClose,
+  } = props;
   const [visible, setVisible] = useState(true);
   const [progress, setProgress] = useState(100); // 게이지 진행률(%)
   const manualClosedRef = useRef(false);
@@ -105,9 +114,9 @@ const Alert: FC<Common.AlertProps> = ({
     <div
       role="alert"
       className={classNames(
-        'ti-toast oveflow-hidden relative flex w-max max-w-full items-start justify-between rounded-lg p-4 text-sm shadow-md',
+        "ti-toast oveflow-hidden relative flex w-max max-w-full items-start justify-between rounded-lg p-4 text-sm shadow-md",
         COLOR_CLASSES[variant][state],
-        classes,
+        classes
       )}
     >
       <div className="flex items-start gap-2">
@@ -119,7 +128,7 @@ const Alert: FC<Common.AlertProps> = ({
               animate={{ rotate: 360 }}
               transition={{
                 repeat: Infinity,
-                ease: 'linear',
+                ease: "linear",
                 duration: 1,
               }}
             />

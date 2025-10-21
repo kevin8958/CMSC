@@ -2,7 +2,7 @@
 
 import { useClickAway } from "@uidotdev/usehooks";
 import classNames from "classnames";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Button from "@/components/Button";
 import { LuChevronRight } from "react-icons/lu";
 
@@ -58,7 +58,6 @@ const Dropdown = (props: Common.DropdownProps) => {
           );
 
         case "group":
-          const prev = items[index - 1];
           const next = items[index + 1];
 
           const isFirst = index === 0;

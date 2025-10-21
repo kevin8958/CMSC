@@ -1,5 +1,9 @@
-import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import React from 'react';
+import {
+  Description,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 
 type ConfirmDialogProps = {
   open: boolean;
@@ -15,10 +19,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   open,
   onClose,
   onConfirm,
-  title = '정말로 진행하시겠어요?',
-  description = '이 작업은 되돌릴 수 없습니다.',
-  confirmText = '확인',
-  cancelText = '취소',
+  title = "정말로 진행하시겠어요?",
+  description = "이 작업은 되돌릴 수 없습니다.",
+  confirmText = "확인",
+  cancelText = "취소",
 }) => {
   return (
     <Dialog open={open} onClose={onClose} className="relative z-50">
@@ -26,7 +30,9 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel className="w-full max-w-md rounded-xl bg-white p-6">
           <DialogTitle className="text-lg font-bold">{title}</DialogTitle>
-          <Description className="mt-2 text-sm text-gray-600">{description}</Description>
+          <Description className="mt-2 text-sm text-gray-600">
+            {description}
+          </Description>
           <div className="mt-6 flex justify-end gap-2">
             <button
               type="button"

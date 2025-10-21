@@ -1,29 +1,28 @@
-'use client';
+"use client";
 
-import classNames from 'classnames';
-import React from 'react';
+import classNames from "classnames";
 
 const sizeMap = {
-  sm: { height: 'h-1.5', radius: 36, stroke: 4 },
-  md: { height: 'h-3', radius: 48, stroke: 6 },
-  lg: { height: 'h-4', radius: 60, stroke: 8 },
+  sm: { height: "h-1.5", radius: 36, stroke: 4 },
+  md: { height: "h-3", radius: 48, stroke: 6 },
+  lg: { height: "h-4", radius: 60, stroke: 8 },
 };
 
 const Progress = (props: Common.ProgressProps) => {
   const {
     value = 0,
     width,
-    size = 'md',
+    size = "md",
     isCircle = false,
-    label = '',
-    labelPosition = 'bottom',
+    label = "",
+    labelPosition = "bottom",
   } = props;
 
   const clampedValue = Math.min(100, Math.max(0, value));
   const sizeProps = sizeMap[size];
 
   const containerStyle = width
-    ? { width: typeof width === 'number' ? `${width}px` : width }
+    ? { width: typeof width === "number" ? `${width}px` : width }
     : undefined;
 
   if (isCircle) {
@@ -70,7 +69,7 @@ const Progress = (props: Common.ProgressProps) => {
             />
           </svg>
           <div className="absolute text-center text-sm font-medium text-gray-400">
-            {label || clampedValue + '%'}
+            {label || clampedValue + "%"}
           </div>
         </div>
       </div>
@@ -81,31 +80,37 @@ const Progress = (props: Common.ProgressProps) => {
 
   return (
     <div className="w-full" style={containerStyle}>
-      {labelPosition === 'top' && (
+      {labelPosition === "top" && (
         <div className="mb-1 text-center text-sm font-medium text-gray-400">
-          {label || clampedValue + '%'}
+          {label || clampedValue + "%"}
         </div>
       )}
       <div
-        className={classNames('relative w-full overflow-hidden rounded-xl bg-gray-200', barHeight)}
+        className={classNames(
+          "relative w-full overflow-hidden rounded-xl bg-gray-200",
+          barHeight
+        )}
         role="Progress"
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={clampedValue}
       >
         <div
-          className={classNames('bg-info transition-all duration-300', barHeight)}
+          className={classNames(
+            "bg-info transition-all duration-300",
+            barHeight
+          )}
           style={{ width: `${clampedValue}%` }}
         />
-        {labelPosition === 'inside' && (
+        {labelPosition === "inside" && (
           <div className="absolute inset-0 flex items-center justify-center text-sm font-medium text-gray-900">
-            {label || clampedValue + '%'}
+            {label || clampedValue + "%"}
           </div>
         )}
       </div>
-      {labelPosition === 'bottom' && (
+      {labelPosition === "bottom" && (
         <div className="mt-1 text-center text-sm font-medium text-gray-400">
-          {label || clampedValue + '%'}
+          {label || clampedValue + "%"}
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 // ProjectModal.tsx
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 import { LuX } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/Button";
@@ -16,7 +16,7 @@ interface ProjectModalProps {
   year: string;
   href?: string;
   backgroundImage?: string;
-  content: ReactNode;
+  content: React.ReactNode;
   currentPage?: number;
 }
 

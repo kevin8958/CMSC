@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import GnbButton from "@/layout/GnbButton";
-import { usePathname } from "next/navigation";
+import { useLocation } from "react-router-dom";
 import classNames from "classnames";
 
 const sections = ["home", "about", "works", "contact"];
 const Gnb = () => {
   const [currentSection, setCurrentSection] = useState<string>("home");
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   useEffect(() => {
     const observer = new IntersectionObserver(

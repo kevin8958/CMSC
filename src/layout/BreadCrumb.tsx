@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import classNames from 'classnames';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import React from 'react';
-import { FaChevronRight } from 'react-icons/fa';
+import classNames from "classnames";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { FaChevronRight } from "react-icons/fa";
 
 const BreadCrumb = (props: Layout.BreadCrumbProps) => {
   const { items } = props;
 
-  const pathname = usePathname();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   return (
     <nav aria-label="breadcrumb">
@@ -19,14 +19,23 @@ const BreadCrumb = (props: Layout.BreadCrumbProps) => {
           return (
             <li
               key={item.label}
-              className={classNames('flex items-center gap-1 text-sm font-semibold', {
-                'text-secondary-300 !font-bold': isActive,
-                'text-primary-200': !isActive,
-                'hover:text-gray-300': !isActive && item.href,
-              })}
+              className={classNames(
+                "flex items-center gap-1 text-sm font-semibold",
+                {
+                  "text-secondary-300 !font-bold": isActive,
+                  "text-primary-200": !isActive,
+                  "hover:text-gray-300": !isActive && item.href,
+                }
+              )}
             >
-              {item.href ? <Link href={item.href}>{item.label}</Link> : item.label}
-              {index < items.length - 1 && <FaChevronRight className="text-primary-200 text-xs" />}
+              {item.href ? (
+                <Link to={item.href}>{item.label}</Link>
+              ) : (
+                item.label
+              )}
+              {index < items.length - 1 && (
+                <FaChevronRight className="text-primary-200 text-xs" />
+              )}
             </li>
           );
         })}
