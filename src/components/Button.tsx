@@ -27,7 +27,7 @@ const Button = forwardRef(
     } = props;
 
     const baseClasses =
-      "flex items-center justify-center px-2 py-[6px] rounded-lg text-sm text-center font-normal transition-all duration-200 ease-in-out";
+      "flex items-center justify-center px-2 py-[6px] rounded-lg text-sm text-center font-normal transition-all duration-200 ease-in-out cursor-pointer";
 
     const sizeClasses = {
       sm: "h-[30px] text-xs w-max",
@@ -48,7 +48,7 @@ const Button = forwardRef(
 
     const getOutlineClasses = (buttonColor: Common.ButtonColor) => {
       const styles = {
-        primary: "border-primary-500 text-primary-300",
+        primary: "border-primary-500 text-primary-900 !font-semibold",
         info: "border-info !text-info",
         success: "border-success !text-success",
         warning: "border-warning !text-warning",
@@ -60,7 +60,7 @@ const Button = forwardRef(
     const getContainClasses = (buttonColor: Common.ButtonColor) => {
       const styles = {
         primary:
-          "bg-white hover:bg-primary-100 active:bg-primary-200 disabled:active:!bg-white disabled:hover:!bg-white text-gray-800",
+          "bg-primary-900 hover:bg-primary-800 active:bg-primary-800 disabled:active:!bg-white disabled:hover:!bg-white text-gray-100 !font-semibold",
         info: "bg-info !text-gray-200",
         success: "bg-success !text-gray-200",
         warning: "bg-warning !text-gray-200",
@@ -79,7 +79,7 @@ const Button = forwardRef(
           {
             "hover:bg-primary-800/30 active:bg-primary-600/30 disabled:!bg-transparent":
               variant === "clear",
-            "hover:bg-primary-800/30 active:bg-primary-600/30 border disabled:!bg-transparent":
+            "hover:bg-primary-100 active:bg-primary-100 border disabled:!bg-transparent":
               variant === "outline",
           },
           variant === "clear" && getClearColorClasses(color),

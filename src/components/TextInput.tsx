@@ -1,23 +1,23 @@
 /* eslint-disable jsx-a11y/tabindex-no-positive */
 /* eslint-disable jsx-a11y/no-autofocus */
-import classNames from 'classnames';
+import classNames from "classnames";
 
 const TextInput = (props: Common.TextInputProps) => {
   const {
-    label = '',
-    placeholder = '',
+    label = "",
+    placeholder = "",
     id,
     classes,
     type,
     max,
-    size = 'md',
+    size = "md",
     required = false,
     disabled = false,
     error = false,
-    errorMsg = '',
+    errorMsg = "",
     inputProps,
-    rounded = 'lg',
-    suffix = '',
+    rounded = "lg",
+    suffix = "",
     autoFocus = false,
     onFocus,
     onBlur,
@@ -30,10 +30,13 @@ const TextInput = (props: Common.TextInputProps) => {
         {label && (
           <label
             htmlFor={id}
-            className={classNames('text-primary-100 relative mb-2 !text-sm font-semibold', {
-              "after:absolute after:top-0 after:-right-[7px] after:rounded-full after:text-[#FF3535] after:content-['*']":
-                required,
-            })}
+            className={classNames(
+              "text-primary-800 relative mb-2 !text-sm font-normal",
+              {
+                "after:absolute after:top-0 after:-right-[7px] after:rounded-full after:text-[#FF3535] after:content-['*']":
+                  required,
+              }
+            )}
           >
             {label}
           </label>
@@ -45,21 +48,21 @@ const TextInput = (props: Common.TextInputProps) => {
           type={type}
           autoFocus={autoFocus}
           className={classNames(
-            'form-control box-border w-full overflow-hidden border border-gray-50 bg-white p-2 !text-base text-ellipsis outline-0 transition-all duration-200 ease-in-out placeholder:text-[#AFAFAF] focus:!border-2',
+            "form-control box-border w-full overflow-hidden border border-gray-300 bg-white p-2 !text-base text-ellipsis outline-0 transition-all duration-200 ease-in-out placeholder:text-[#AFAFAF] focus:!border-2 focus:!border-info",
             classes,
             {
-              'h-[32px] max-h-[32px]': size === 'sm',
-              'h-[46px] max-h-[46px]': size === 'md',
-              'h-[56px] max-h-[56px]': size === 'lg',
-              '!bg-newPrimary-50 !text-[#8C9097]': disabled,
-              '!border-danger focus:!border-danger !border-2': error,
-              'focus:!border-newPrimary-600': !error,
-              '!rounded-sm': rounded === 'sm',
-              '!rounded-md': rounded === 'md',
-              '!rounded-lg': rounded === 'lg',
-              '!rounded-[16px]': rounded === '2xl',
-              '!pr-10': suffix,
-            },
+              "h-[32px] max-h-[32px]": size === "sm",
+              "h-[46px] max-h-[46px]": size === "md",
+              "h-[56px] max-h-[56px]": size === "lg",
+              "!bg-newPrimary-50 !text-[#8C9097]": disabled,
+              "!border-danger focus:!border-danger !border-2": error,
+              "focus:!border-newPrimary-600": !error,
+              "!rounded-sm": rounded === "sm",
+              "!rounded-md": rounded === "md",
+              "!rounded-lg": rounded === "lg",
+              "!rounded-[16px]": rounded === "2xl",
+              "!pr-10": suffix,
+            }
           )}
           tabIndex={0}
           placeholder={placeholder}
