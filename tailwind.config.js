@@ -94,7 +94,7 @@ export default {
       "custom-light":
         "2px 4px 12px rgba(0, 0, 0, 0.2), -2px -2px 12px rgba(255, 255, 255, 0.3)",
       "custom-dark":
-        "2px 4px 16px rgba(0, 0, 0, 0.3), -2px -2px 16px rgba(255, 255, 255, 0.05)",
+        "2px 4px 16px rgba(0, 0, 0, 0.05), -2px -2px 16px rgba(255, 255, 255, 0.01)",
     },
   },
   plugins: [require("tailwind-scrollbar")],

@@ -1,50 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import GnbButton from "@/layout/GnbButton";
-import { useLocation } from "react-router-dom";
+import FlexWrapper from "./FlexWrapper";
+import { useEffect, useState } from "react";
 import classNames from "classnames";
 
-const sections = ["home", "about", "works", "contact"];
-const Gnb = () => {
-  const [currentSection, setCurrentSection] = useState<string>("home");
-  const location = useLocation();
-  const pathname = location.pathname;
+export default function Gnb() {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setCurrentSection(entry.target.id);
-          }
-        });
-      },
-      { root: null, rootMargin: "0px", threshold: [0.25, 0.75] }
-    );
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
 
-    sections.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div
       className={classNames(
-        "border-primary-100/30 fixed top-6 left-1/2 z-50 flex w-fit -translate-x-1/2 items-center justify-center gap-4 rounded-2xl border border-[1px] bg-transparent px-2 pt-1 pb-2 backdrop-blur transition-all duration-500 ease-in-out sm:px-6",
-        { hidden: pathname.startsWith("/design-system") }
+        "fixed top-4 left-1/2 z-50 flex w-full -translate-x-1/2 items-center justify-between rounded-full bg-white px-[32px] py-4 transition-all duration-300 ease-in-out border border-transparent",
+        scrolled
+          ? "max-w-[1160px] !border-primary-100 shadow-custom-dark"
+          : "max-w-[1200px]"
       )}
     >
-      {sections.map((id) => (
-        <GnbButton key={id} href={`#${id}`} isActive={currentSection === id}>
-          {id.toUpperCase()}
-        </GnbButton>
-      ))}
+      <FlexWrapper gap={4} items="center">
+        <a href="/" className="font-extrabold text-2xl">
+          CMSC
+        </a>
+        <GnbButton href="/">CMSC소개</GnbButton>
+        <GnbButton href="/">이용사례</GnbButton>
+        <GnbButton href="/">요금제</GnbButton>
+        <GnbButton href="/">리소스</GnbButton>
+      </FlexWrapper>
+
+      <FlexWrapper gap={4} items="center">
+        <GnbButton href="/login">로그인</GnbButton>
+        <GnbButton href="/login">무료로 시작하기</GnbButton>
+      </FlexWrapper>
     </div>
   );
-};
-
-export default Gnb;
+}
