@@ -14,6 +14,7 @@ import { useSession } from "@/hooks/useSession";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
   const session = useSession();
@@ -31,7 +32,52 @@ function Login() {
     onError: () => console.log("Login Failed"),
   });
 
-  const login = async () => {
+  const validateEmail = (value: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(value);
+  };
+
+  const validatePassword = (value: string) => {
+    // 영어 소문자 + 숫자 + 특수문자 포함, 최소 8자
+    const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+    return regex.test(value);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (!value) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "",
+      }));
+      return;
+    }
+    setErrors((prev) => ({
+      ...prev,
+      email: validateEmail(value) ? "" : "이메일 형식이 올바르지 않습니다.",
+    }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (!value) {
+      setErrors((prev) => ({
+        ...prev,
+        password: "",
+      }));
+      return;
+    }
+    setErrors((prev) => ({
+      ...prev,
+      password: validatePassword(value)
+        ? ""
+        : "영문 소문자, 숫자, 특수문자를 포함해야 합니다.",
+    }));
+  };
+
+  const handleSubmit = async () => {
     if (isError) return;
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -79,32 +125,38 @@ function Login() {
             <p className="my-2 text-sm text-gray-400">OR</p>
             <span className="h-px flex-1 bg-gray-200" />
           </div>
-          <TextInput
-            label="이메일"
-            id="Email"
-            classes="w-full"
-            type="text"
-            max={100}
-            autoFocus={false}
-            onFocus={() => console.log("Input focused")}
-            onBlur={() => console.log("Input blurred")}
-            onKeyUp={(e) => console.log("Key pressed:", e.key)}
-            onChange={(e) => setEmail(e.target.value)}
-            inputProps={{ "aria-label": "Default Text Input" }}
-          />
-          <TextInput
-            label="비밀번호"
-            id="Password"
-            classes="w-full"
-            type="password"
-            max={100}
-            autoFocus={false}
-            onFocus={() => console.log("Input focused")}
-            onBlur={() => console.log("Input blurred")}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyUp={(e) => console.log("Key pressed:", e.key)}
-            inputProps={{ "aria-label": "Default Text Input" }}
-          />
+          <div className="flex flex-col w-full items-center gap-[20px] mb-2">
+            <TextInput
+              label="이메일"
+              id="Email"
+              classes="w-full"
+              type="text"
+              max={100}
+              autoFocus={false}
+              error={!!errors.email}
+              errorMsg={errors.email}
+              onFocus={() => console.log("Input focused")}
+              onBlur={() => console.log("Input blurred")}
+              onKeyUp={(e) => console.log("Key pressed:", e.key)}
+              onChange={handleEmailChange}
+              inputProps={{ "aria-label": "Default Text Input" }}
+            />
+            <TextInput
+              label="비밀번호"
+              id="Password"
+              classes="w-full"
+              type="password"
+              max={100}
+              autoFocus={false}
+              error={!!errors.password}
+              errorMsg={errors.password}
+              onFocus={() => console.log("Input focused")}
+              onBlur={() => console.log("Input blurred")}
+              onChange={handlePasswordChange}
+              onKeyUp={(e) => console.log("Key pressed:", e.key)}
+              inputProps={{ "aria-label": "Default Text Input" }}
+            />
+          </div>
           <FlexWrapper justify="between" items="center" classes="w-full">
             <Typography variant="B2" classes="!font-normal">
               비밀번호를 잊으셨나요?
@@ -121,7 +173,7 @@ function Login() {
             color="primary"
             variant="contain"
             size="lg"
-            onClick={login}
+            onClick={handleSubmit}
           >
             로그인
           </Button>
@@ -129,7 +181,7 @@ function Login() {
       </FlexWrapper>
       {isError && (
         <Alert
-          classes="!w-[60%] !fixed top-2 left-1/2 -translate-x-1/2"
+          classes="!w-[60%] !fixed top-2 left-1/2 -translate-x-1/2 transition-all duration-500 ease-out animate-slide-down"
           variant="contain"
           state="danger"
           title="이메일 또는 비밀번호가 올바르지 않습니다."

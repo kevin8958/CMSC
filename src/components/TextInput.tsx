@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/tabindex-no-positive */
 /* eslint-disable jsx-a11y/no-autofocus */
+import Typography from "@/foundation/Typography";
 import classNames from "classnames";
 
 const TextInput = (props: Common.TextInputProps) => {
@@ -32,7 +33,7 @@ const TextInput = (props: Common.TextInputProps) => {
           <label
             htmlFor={id}
             className={classNames(
-              "text-primary-800 relative mb-2 !text-sm font-normal",
+              "text-primary-800 relative mb-1 !text-sm font-normal",
               {
                 "after:absolute after:top-0 after:-right-[7px] after:rounded-full after:text-[#FF3535] after:content-['*']":
                   required,
@@ -49,7 +50,7 @@ const TextInput = (props: Common.TextInputProps) => {
           type={type}
           autoFocus={autoFocus}
           className={classNames(
-            "form-control box-border w-full overflow-hidden border border-gray-300 bg-white p-2 !text-base text-ellipsis outline-0 transition-all duration-200 ease-in-out placeholder:text-[#AFAFAF] focus:!border-2 focus:!border-info",
+            "form-control box-border w-full overflow-hidden border border-gray-300 bg-white p-2 !text-base text-ellipsis outline-0 transition-all duration-200 ease-in-out placeholder:text-[#AFAFAF] focus:!border-2 focus:border-info",
             classes,
             {
               "h-[32px] max-h-[32px]": size === "sm",
@@ -73,7 +74,12 @@ const TextInput = (props: Common.TextInputProps) => {
           onChange={onChange}
         />
         {suffix && <div className="absolute right-3 bottom-3">{suffix}</div>}
-        <p className="text-danger absolute bottom-[-20px] left-0">{errorMsg}</p>
+        <Typography
+          variant="C1"
+          classes="!text-danger absolute bottom-[-20px] left-0"
+        >
+          {errorMsg}
+        </Typography>
       </div>
     </div>
   );

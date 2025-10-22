@@ -84,8 +84,13 @@ export default {
           "0%": { "background-position": "100%" },
           "100%": { "background-position": "-100%" },
         },
+        "slide-down": {
+          "0%": { transform: "translateY(-100%)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
       },
       animation: {
+        "slide-down": "slide-down 0.4s ease-out forwards",
         "flash-fast": "flash 1s ease-in-out infinite",
         shine: "shine 5s linear infinite",
       },
