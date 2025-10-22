@@ -41,7 +41,7 @@ function Login() {
       setIsError(true);
       return;
     }
-    navigate("/dashboard");
+    if (data) navigate("/dashboard");
   };
 
   return (
