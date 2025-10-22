@@ -135,8 +135,16 @@ const Alert = (props: Common.AlertProps) => {
           )}
         </div>
         <div className="flex flex-col">
-          {title && <Typography variant="H4">{title}</Typography>}
-          {message && <Typography variant="B2">{message}</Typography>}
+          {title && (
+            <Typography variant="B2" classes="!text-primary-100">
+              {title}
+            </Typography>
+          )}
+          {message && (
+            <Typography variant="B2" classes="!text-primary-100">
+              {message}
+            </Typography>
+          )}
         </div>
       </div>
 
@@ -153,14 +161,14 @@ const Alert = (props: Common.AlertProps) => {
       )}
 
       {/* 게이지 바 */}
-      {time && (
-        <div className="absolute bottom-0 left-0 h-1 w-full overflow-hidden rounded-b-lg bg-current/20">
+      {/* {time && (
+        <div className="absolute bottom-0 left-0 h-1 w-full overflow-hidden rounded-b-lg bg-primary-900/20">
           <div
-            className="h-full bg-current transition-[width] duration-75"
+            className="h-full bg-primary-100 transition-[width] duration-75"
             style={{ width: `${progress}%` }}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

@@ -1,27 +1,56 @@
+import { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
 import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
+import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import LogoBlack from "@/assets/image/logo_black.png";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { useSession } from "@/hooks/useSession";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
+  const session = useSession();
+
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboard");
+    }
+  }, [session, navigate]);
+
   const googleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       console.log(tokenResponse);
     },
     onError: () => console.log("Login Failed"),
   });
+
+  const login = async () => {
+    if (isError) return;
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setIsError(true);
+      return;
+    }
+    navigate("/dashboard");
+  };
+
   return (
     <div className="w-full h-screen justify-evenly flex flex-col gap-4 items-center">
       <FlexWrapper
         gap={10}
         items="start"
         direction="col"
-        classes="w-[90%] sm:w-[400px]"
+        classes="w-[90%] sm:w-[400px] mt-[-60px]"
       >
         <a href="/">
           <img src={LogoBlack} alt="CMSC Logo" className="w-[60px]" />
@@ -60,6 +89,7 @@ function Login() {
             onFocus={() => console.log("Input focused")}
             onBlur={() => console.log("Input blurred")}
             onKeyUp={(e) => console.log("Key pressed:", e.key)}
+            onChange={(e) => setEmail(e.target.value)}
             inputProps={{ "aria-label": "Default Text Input" }}
           />
           <TextInput
@@ -71,6 +101,7 @@ function Login() {
             autoFocus={false}
             onFocus={() => console.log("Input focused")}
             onBlur={() => console.log("Input blurred")}
+            onChange={(e) => setPassword(e.target.value)}
             onKeyUp={(e) => console.log("Key pressed:", e.key)}
             inputProps={{ "aria-label": "Default Text Input" }}
           />
@@ -90,15 +121,22 @@ function Login() {
             color="primary"
             variant="contain"
             size="lg"
-            onClick={() => navigate("/dashboard")}
+            onClick={login}
           >
             로그인
           </Button>
-          <Button classes="w-full" color="primary" variant="outline" size="lg">
-            회원가입
-          </Button>
         </FlexWrapper>
       </FlexWrapper>
+      {isError && (
+        <Alert
+          classes="!w-[60%] !fixed top-2 left-1/2 -translate-x-1/2"
+          variant="contain"
+          state="danger"
+          title="이메일 또는 비밀번호가 올바르지 않습니다."
+          time={3}
+          onClose={() => setIsError(false)}
+        />
+      )}
     </div>
   );
 }

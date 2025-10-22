@@ -21,6 +21,7 @@ const TextInput = (props: Common.TextInputProps) => {
     autoFocus = false,
     onFocus,
     onBlur,
+    onChange,
   } = props;
 
   return (
@@ -69,6 +70,7 @@ const TextInput = (props: Common.TextInputProps) => {
           disabled={disabled}
           onFocus={onFocus}
           onBlur={onBlur}
+          onChange={onChange}
         />
         {suffix && <div className="absolute right-3 bottom-3">{suffix}</div>}
         <p className="text-danger absolute bottom-[-20px] left-0">{errorMsg}</p>
