@@ -27,7 +27,7 @@ const Button = forwardRef(
     } = props;
 
     const baseClasses =
-      "flex items-center justify-center px-2 py-[6px] rounded-lg text-sm text-center font-normal transition-all duration-200 ease-in-out cursor-pointer";
+      "relative flex items-center justify-center px-2 py-[6px] rounded-lg text-sm text-center font-normal transition-all duration-200 ease-in-out cursor-pointer";
 
     const sizeClasses = {
       sm: "h-[30px] text-xs w-max",
@@ -77,7 +77,7 @@ const Button = forwardRef(
           classes,
           sizeClasses[size],
           {
-            "hover:bg-primary-800/30 active:bg-primary-600/30 disabled:!bg-transparent":
+            "hover:bg-primary-100 active:bg-primary-100 disabled:!bg-transparent":
               variant === "clear",
             "hover:bg-primary-100 active:bg-primary-100 border disabled:!bg-transparent":
               variant === "outline",

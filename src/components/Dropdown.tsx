@@ -5,6 +5,9 @@ import classNames from "classnames";
 import { useRef, useState } from "react";
 import Button from "@/components/Button";
 import { LuChevronRight } from "react-icons/lu";
+import { LuChevronDown } from "react-icons/lu";
+import { LuDot } from "react-icons/lu";
+import FlexWrapper from "@/layout/FlexWrapper";
 
 const Dropdown = (props: Common.DropdownProps) => {
   const {
@@ -12,6 +15,8 @@ const Dropdown = (props: Common.DropdownProps) => {
     dialogPosition = "left",
     dialogWidth,
     onChange,
+    buttonVariant = "outline",
+    buttonSize = "md",
     buttonItem,
     buttonClasses,
   } = props;
@@ -26,7 +31,7 @@ const Dropdown = (props: Common.DropdownProps) => {
   const renderItems = (items: Common.DropdownItem[]) => {
     return items.map((item, index) => {
       const itemWidthStyle = dialogWidth ? { width: dialogWidth } : {};
-      const itemTitle = item.label;
+      // const itemTitle = item.label;
 
       switch (item.type) {
         case "item":
@@ -35,23 +40,32 @@ const Dropdown = (props: Common.DropdownProps) => {
               key={item.id}
               className={classNames(dialogWidth ? "" : "w-full")}
               style={itemWidthStyle}
-              title={itemTitle}
+              // title={String(itemTitle)}
             >
               <Button
                 type="button"
                 variant="clear"
                 size="sm"
                 color={item.danger ? "danger" : "primary"}
-                classes="!px-2 !w-full !justify-start truncate"
+                classes="!p-4 !w-full !justify-start truncate text-primary-900 !rounded-none"
                 onClick={() => {
                   item.onClick?.();
                   onChange?.(item.id);
                   setIsOpen(false);
                 }}
               >
-                <div className="flex w-full items-center gap-2">
+                <div className="flex w-full items-center gap-1">
                   {item.icon}
-                  <span className="block truncate">{item.label}</span>
+                  <span
+                    className={classNames("block truncate text-sm", {
+                      "font-bold": item.label === buttonItem,
+                    })}
+                  >
+                    {item.label}
+                  </span>
+                  {item.label === buttonItem && (
+                    <LuDot className="text-2xl text-success ml-[-4px]" />
+                  )}
                 </div>
               </Button>
             </li>
@@ -128,17 +142,20 @@ const Dropdown = (props: Common.DropdownProps) => {
     <div className="relative">
       <Button
         type="button"
-        variant="outline"
-        size="md"
+        variant={buttonVariant}
+        size={buttonSize}
         ref={buttonRef}
         classes={buttonClasses}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {buttonItem || "Menu"}
+        <FlexWrapper justify="between" items="center" gap={1} classes="w-full">
+          <p className="w-full">{buttonItem || "Menu"}</p>
+          <LuChevronDown className="shrink-0" />
+        </FlexWrapper>
       </Button>
       <dialog
         className={classNames(
-          "bg-primary-900 border-primary-600 right-0 z-50 mt-2 !block rounded-xl border p-2 transition-all duration-200 ease-in-out",
+          "border-primary-100 shadow-custom-dark right-0 z-50 mt-2 !block rounded-xl border p-0 transition-all duration-200 ease-in-out overflow-hidden",
           {
             "left-0": dialogPosition === "left",
             "right-0 left-[unset]": dialogPosition === "right",

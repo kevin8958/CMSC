@@ -5,8 +5,10 @@ import Button from "@/components/Button";
 import LogoBlack from "@/assets/image/logo_black.png";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
   const googleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       console.log(tokenResponse);
@@ -21,7 +23,7 @@ function Login() {
         direction="col"
         classes="w-[90%] sm:w-[400px]"
       >
-        <a href="/" className="font-extrabold text-2xl">
+        <a href="/">
           <img src={LogoBlack} alt="CMSC Logo" className="w-[60px]" />
         </a>
         <FlexWrapper gap={4} items="start" direction="col" classes="w-full">
@@ -73,7 +75,7 @@ function Login() {
             inputProps={{ "aria-label": "Default Text Input" }}
           />
           <FlexWrapper justify="between" items="center" classes="w-full">
-            <Typography variant="B2" classes="!text-primary-900 !font-normal">
+            <Typography variant="B2" classes="!font-normal">
               비밀번호를 잊으셨나요?
             </Typography>
             <a
@@ -83,7 +85,13 @@ function Login() {
               비밀번호 재설정
             </a>
           </FlexWrapper>
-          <Button classes="w-full" color="primary" variant="contain" size="lg">
+          <Button
+            classes="w-full"
+            color="primary"
+            variant="contain"
+            size="lg"
+            onClick={() => navigate("/dashboard")}
+          >
             로그인
           </Button>
           <Button classes="w-full" color="primary" variant="outline" size="lg">

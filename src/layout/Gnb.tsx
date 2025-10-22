@@ -5,6 +5,7 @@ import FlexWrapper from "./FlexWrapper";
 import { useEffect, useState } from "react";
 import classNames from "classnames";
 import BurgerButton from "@/interaction/BurgerButton";
+import LogoBlack from "@/assets/image/logo_black.png";
 
 export default function Gnb() {
   const [scrolled, setScrolled] = useState(false);
@@ -29,8 +30,8 @@ export default function Gnb() {
       )}
     >
       <FlexWrapper gap={4} items="center">
-        <a href="/" className="font-extrabold text-2xl">
-          CMSC
+        <a href="/">
+          <img src={LogoBlack} alt="CMSC Logo" className="w-[60px]" />
         </a>
 
         <FlexWrapper gap={4} items="center" classes="!hidden sm:!flex">

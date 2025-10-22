@@ -1,7 +1,7 @@
 namespace Common {
   /** Alert */
-  type AlertState = 'info' | 'success' | 'warning' | 'danger';
-  type AlertVariant = 'contain' | 'outline';
+  type AlertState = "info" | "success" | "warning" | "danger";
+  type AlertVariant = "contain" | "outline";
   interface AlertProps {
     classes?: string;
     variant: AlertVariant;
@@ -18,9 +18,9 @@ namespace Common {
   }
 
   /** Avatar */
-  type AvatarSize = 'lg' | 'md' | 'sm';
-  type AvatarType = 'image' | 'text';
-  type AvatarState = 'none' | 'active' | 'semiActive' | 'inactive';
+  type AvatarSize = "lg" | "md" | "sm";
+  type AvatarType = "image" | "text";
+  type AvatarState = "none" | "active" | "semiActive" | "inactive";
   interface AvatarProps {
     classes?: string;
     size: AvatarSize;
@@ -34,16 +34,16 @@ namespace Common {
     users: Common.AvatarProps[]; // Avatar에 전달되는 동일한 props 타입
     max?: number; // 표시할 최대 개수
     overlap?: number; // 겹침 정도 (기본: -8px)
-    size?: Common.AvatarProps['size']; // sm, md, lg
+    size?: Common.AvatarProps["size"]; // sm, md, lg
     classes?: string;
   }
   /** Button */
-  type ButtonType = 'button' | 'submit';
-  type ButtonSize = 'lg' | 'md' | 'sm';
-  type ButtonVariant = 'contain' | 'outline' | 'clear';
-  type ButtonColor = 'primary' | 'info' | 'success' | 'warning' | 'danger';
-  type ButtonIconPosition = 'left' | 'right';
-  type ButtonShape = 'rect' | 'circle';
+  type ButtonType = "button" | "submit";
+  type ButtonSize = "lg" | "md" | "sm";
+  type ButtonVariant = "contain" | "outline" | "clear";
+  type ButtonColor = "primary" | "info" | "success" | "warning" | "danger";
+  type ButtonIconPosition = "left" | "right";
+  type ButtonShape = "rect" | "circle";
   interface ButtonProps {
     classes?: string;
     type?: ButtonType;
@@ -63,7 +63,7 @@ namespace Common {
   }
 
   /** ButtonGroup */
-  type ButtonGroupSize = 'lg' | 'md' | 'sm';
+  type ButtonGroupSize = "lg" | "md" | "sm";
   type ButtonGroupOption = { id: string; value: string };
   interface ButtonGroupProps {
     classes?: string;
@@ -75,8 +75,8 @@ namespace Common {
   }
 
   /** Badge */
-  type BadgeSize = 'sm' | 'md' | 'lg';
-  type BadgeColor = 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  type BadgeSize = "sm" | "md" | "lg";
+  type BadgeColor = "primary" | "secondary" | "success" | "warning" | "danger";
   interface BadgeProps {
     children: string | React.ReactNode;
     size?: BadgeSize;
@@ -90,13 +90,13 @@ namespace Common {
   interface BoxProps {
     id?: string;
     classes?: string;
-    type?: 'default' | 'card' | 'code';
+    type?: "default" | "card" | "code";
     title?: string;
     maxWidth?: number;
     children?: React.ReactNode;
   }
   /** Checkbox */
-  type CheckboxSize = 'sm' | 'md' | 'lg';
+  type CheckboxSize = "sm" | "md" | "lg";
   interface CheckboxProps {
     classes?: string;
     id: string;
@@ -114,9 +114,9 @@ namespace Common {
   }
 
   /** Datepicker */
-  type DatepickerType = 'single' | 'range';
-  type DatepickerSize = 'sm' | 'md' | 'lg';
-  type DatepickerVariant = 'outline' | 'contain' | 'clear';
+  type DatepickerType = "single" | "range";
+  type DatepickerSize = "sm" | "md" | "lg";
+  type DatepickerVariant = "outline" | "contain" | "clear";
   interface DatepickerProps {
     classes?: string;
     type: DatepickerType;
@@ -139,8 +139,8 @@ namespace Common {
   }
 
   /** Dialog */
-  type DialogPlacement = 'top' | 'center' | 'bottom';
-  type DialogState = 'info' | 'success' | 'warning' | 'danger' | 'default';
+  type DialogPlacement = "top" | "center" | "bottom";
+  type DialogState = "info" | "success" | "warning" | "danger" | "default";
   interface DialogProps {
     title?: string;
     message: string;
@@ -169,27 +169,41 @@ namespace Common {
 
   type DropdownItem =
     | {
-        type: 'item';
+        type: "item";
         id: string;
-        label: string;
+        label: React.ReactNode;
         icon?: React.ReactNode;
         onClick?: () => void;
         danger?: boolean;
       }
-    | { type: 'group'; id: string; label?: string; icon?: React.ReactNode; items: DropdownItem[] }
-    | { type: 'submenu'; id: string; label: string; icon?: React.ReactNode; items: DropdownItem[] };
+    | {
+        type: "group";
+        id: string;
+        label?: string;
+        icon?: React.ReactNode;
+        items: DropdownItem[];
+      }
+    | {
+        type: "submenu";
+        id: string;
+        label: string;
+        icon?: React.ReactNode;
+        items: DropdownItem[];
+      };
 
   interface DropdownProps {
     items: DropdownItem[];
     onChange?: (value: any) => void;
-    dialogPosition?: 'left' | 'right';
+    dialogPosition?: "left" | "right";
     dialogWidth?: number;
+    buttonVariant?: ButtonVariant;
+    buttonSize?: ButtonSize;
     buttonItem?: string | React.ReactNode;
     buttonClasses?: string;
   }
 
-  type ProgressSize = 'sm' | 'md' | 'lg';
-  type ProgressLabelPosition = 'top' | 'bottom' | 'inside';
+  type ProgressSize = "sm" | "md" | "lg";
+  type ProgressLabelPosition = "top" | "bottom" | "inside";
 
   interface ProgressProps {
     value: number;
@@ -214,9 +228,9 @@ namespace Common {
     data: Row[];
   }
   /** TextInput */
-  type TextInputSize = 'sm' | 'md' | 'lg';
-  type TextInputType = 'text' | 'password' | 'email' | 'number';
-  type TextInputRounded = 'sm' | 'md' | 'lg' | '2xl';
+  type TextInputSize = "sm" | "md" | "lg";
+  type TextInputType = "text" | "password" | "email" | "number";
+  type TextInputRounded = "sm" | "md" | "lg" | "2xl";
   interface TextInputProps {
     label?: string;
     placeholder?: string;

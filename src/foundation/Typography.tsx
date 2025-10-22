@@ -19,7 +19,7 @@ const Typography = (props: Foundation.TypographyProps) => {
         baseStyles[variant],
         "tracking-wide transition-all duration-200 ease-in-out",
         {
-          "text-primary-100": color === "primary",
+          "text-primary-900": color === "primary",
           "text-secondary-400": color === "secondary",
         },
         classes
