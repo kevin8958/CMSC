@@ -59,7 +59,7 @@ const Alert = (props: Common.AlertProps) => {
     onClose,
   } = props;
   const [visible, setVisible] = useState(true);
-  const [progress, setProgress] = useState(100); // 게이지 진행률(%)
+  // const [progress, setProgress] = useState(100); // 게이지 진행률(%)
   const manualClosedRef = useRef(false);
   const rafIdRef = useRef<number | null>(null);
 
@@ -77,8 +77,8 @@ const Alert = (props: Common.AlertProps) => {
 
     const tick = (now: number) => {
       const elapsed = now - start;
-      const pct = Math.max(0, 100 - (elapsed / total) * 100);
-      setProgress(pct);
+      // const pct = Math.max(0, 100 - (elapsed / total) * 100);
+      // setProgress(pct);
 
       if (elapsed >= total) {
         setVisible(false);
@@ -104,7 +104,7 @@ const Alert = (props: Common.AlertProps) => {
     if (!repeat || visible || manualClosedRef.current) return;
 
     if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-    setProgress(100);
+    // setProgress(100);
     setVisible(true);
   }, [repeat, visible]);
 
