@@ -4,37 +4,35 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useSession } from "@/hooks/useSession";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { AlertProvider } from "@/components/AlertProvider";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const session = useSession();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!session) navigate("/login");
-  }, [session, navigate]);
-
-  return session ? <>{children}</> : null;
+  if (session === undefined) return null; // 로딩 중에는 아무것도 안 렌더링
+  if (!session) return <Navigate to="/login" replace />;
+  return children;
 }
 
 function App() {
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+      <AlertProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </AlertProvider>
     </GoogleOAuthProvider>
   );
 }

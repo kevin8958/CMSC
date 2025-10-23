@@ -2,28 +2,22 @@ import { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
 import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
-import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import LogoBlack from "@/assets/image/logo_black.png";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { useSession } from "@/hooks/useSession";
+import { useAlert } from "@/components/AlertProvider";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
-  const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const session = useSession();
-
-  useEffect(() => {
-    if (session) {
-      navigate("/dashboard");
-    }
-  }, [session, navigate]);
+  const { showAlert } = useAlert();
 
   const googleLogin = useGoogleLogin({
     onSuccess: (tokenResponse) => {
@@ -78,16 +72,25 @@ function Login() {
   };
 
   const handleSubmit = async () => {
-    if (isError) return;
+    setLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) {
-      setIsError(true);
+      setLoading(false);
+      showAlert("이메일 또는 비밀번호가 올바르지 않습니다.", {
+        type: "danger",
+        durationMs: 3000,
+      });
       return;
     }
-    if (data) navigate("/dashboard");
+    if (data) {
+      setTimeout(() => {
+        navigate("/dashboard");
+        setLoading(false);
+      }, 500);
+    }
   };
 
   return (
@@ -135,9 +138,6 @@ function Login() {
               autoFocus={false}
               error={!!errors.email}
               errorMsg={errors.email}
-              onFocus={() => console.log("Input focused")}
-              onBlur={() => console.log("Input blurred")}
-              onKeyUp={(e) => console.log("Key pressed:", e.key)}
               onChange={handleEmailChange}
               inputProps={{ "aria-label": "Default Text Input" }}
             />
@@ -150,10 +150,7 @@ function Login() {
               autoFocus={false}
               error={!!errors.password}
               errorMsg={errors.password}
-              onFocus={() => console.log("Input focused")}
-              onBlur={() => console.log("Input blurred")}
               onChange={handlePasswordChange}
-              onKeyUp={(e) => console.log("Key pressed:", e.key)}
               inputProps={{ "aria-label": "Default Text Input" }}
             />
           </div>
@@ -179,16 +176,31 @@ function Login() {
           </Button>
         </FlexWrapper>
       </FlexWrapper>
-      {isError && (
-        <Alert
-          classes="!w-[60%] !fixed top-2 left-1/2 -translate-x-1/2 transition-all duration-500 ease-out animate-slide-down"
-          variant="contain"
-          state="danger"
-          title="이메일 또는 비밀번호가 올바르지 않습니다."
-          time={3}
-          onClose={() => setIsError(false)}
-        />
-      )}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm"
+          >
+            <motion.div
+              className="flex flex-col items-center justify-center"
+              initial={{ y: -30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 150, damping: 15 }}
+            >
+              <motion.div
+                className="w-10 h-10 border-4 border-primary-900 border-t-transparent rounded-full"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
