@@ -39,7 +39,7 @@ const SNB = () => {
   return (
     <header
       className={
-        "scrollbar-thin scrollbar-thumb-primary-100 scrollbar-track-transparent z-40 flex h-[100dvh] overflow-y-auto pt-[70px] pr-0 w-[180px] border-r border-primary-100 "
+        "scrollbar-thin scrollbar-thumb-primary-100 scrollbar-track-transparent z-40 flex h-[100dvh] overflow-y-auto pt-[60px] pr-0 w-[180px] border-r border-primary-100 "
       }
     >
       <nav className="w-full rounded-xl py-4 px-2">

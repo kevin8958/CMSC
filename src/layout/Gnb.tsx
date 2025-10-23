@@ -29,7 +29,7 @@ export default function DashboardGnb() {
   return (
     <div
       className={classNames(
-        "h-[80px] fixed w-full top-0 left-1/2 z-50 flex -translate-x-1/2 items-center justify-between bg-white p-4 transition-all duration-300 ease-in-out border !border-primary-100"
+        "h-[60px] fixed w-full top-0 left-1/2 z-50 flex -translate-x-1/2 items-center justify-between bg-white p-4 transition-all duration-300 ease-in-out border !border-primary-100"
       )}
     >
       <FlexWrapper gap={2} items="center">

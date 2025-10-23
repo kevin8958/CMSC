@@ -1,7 +1,7 @@
 function Document() {
   return (
     <div>
-      <h1>도큐먼트</h1>
+      <h1>서류관리</h1>
     </div>
   );
 }
