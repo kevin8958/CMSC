@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TextInput from "@/components/TextInput";
 import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";

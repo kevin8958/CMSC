@@ -1,13 +1,11 @@
 import classNames from "classnames";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
 import { LuChartNoAxesCombined } from "react-icons/lu";
 import { LuListChecks } from "react-icons/lu";
 import { LuCalculator } from "react-icons/lu";
 import { LuNotebook } from "react-icons/lu";
 
 const SNB = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const pathname = location.pathname;
 
