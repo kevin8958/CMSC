@@ -2,9 +2,9 @@ import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-const navigate = useNavigate();
 const MenuButton = (props: Layout.MenuButtonProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const pathname = location.pathname;
   const { label, href, locale, isItem, items } = props;
   const isActive = pathname === (locale === "en" ? href : `/${locale}${href}`);
