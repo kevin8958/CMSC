@@ -8,7 +8,8 @@ import { Navigate } from "react-router-dom";
 import { AlertProvider } from "@/components/AlertProvider";
 import Gnb from "@/layout/Gnb";
 import Communication from "@/pages/Communication";
-import Accounting from "@/pages/Accounting";
+import Employee from "@/pages/Employee";
+import Income from "@/pages/Income";
 import Document from "@/pages/Document";
 import Snb from "@/layout/Snb";
 import FlexWrapper from "./layout/FlexWrapper";
@@ -62,11 +63,21 @@ function App() {
               }
             />
             <Route
-              path="/accounting"
+              path="/employee"
               element={
                 <AppLayout>
                   <ProtectedRoute>
-                    <Accounting />
+                    <Employee />
+                  </ProtectedRoute>
+                </AppLayout>
+              }
+            />
+            <Route
+              path="/income"
+              element={
+                <AppLayout>
+                  <ProtectedRoute>
+                    <Income />
                   </ProtectedRoute>
                 </AppLayout>
               }
