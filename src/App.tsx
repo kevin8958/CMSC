@@ -25,9 +25,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen w-full">
       <Gnb />
-      <FlexWrapper items="center" gap={0}>
+      <FlexWrapper items="start" gap={0}>
         <Snb />
-        <main className="pt-[76px] px-4 flex-1 min-h-screen flex flex-col">
+        <main className="pt-[76px] px-4 flex-1 h-screen flex flex-col overflow-scroll">
           {children}
         </main>
       </FlexWrapper>
