@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ComposedChart,
   Bar,
@@ -8,6 +9,44 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { TooltipProps } from "recharts";
+
+const RoundedBar = ({ x, y, width, height, value }: any) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const isPositive = value >= 0;
+  const color = isHovered ? "#A7B3C5" : "#C6CEDA";
+  const radius = 8;
+
+  const d = isPositive
+    ? `
+      M${x},${y + height}
+      L${x},${y + radius}
+      Q${x},${y} ${x + radius},${y}
+      L${x + width - radius},${y}
+      Q${x + width},${y} ${x + width},${y + radius}
+      L${x + width},${y + height}
+      Z
+    `
+    : `
+      M${x},${y}
+      L${x},${y + height - radius}
+      Q${x},${y + height} ${x + radius},${y + height}
+      L${x + width - radius},${y + height}
+      Q${x + width},${y + height} ${x + width},${y + height - radius}
+      L${x + width},${y}
+      Z
+    `;
+
+  return (
+    <path
+      d={d}
+      fill={color}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ transition: "fill 0.2s ease" }}
+    />
+  );
+};
 
 const CustomTooltip = ({
   active,
@@ -82,51 +121,7 @@ const FinanceWaterfallChart = ({ data }: { data: any[] }) => {
           <Tooltip content={<CustomTooltip />} />
 
           {/* Bar (막대) */}
-          <Bar
-            dataKey="value"
-            barSize={36}
-            shape={(props: any) => {
-              const { x, y, width, height, payload } = props;
-              const isPositive = payload.value >= 0;
-              const color = isPositive ? "#3b82f6" : "#ef4444";
-
-              const radius = 8;
-
-              if (isPositive) {
-                // 상단만 둥글게
-                return (
-                  <path
-                    d={`
-            M${x},${y + height}
-            L${x},${y + radius}
-            Q${x},${y} ${x + radius},${y}
-            L${x + width - radius},${y}
-            Q${x + width},${y} ${x + width},${y + radius}
-            L${x + width},${y + height}
-            Z
-          `}
-                    fill={color}
-                  />
-                );
-              } else {
-                // 하단만 둥글게
-                return (
-                  <path
-                    d={`
-            M${x},${y}
-            L${x},${y + height - radius}
-            Q${x},${y + height} ${x + radius},${y + height}
-            L${x + width - radius},${y + height}
-            Q${x + width},${y + height} ${x + width},${y + height - radius}
-            L${x + width},${y}
-            Z
-          `}
-                    fill={color}
-                  />
-                );
-              }
-            }}
-          />
+          <Bar dataKey="value" barSize={36} shape={<RoundedBar />} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
