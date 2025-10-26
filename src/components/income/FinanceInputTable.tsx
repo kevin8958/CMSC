@@ -21,8 +21,8 @@ const initialData: Row[] = [
     title: "매출",
     unit: "원",
     value: "",
-    children: [{ id: "cogs", title: "매출원가", unit: "원", value: "" }],
   },
+  { id: "cogs", title: "매출원가", unit: "원", value: "" },
   {
     id: "grossProfit",
     title: "매출총이익",
@@ -48,7 +48,8 @@ const initialData: Row[] = [
       { id: "operatingMargin", title: "영업이익률", unit: "%", value: "" },
     ],
   },
-  { id: "nonOperating", title: "영업외비용", unit: "원", value: "" },
+  { id: "NonOperatingIncome", title: "영업외수익", unit: "원", value: "" },
+  { id: "NonOperatingExpense", title: "영업외비용", unit: "원", value: "" },
   {
     id: "preTaxProfit",
     title: "세전이익",
