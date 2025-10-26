@@ -114,7 +114,7 @@ namespace Common {
   }
 
   /** Datepicker */
-  type DatepickerType = "single" | "range";
+  type DatepickerType = "single" | "range" | "month";
   type DatepickerSize = "sm" | "md" | "lg";
   type DatepickerVariant = "outline" | "contain" | "clear";
   interface DatepickerProps {
@@ -130,8 +130,10 @@ namespace Common {
     placeholder?: string;
     isRange?: boolean;
     isMultiple?: boolean;
+    isMonthPicker?: boolean;
     startDate?: Date;
     endDate?: Date;
+    dateFormat?: string;
     size?: DatepickerSize;
     disabled?: boolean;
     hideHeaderButtons?: boolean;

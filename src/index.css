@@ -29,3 +29,48 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.react-datepicker__aria-live,
+.react-datepicker__day-names {
+  display: none !important;
+}
+/* ✅ 12개월을 4행 3열로 표시 */
+.react-datepicker__month-wrapper {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, auto);
+  column-gap: 4px; /* X축 간격 */
+  row-gap: 0px; /* Y축 간격 */
+  margin: 0 !important;
+}
+
+.react-datepicker__month-text {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  height: 36px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.react-datepicker__month-text:hover {
+  background-color: #c6ceda;
+}
+
+.react-datepicker__month-text--selected {
+  background-color: #c6ceda !important;
+  border: 2px solid #374151 !important;
+}

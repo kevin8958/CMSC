@@ -25,6 +25,30 @@ const TextInput = (props: Common.TextInputProps) => {
     onChange,
   } = props;
 
+  // 🔹 숫자 입력 시 콤마 자동 추가
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === "number") {
+      // 숫자만 남기기
+      const numericValue = e.target.value.replace(/[^0-9.-]/g, "");
+      // 3자리 콤마 추가
+      const formatted = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      // input에 표시되는 값은 콤마 포함
+      e.target.value = formatted;
+
+      // 부모로 넘길 때는 콤마 제거한 순수 숫자값
+      if (onChange) {
+        const cleanValue = numericValue;
+        onChange({
+          ...e,
+          target: { ...e.target, value: cleanValue },
+        });
+      }
+    } else {
+      onChange?.(e);
+    }
+  };
+
   return (
     <div className="relative w-full">
       <div className="relative flex flex-col items-start">
@@ -47,7 +71,8 @@ const TextInput = (props: Common.TextInputProps) => {
           {...inputProps}
           id={id}
           maxLength={max}
-          type={type}
+          // 👇 실제로는 text input으로 렌더링 (콤마 허용)
+          type={type === "number" ? "text" : type}
           autoFocus={autoFocus}
           className={classNames(
             "form-control box-border w-full overflow-hidden border border-gray-300 bg-white p-2 !text-base text-ellipsis outline-0 transition-all duration-200 ease-in-out placeholder:text-[#AFAFAF] placeholder:text-sm focus:!border-2 focus:border-info",
@@ -69,9 +94,16 @@ const TextInput = (props: Common.TextInputProps) => {
           tabIndex={0}
           placeholder={placeholder}
           disabled={disabled}
+          // 👇 콤마 처리 로직 연결
+          onChange={handleChange}
           onFocus={onFocus}
           onBlur={onBlur}
-          onChange={onChange}
+          // 👇 표시될 때도 콤마 적용
+          value={
+            type === "number" && inputProps?.value
+              ? Number(inputProps.value).toLocaleString("ko-KR")
+              : inputProps?.value
+          }
         />
         {suffix && <div className="absolute right-3 bottom-3">{suffix}</div>}
         <Typography
