@@ -12,7 +12,8 @@ import Employee from "@/pages/Employee";
 import Income from "@/pages/Income";
 import Document from "@/pages/Document";
 import Snb from "@/layout/Snb";
-import FlexWrapper from "./layout/FlexWrapper";
+import FlexWrapper from "@/layout/FlexWrapper";
+import { DialogProvider } from "@/hooks/useDialog";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const session = useSession();
@@ -37,64 +38,66 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <AlertProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/dashboard"
-              element={
-                <AppLayout>
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/communication"
-              element={
-                <AppLayout>
-                  <ProtectedRoute>
-                    <Communication />
-                  </ProtectedRoute>
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/employee"
-              element={
-                <AppLayout>
-                  <ProtectedRoute>
-                    <Employee />
-                  </ProtectedRoute>
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/income"
-              element={
-                <AppLayout>
-                  <ProtectedRoute>
-                    <Income />
-                  </ProtectedRoute>
-                </AppLayout>
-              }
-            />
-            <Route
-              path="/document"
-              element={
-                <AppLayout>
-                  <ProtectedRoute>
-                    <Document />
-                  </ProtectedRoute>
-                </AppLayout>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </AlertProvider>
+      <DialogProvider>
+        <AlertProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <AppLayout>
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/communication"
+                element={
+                  <AppLayout>
+                    <ProtectedRoute>
+                      <Communication />
+                    </ProtectedRoute>
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/employee"
+                element={
+                  <AppLayout>
+                    <ProtectedRoute>
+                      <Employee />
+                    </ProtectedRoute>
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/income"
+                element={
+                  <AppLayout>
+                    <ProtectedRoute>
+                      <Income />
+                    </ProtectedRoute>
+                  </AppLayout>
+                }
+              />
+              <Route
+                path="/document"
+                element={
+                  <AppLayout>
+                    <ProtectedRoute>
+                      <Document />
+                    </ProtectedRoute>
+                  </AppLayout>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </AlertProvider>
+      </DialogProvider>
     </GoogleOAuthProvider>
   );
 }

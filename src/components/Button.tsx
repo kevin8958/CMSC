@@ -60,7 +60,7 @@ const Button = forwardRef(
     const getContainClasses = (buttonColor: Common.ButtonColor) => {
       const styles = {
         primary:
-          "bg-primary-900 hover:bg-primary-800 active:bg-primary-800 disabled:active:!bg-white disabled:hover:!bg-white text-gray-100 !font-semibold",
+          "bg-primary-900 hover:bg-primary-800 active:bg-primary-800 disabled:active:!bg-primary-900 disabled:hover:!bg-primary-900 text-gray-100 !font-semibold",
         info: "bg-info !text-gray-200",
         success: "bg-success !text-gray-200",
         warning: "bg-warning !text-gray-200",
@@ -85,7 +85,7 @@ const Button = forwardRef(
           variant === "clear" && getClearColorClasses(color),
           variant === "outline" && getOutlineClasses(color),
           variant === "contain" && getContainClasses(color),
-          disabled && "cursor-not-allowed opacity-30",
+          disabled && "!cursor-not-allowed opacity-30",
           prompted && "animate-flash-fast cursor-pointer",
           shape === "circle" && "aspect-square !rounded-full p-0"
         )}

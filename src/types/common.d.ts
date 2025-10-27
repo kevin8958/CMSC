@@ -145,11 +145,13 @@ namespace Common {
   type DialogState = "info" | "success" | "warning" | "danger" | "default";
   interface DialogProps {
     title?: string;
-    message: string;
+    message?: string;
+    body?: React.ReactNode;
     confirmText?: string;
     cancelText?: string;
     placement?: DialogPlacement;
     state?: DialogState;
+    onConfirm?: () => boolean;
   }
   interface DialogContextValue {
     openDialog: (options: DialogProps) => Promise<boolean>;
