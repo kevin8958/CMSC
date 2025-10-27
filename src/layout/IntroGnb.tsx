@@ -23,7 +23,7 @@ export default function IntroGnb() {
   return (
     <div
       className={classNames(
-        "fixed top-4 left-1/2 z-50 flex -translate-x-1/2 items-center justify-between rounded-full bg-white px-[32px] py-4 transition-all duration-300 ease-in-out border sm:border-transparent",
+        "fixed top-4 left-1/2 z-50 flex -translate-x-1/2 items-center backdrop-blur-md justify-between rounded-full bg-white/60 px-[32px] py-4 transition-all duration-300 ease-in-out border sm:border-transparent",
         scrolled
           ? "max-w-[1160px] w-[calc(100%-16px)] !border-primary-100 shadow-custom-light "
           : "max-w-[1200px] w-[calc(100%-16px)] sm:w-full border-primary-100 shadow-custom-light  sm:shadow-none"
@@ -35,16 +35,17 @@ export default function IntroGnb() {
         </a>
 
         <FlexWrapper gap={4} items="center" classes="!hidden sm:!flex">
-          <GnbButton href="/">CMSC소개</GnbButton>
-          <GnbButton href="/">이용사례</GnbButton>
-          <GnbButton href="/">요금제</GnbButton>
-          <GnbButton href="/">리소스</GnbButton>
+          <GnbButton href="/">업무보드</GnbButton>
+          <GnbButton href="/">인사업무지원</GnbButton>
+          <GnbButton href="/">회계업무지원</GnbButton>
+          <GnbButton href="/">구매업무지원</GnbButton>
+          <GnbButton href="/">행정업무지원</GnbButton>
         </FlexWrapper>
       </FlexWrapper>
 
       <FlexWrapper gap={4} items="center" classes="!hidden sm:!flex">
         <GnbButton href="/login">로그인</GnbButton>
-        <GnbButton href="/login">무료로 시작하기</GnbButton>
+        <GnbButton href="/login">문의하기</GnbButton>
       </FlexWrapper>
 
       <BurgerButton isOpen={isOpen} setIsOpen={setIsOpen} />
