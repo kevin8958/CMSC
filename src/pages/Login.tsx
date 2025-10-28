@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Button from "@/components/Button";
-import LogoBlack from "@/assets/image/logo_black.png";
+import LogoBlack from "@/assets/image/logo_hands_black.png";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
@@ -96,7 +96,7 @@ function Login() {
   return (
     <div className="w-full h-screen justify-evenly flex flex-col gap-4 items-center">
       <FlexWrapper
-        gap={10}
+        gap={2}
         items="start"
         direction="col"
         classes="w-[90%] sm:w-[400px] mt-[-60px]"

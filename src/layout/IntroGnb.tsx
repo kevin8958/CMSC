@@ -5,7 +5,7 @@ import FlexWrapper from "./FlexWrapper";
 import { useEffect, useState } from "react";
 import classNames from "classnames";
 import BurgerButton from "@/interaction/BurgerButton";
-import LogoBlack from "@/assets/image/logo_black.png";
+import LogoBlack from "@/assets/image/logo_hands_black.png";
 
 export default function IntroGnb() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,7 +23,7 @@ export default function IntroGnb() {
   return (
     <div
       className={classNames(
-        "fixed top-4 left-1/2 z-50 flex -translate-x-1/2 items-center backdrop-blur-md justify-between rounded-full bg-white/60 px-[32px] py-4 transition-all duration-300 ease-in-out border sm:border-transparent",
+        "fixed top-4 left-1/2 z-50 flex -translate-x-1/2 items-center backdrop-blur-md justify-between rounded-full bg-white/60 px-[32px] py-1 transition-all duration-300 ease-in-out border sm:border-transparent",
         scrolled
           ? "max-w-[1160px] w-[calc(100%-16px)] !border-primary-100 shadow-custom-light "
           : "max-w-[1200px] w-[calc(100%-16px)] sm:w-full border-primary-100 shadow-custom-light  sm:shadow-none"

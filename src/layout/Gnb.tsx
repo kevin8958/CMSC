@@ -24,9 +24,7 @@ export default function Gnb() {
   const { openDialog } = useDialog();
   const { showAlert } = useAlert();
 
-  console.log(initialized, "initialized@@@??");
   useEffect(() => {
-    console.log("@@@??");
     fetchCompanies();
   }, []);
 

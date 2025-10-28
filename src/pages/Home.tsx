@@ -26,7 +26,7 @@ function Home() {
           />
         </FlexWrapper>
         <FlexWrapper gap={0} items="center" direction="col">
-          <p className="text-[52px] font-bold tracking-wide">CM.SC와 함께</p>
+          <p className="text-[52px] font-bold tracking-wide">HandS와 함께</p>
           <p className="text-[52px] font-bold mt-[-12px]">간편한 경영지원</p>
         </FlexWrapper>
         <Button
