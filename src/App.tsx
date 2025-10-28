@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -22,19 +22,21 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return children;
 }
 
-function AppLayout({ children }: { children: React.ReactNode }) {
+// ✅ Outlet 기반 AppLayout
+function AppLayout() {
   return (
     <div className="min-h-screen w-full">
       <Gnb />
       <FlexWrapper items="start" gap={0}>
         <Snb />
         <main className="pt-[76px] px-4 flex-1 h-screen flex flex-col overflow-scroll">
-          {children}
+          <Outlet /> {/* ✅ 여기에 자식 페이지들이 자동으로 렌더 */}
         </main>
       </FlexWrapper>
     </div>
   );
 }
+
 function App() {
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
@@ -42,58 +44,24 @@ function App() {
         <AlertProvider>
           <BrowserRouter>
             <Routes>
+              {/* 비로그인용 */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
+
+              {/* 로그인 후 영역 */}
               <Route
-                path="/dashboard"
                 element={
-                  <AppLayout>
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  </AppLayout>
+                  <ProtectedRoute>
+                    <AppLayout />
+                  </ProtectedRoute>
                 }
-              />
-              <Route
-                path="/communication"
-                element={
-                  <AppLayout>
-                    <ProtectedRoute>
-                      <Communication />
-                    </ProtectedRoute>
-                  </AppLayout>
-                }
-              />
-              <Route
-                path="/employee"
-                element={
-                  <AppLayout>
-                    <ProtectedRoute>
-                      <Employee />
-                    </ProtectedRoute>
-                  </AppLayout>
-                }
-              />
-              <Route
-                path="/income"
-                element={
-                  <AppLayout>
-                    <ProtectedRoute>
-                      <Income />
-                    </ProtectedRoute>
-                  </AppLayout>
-                }
-              />
-              <Route
-                path="/document"
-                element={
-                  <AppLayout>
-                    <ProtectedRoute>
-                      <Document />
-                    </ProtectedRoute>
-                  </AppLayout>
-                }
-              />
+              >
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/communication" element={<Communication />} />
+                <Route path="/employee" element={<Employee />} />
+                <Route path="/income" element={<Income />} />
+                <Route path="/document" element={<Document />} />
+              </Route>
             </Routes>
           </BrowserRouter>
         </AlertProvider>
