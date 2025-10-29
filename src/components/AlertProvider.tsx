@@ -73,7 +73,7 @@ export function AlertProvider({ children }: { children: ReactNode }) {
         createPortal(
           <div key={key} className="z-[9999]">
             <Alert
-              classes={`!w-[60%] !fixed top-2 left-1/2 -translate-x-1/2 transition-all duration-500 ease-out animate-slide-down ${classes}`}
+              classes={`!w-[calc(100%-16px)] sm:!w-[60%] !fixed top-2 left-1/2 -translate-x-1/2 transition-all duration-500 ease-out animate-slide-down ${classes}`}
               variant="contain"
               state={type}
               title={message}

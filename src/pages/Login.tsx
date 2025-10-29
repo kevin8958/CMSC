@@ -148,6 +148,7 @@ function Login() {
             />
             <TextInput
               label="비밀번호"
+              tooltip="영문 소문자, 숫자, 특수문자를 포함해야 합니다."
               id="Password"
               classes="w-full"
               type="password"

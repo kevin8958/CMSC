@@ -237,6 +237,7 @@ namespace Common {
   type TextInputRounded = "sm" | "md" | "lg" | "2xl";
   interface TextInputProps {
     label?: string;
+    tooltip?: string;
     placeholder?: string;
     id?: string;
     classes?: string;

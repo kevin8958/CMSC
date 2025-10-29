@@ -2,10 +2,15 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 import Typography from "@/foundation/Typography";
 import classNames from "classnames";
+import { motion, AnimatePresence } from "framer-motion";
+import { LuCircleHelp } from "react-icons/lu";
+import { useState } from "react";
+import FlexWrapper from "@/layout/FlexWrapper";
 
 const TextInput = (props: Common.TextInputProps) => {
   const {
     label = "",
+    tooltip = "",
     placeholder = "",
     id,
     classes,
@@ -25,6 +30,7 @@ const TextInput = (props: Common.TextInputProps) => {
     onChange,
     onKeyUp,
   } = props;
+  const [showTooltip, setShowTooltip] = useState(false);
 
   // 🔹 숫자 입력 시 콤마 자동 추가
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,20 +60,44 @@ const TextInput = (props: Common.TextInputProps) => {
     <div className="relative w-full">
       <div className="relative flex flex-col items-start">
         <input className="hidden" aria-hidden="true" />
-        {label && (
-          <label
-            htmlFor={id}
-            className={classNames(
-              "text-primary-800 relative mb-1 !text-sm font-normal",
-              {
+        <FlexWrapper gap={1} items="center" classes="relative mb-1">
+          {label && (
+            <label
+              htmlFor={id}
+              className={classNames("text-primary-800 !text-sm font-normal", {
                 "after:absolute after:top-0 after:-right-[7px] after:rounded-full after:text-[#FF3535] after:content-['*']":
                   required,
-              }
-            )}
-          >
-            {label}
-          </label>
-        )}
+              })}
+            >
+              {label}
+            </label>
+          )}
+          {tooltip && (
+            <div
+              className="relative"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <LuCircleHelp
+                className="text-primary-400 cursor-pointer hover:text-primary-600"
+                size={16}
+              />
+              <AnimatePresence>
+                {showTooltip && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-6 top-[-5px] z-50 w-max max-w-[220px] rounded-md bg-gray-800 px-3 py-2 text-xs text-white shadow-lg"
+                  >
+                    {tooltip}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+        </FlexWrapper>
         <input
           {...inputProps}
           id={id}
