@@ -7,7 +7,7 @@ import {
   LuArrowUpDown,
 } from "react-icons/lu";
 import { MdOutlineMedicalInformation } from "react-icons/md";
-
+import { AiOutlineTeam } from "react-icons/ai";
 const SNB = () => {
   const { pathname } = useLocation();
 
@@ -64,6 +64,17 @@ const SNB = () => {
         },
       ],
     },
+    {
+      title: null,
+      items: [
+        {
+          id: "member",
+          label: "멤버관리",
+          href: "/member",
+          icon: <AiOutlineTeam />,
+        },
+      ],
+    },
   ];
 
   return (
@@ -71,7 +82,7 @@ const SNB = () => {
       <nav className="w-full rounded-xl py-4 px-2">
         <ul className="flex flex-col w-full">
           {snbGroups.map((group, gIdx) => (
-            <li key={gIdx} className="mb-2">
+            <li key={gIdx} className="mb-2 border-b border-primary-100 pb-4">
               {group.title && (
                 <p className="px-4 py-2 text-xs font-semibold text-primary-500 tracking-wide uppercase">
                   {group.title}

@@ -14,6 +14,7 @@ import Document from "@/pages/Document";
 import Snb from "@/layout/Snb";
 import FlexWrapper from "@/layout/FlexWrapper";
 import { DialogProvider } from "@/hooks/useDialog";
+import Member from "@/pages/Member";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const session = useSession();
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/employee" element={<Employee />} />
                 <Route path="/income" element={<Income />} />
                 <Route path="/document" element={<Document />} />
+                <Route path="/member" element={<Member />} />
               </Route>
             </Routes>
           </BrowserRouter>
