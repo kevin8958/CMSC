@@ -8,7 +8,7 @@ function Home() {
   return (
     <div className="w-full max-w-[1200px] py-[100px] flex flex-col gap-4 px-4 sm:px-8 items-center">
       <IntroGnb />
-      <div className="w-full rounded-xl flex flex-col items-center justify-center h-[480px] gap-0">
+      <div className="w-full rounded-xl flex flex-col items-center justify-center h-[420px] sm:h-[480px] gap-0">
         <FlexWrapper gap={0} items="center">
           <p className="text-2xl font-thin">더 효율적인</p>
           <RotatingText
@@ -26,21 +26,29 @@ function Home() {
           />
         </FlexWrapper>
         <FlexWrapper gap={0} items="center" direction="col">
-          <p className="text-[52px] font-bold tracking-wide">HandS와 함께</p>
-          <p className="text-[52px] font-bold mt-[-12px]">간편한 경영지원</p>
+          <p className="text-[40px] sm:text-[52px] font-bold tracking-wide">
+            HandS와 함께
+          </p>
+          <p className="text-[40px] sm:text-[52px] font-bold mt-[-12px]">
+            간편한 경영지원
+          </p>
         </FlexWrapper>
         <Button
           variant="contain"
           color="primary"
           size="lg"
-          classes="mt-6 !w-[320px]"
+          classes="mt-6 !w-[248px] sm:!w-[320px]"
         >
           문의하기
         </Button>
       </div>
-      <div className="w-full rounded-xl flex flex-col items-start h-[400px]">
-        <FlexWrapper justify="between" classes="w-full">
-          <div className="flex w-[300px] flex-col items-start gap-4 pb-4">
+      <div className="w-full rounded-xl flex flex-col items-start h-fit sm:h-[400px]">
+        <FlexWrapper
+          justify="between"
+          direction="col"
+          classes="w-full sm:flex-row"
+        >
+          <div className="flex w-full sm:w-[300px] flex-col items-start gap-4 pb-4">
             <div className="w-full bg-primary-100 pointer-events-none relative flex aspect-[3/2] items-center justify-center rounded-lg">
               image1
             </div>
@@ -52,7 +60,7 @@ function Home() {
               서비스의 범위와 업무수행에 필요한 정보를 안내드립니다.
             </Typography>
           </div>
-          <div className="flex w-[300px] flex-col items-start gap-4 pb-4">
+          <div className="flex w-full sm:w-[300px] flex-col items-start gap-4 pb-4">
             <div className="w-full bg-primary-100 pointer-events-none relative flex aspect-[3/2] items-center justify-center rounded-lg">
               image2
             </div>
@@ -64,7 +72,7 @@ function Home() {
               안내드리고, 계약서 작성을 진행합니다.
             </Typography>
           </div>
-          <div className="flex w-[300px] flex-col items-start gap-4 pb-4">
+          <div className="flex w-full sm:w-[300px] flex-col items-start gap-4 pb-4">
             <div className="w-full bg-primary-100 pointer-events-none relative flex aspect-[3/2] items-center justify-center rounded-lg">
               image3
             </div>
