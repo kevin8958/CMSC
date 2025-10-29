@@ -135,10 +135,15 @@ function Login() {
               classes="w-full"
               type="text"
               max={100}
-              autoFocus={false}
+              autoFocus={true}
               error={!!errors.email}
               errorMsg={errors.email}
               onChange={handleEmailChange}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
               inputProps={{ "aria-label": "Default Text Input" }}
             />
             <TextInput
@@ -151,6 +156,11 @@ function Login() {
               error={!!errors.password}
               errorMsg={errors.password}
               onChange={handlePasswordChange}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
               inputProps={{ "aria-label": "Default Text Input" }}
             />
           </div>

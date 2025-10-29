@@ -23,6 +23,7 @@ const TextInput = (props: Common.TextInputProps) => {
     onFocus,
     onBlur,
     onChange,
+    onKeyUp,
   } = props;
 
   // 🔹 숫자 입력 시 콤마 자동 추가
@@ -98,6 +99,7 @@ const TextInput = (props: Common.TextInputProps) => {
           onChange={handleChange}
           onFocus={onFocus}
           onBlur={onBlur}
+          onKeyUp={onKeyUp}
           // 👇 표시될 때도 콤마 적용
           value={
             type === "number" && inputProps?.value
