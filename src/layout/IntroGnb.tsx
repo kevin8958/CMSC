@@ -70,7 +70,7 @@ export default function IntroGnb() {
       <header
         className={
           "bg-white scrollbar-thin scrollbar-thumb-primary-900 scrollbar-track-transparent fixed top-0 z-40 pt-[120px] flex h-[100dvh] w-full overflow-y-auto pr-0 " +
-          (isOpen ? "left-0" : "-left-full sm:left-0")
+          (isOpen ? "left-0" : "-left-full")
         }
       >
         <nav className="w-full rounded-xl px-8">
