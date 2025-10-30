@@ -3,6 +3,9 @@ import RotatingText from "@/interaction/RotatingText";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Typography from "@/foundation/Typography";
 import Button from "@/components/Button";
+import ProcessImage1 from "@/assets/image/intro_process_1.jpg";
+import ProcessImage2 from "@/assets/image/intro_process_2.jpg";
+import ProcessImage3 from "@/assets/image/intro_process_3.jpg";
 
 function Home() {
   return (
@@ -50,7 +53,11 @@ function Home() {
         >
           <div className="flex w-full sm:w-[300px] flex-col items-start gap-4 pb-4">
             <div className="w-full bg-primary-100 pointer-events-none relative flex aspect-[3/2] items-center justify-center rounded-lg">
-              image1
+              <img
+                src={ProcessImage1}
+                alt="상담진행 이미지"
+                className="w-full h-full object-cover rounded-lg"
+              />
             </div>
             <Typography variant="H3" classes="!font-semibold">
               상담진행
@@ -62,7 +69,11 @@ function Home() {
           </div>
           <div className="flex w-full sm:w-[300px] flex-col items-start gap-4 pb-4">
             <div className="w-full bg-primary-100 pointer-events-none relative flex aspect-[3/2] items-center justify-center rounded-lg">
-              image2
+              <img
+                src={ProcessImage2}
+                alt="비용산정 및 계약진행 이미지"
+                className="w-full h-full object-cover rounded-lg"
+              />
             </div>
             <Typography variant="H3" classes="!font-semibold">
               비용산정 및 계약진행
@@ -74,7 +85,11 @@ function Home() {
           </div>
           <div className="flex w-full sm:w-[300px] flex-col items-start gap-4 pb-4">
             <div className="w-full bg-primary-100 pointer-events-none relative flex aspect-[3/2] items-center justify-center rounded-lg">
-              image3
+              <img
+                src={ProcessImage3}
+                alt="팀 빌딩 및 서비스 제공 이미지"
+                className="w-full h-full object-cover rounded-lg"
+              />
             </div>
             <Typography variant="H3" classes="!font-semibold">
               팀 빌딩 및 서비스 제공
