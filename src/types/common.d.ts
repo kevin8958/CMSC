@@ -231,6 +231,25 @@ namespace Common {
     columns: Column[];
     data: Row[];
   }
+
+  /** Table */
+
+  // Table
+  interface TableProps {
+    classes?: string;
+    data: any;
+    columns: any[];
+    centerAlignHeaders?: string[];
+    emphasisColumns?: string[];
+    showPagination?: boolean;
+    noLine?: boolean;
+    hideHeader?: boolean;
+    stickyHeader?: boolean;
+    columnVisibility?: any;
+    hideSize?: boolean;
+    isDisableRow?: (value: Row<unknown>) => void;
+  }
+
   /** TextInput */
   type TextInputSize = "sm" | "md" | "lg";
   type TextInputType = "text" | "password" | "email" | "number";

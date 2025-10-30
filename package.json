@@ -13,6 +13,7 @@
     "@headlessui/react": "^2.2.9",
     "@react-oauth/google": "^0.12.2",
     "@supabase/supabase-js": "^2.76.1",
+    "@tanstack/react-table": "^8.21.3",
     "@uidotdev/usehooks": "^2.4.1",
     "class-variance-authority": "^0.7.1",
     "classnames": "^2.5.1",
