@@ -28,10 +28,11 @@ export default function IntroGnb() {
 
   const menus = [
     { id: 1, label: "업무보드", href: "/work" },
-    { id: 2, label: "인사업무지원", href: "/hr" },
-    { id: 3, label: "회계업무지원", href: "/accounting" },
-    { id: 4, label: "구매업무지원", href: "/purchasing" },
-    { id: 5, label: "행정업무지원", href: "/administration" },
+    { id: 2, label: "채용지원", href: "/recruitment" },
+    { id: 3, label: "인사지원", href: "/hr" },
+    { id: 3, label: "회계지원", href: "/accounting" },
+    { id: 4, label: "구매지원", href: "/purchasing" },
+    { id: 5, label: "기타지원", href: "/etc" },
   ];
 
   return (
@@ -49,7 +50,7 @@ export default function IntroGnb() {
             <img src={LogoBlack} alt="CMSC Logo" className="w-[60px]" />
           </a>
 
-          <FlexWrapper gap={4} items="center" classes="!hidden sm:!flex">
+          <FlexWrapper gap={2} items="center" classes="!hidden sm:!flex">
             {menus.map((menu) => {
               return (
                 <GnbButton key={menu.id} href={menu.href}>
