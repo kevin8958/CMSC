@@ -55,6 +55,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
       body,
       confirmText = "Confirm",
       cancelText = "Cancel",
+      hideBottom = false,
       placement = "center",
       state,
       onConfirm,
@@ -65,6 +66,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
         body,
         confirmText,
         cancelText,
+        hideBottom,
         placement,
         state,
         onConfirm,
@@ -126,10 +128,17 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
             >
               <Dialog.Panel
                 className={classNames(
-                  "bg-white w-full max-w-md rounded-xl p-6 shadow-xl",
+                  "relative bg-white w-full max-w-md rounded-xl p-6 shadow-xl",
                   PANEL_BORDER[options?.state || "default"]
                 )}
               >
+                <button
+                  onClick={() => close(false)}
+                  aria-label="닫기"
+                  className="absolute top-6 right-6 text-primary-900 hover:text-primary-600 transition-colors"
+                >
+                  ✕
+                </button>
                 <div className="space-y-4">
                   {options?.title && (
                     <Dialog.Title className="text-lg font-medium text-primary-900">
@@ -147,39 +156,45 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
                   )}
                 </div>
 
-                <div className="mt-6 flex justify-end gap-3">
-                  {!hideCancel && (
-                    <Button
-                      variant="outline"
-                      classes="min-w-[80px]"
-                      onClick={() => close(false)}
-                    >
-                      {options?.cancelText ?? "Cancel"}
-                    </Button>
-                  )}
-                  <Button
-                    variant="contain"
-                    classes={classNames(
-                      "min-w-[80px]",
-                      options?.state && CONFIRM_BTN[options.state]
+                {!options?.hideBottom && (
+                  <div className="w-full mt-10 flex justify-end gap-3">
+                    {!hideCancel && (
+                      <Button
+                        variant="outline"
+                        classes="min-w-[80px]"
+                        onClick={() => close(false)}
+                      >
+                        {options?.cancelText ?? "Cancel"}
+                      </Button>
                     )}
-                    color={
-                      options?.state === "default" ? "primary" : options?.state
-                    }
-                    onClick={() => {
-                      if (options?.onConfirm) {
-                        const isConfirmed = options?.onConfirm();
-                        if (isConfirmed) {
+                    <Button
+                      size="lg"
+                      variant="contain"
+                      classes={classNames(
+                        "min-w-[80px]",
+                        { "w-full": hideCancel },
+                        options?.state && CONFIRM_BTN[options.state]
+                      )}
+                      color={
+                        options?.state === "default"
+                          ? "primary"
+                          : options?.state
+                      }
+                      onClick={() => {
+                        if (options?.onConfirm) {
+                          const isConfirmed = options?.onConfirm();
+                          if (isConfirmed) {
+                            close(true);
+                          }
+                        } else {
                           close(true);
                         }
-                      } else {
-                        close(true);
-                      }
-                    }}
-                  >
-                    {options?.confirmText ?? "Confirm"}
-                  </Button>
-                </div>
+                      }}
+                    >
+                      {options?.confirmText ?? "Confirm"}
+                    </Button>
+                  </div>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </FlexWrapper>

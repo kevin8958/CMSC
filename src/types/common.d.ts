@@ -149,6 +149,7 @@ namespace Common {
     body?: React.ReactNode;
     confirmText?: string;
     cancelText?: string;
+    hideBottom?: boolean;
     placement?: DialogPlacement;
     state?: DialogState;
     onConfirm?: () => boolean;

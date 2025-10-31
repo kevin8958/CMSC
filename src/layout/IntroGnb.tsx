@@ -47,7 +47,7 @@ export default function IntroGnb() {
       >
         <FlexWrapper gap={4} items="center">
           <a href="/">
-            <img src={LogoBlack} alt="CMSC Logo" className="w-[60px]" />
+            <img src={LogoBlack} alt="HandS Logo" className="w-[60px]" />
           </a>
 
           <FlexWrapper gap={2} items="center" classes="!hidden sm:!flex">

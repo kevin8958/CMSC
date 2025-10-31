@@ -10,6 +10,7 @@ import { useDialog } from "@/hooks/useDialog";
 import { useAlert } from "@/components/AlertProvider";
 import TextInput from "@/components/TextInput";
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import LogoBlack from "@/assets/image/logo_hands_black.png";
 
 export default function Gnb() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,22 +43,50 @@ export default function Gnb() {
     },
   ] as Common.DropdownItem[];
 
-  const onSubmit = async (companyName: string) => {
-    try {
-      const company = await createCompany(companyName);
-      if (company) {
-        showAlert(`회사 "${company.name}"가 생성되었습니다.`, {
-          type: "success",
+  function DialogBody() {
+    const { close } = useDialog();
+    const [companyName, setCompanyName] = useState("");
+
+    const onSubmit = async (companyName: string) => {
+      try {
+        const company = await createCompany(companyName);
+        if (company) {
+          showAlert(`회사 "${company.name}"가 생성되었습니다.`, {
+            type: "success",
+            durationMs: 3000,
+          });
+        }
+        fetchCompanies();
+        close(true);
+      } catch (err: any) {
+        showAlert(err?.message || "회사 생성 중 오류가 발생했습니다.", {
+          type: "danger",
           durationMs: 3000,
         });
       }
-    } catch (err: any) {
-      showAlert(err?.message || "회사 생성 중 오류가 발생했습니다.", {
-        type: "danger",
-        durationMs: 3000,
-      });
-    }
-  };
+    };
+    return (
+      <FlexWrapper direction="col" gap={4} classes="w-full">
+        <TextInput
+          label="회사 이름"
+          id="companyName"
+          classes="w-full"
+          onChange={(e) => setCompanyName(e.target.value)}
+        />
+        <Button
+          size="lg"
+          variant="contain"
+          classes="w-full"
+          disabled={companyName.trim() === ""}
+          onClick={() => {
+            onSubmit(companyName);
+          }}
+        >
+          추가하기
+        </Button>
+      </FlexWrapper>
+    );
+  }
 
   return (
     <div
@@ -79,41 +108,18 @@ export default function Gnb() {
         </FlexWrapper>
       ) : (
         <FlexWrapper gap={2} items="center">
-          <span className="size-10 flex items-center justify-center rounded-md bg-secondary-500 font-normal text-base">
-            {currentCompanyId
-              ? companies
-                  .find((c) => c.id === currentCompanyId)
-                  ?.name?.charAt(0)
-                  .toUpperCase()
-              : ""}
-          </span>
+          <a href="/dashboard">
+            <img src={LogoBlack} alt="HandS Logo" className="w-[60px]" />
+          </a>
           <Dropdown
+            buttonVariant="outline"
             items={dropdownItems}
             onChange={async (val) => {
               if (val === "add") {
-                let companyName = "";
                 await openDialog({
                   title: "회사 추가",
-                  body: (
-                    <TextInput
-                      label="회사 이름"
-                      id="companyName"
-                      classes="w-full"
-                      onChange={(e) => (companyName = e.target.value)}
-                    />
-                  ),
-                  onConfirm: () => {
-                    if (companyName.trim() === "") {
-                      showAlert("회사 이름을 입력해주세요.", {
-                        type: "danger",
-                        durationMs: 3000,
-                      });
-                      return false;
-                    } else {
-                      onSubmit(companyName);
-                      return true;
-                    }
-                  },
+                  hideBottom: true,
+                  body: <DialogBody />,
                 });
                 return;
               } else {
@@ -121,12 +127,11 @@ export default function Gnb() {
               }
             }}
             dialogWidth={160}
-            buttonVariant="clear"
             buttonItem={
               companies.find((c) => c.id === currentCompanyId)?.name ??
               "회사 선택"
             }
-            buttonClasses="w-[120px] !font-normal text-primary-900 !h-10"
+            buttonClasses="w-[120px] !font-normal text-primary-900 !h-10 !border-primary-100"
           />
         </FlexWrapper>
       )}

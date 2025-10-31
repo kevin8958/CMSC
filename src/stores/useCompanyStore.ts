@@ -29,9 +29,6 @@ export const useCompanyStore = create<CompanyStore>()(
 
       // ✅ 회사 목록 불러오기
       fetchCompanies: async () => {
-        // 이미 한 번 불렀거나 현재 로딩 중이면 중복 방지
-        if (get().initialized || get().fetching) return;
-
         set({ fetching: true, loading: true });
         const {
           data: { user },
