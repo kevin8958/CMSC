@@ -240,15 +240,16 @@ namespace Common {
     classes?: string;
     data: any;
     columns: any[];
+    totalCount?: number;
     centerAlignHeaders?: string[];
     emphasisColumns?: string[];
     showPagination?: boolean;
     noLine?: boolean;
     hideHeader?: boolean;
     stickyHeader?: boolean;
-    columnVisibility?: any;
     hideSize?: boolean;
     isDisableRow?: (value: Row<unknown>) => void;
+    onPageChange?: (page: number, size: number) => void;
   }
 
   /** TextInput */

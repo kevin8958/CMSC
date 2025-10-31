@@ -46,7 +46,7 @@ export const useCompanyStore = create<CompanyStore>()(
 
         let companies: Company[] = [];
 
-        if (profile?.role === "admin") {
+        if (profile?.role === "admin" || profile?.role === "super_admin") {
           const { data } = await supabase
             .from("admin_companies")
             .select("companies(id, name)")

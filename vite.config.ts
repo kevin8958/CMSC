@@ -10,4 +10,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/api": "http://localhost:4000", // ✅ Express 서버로 프록시
+    },
+  },
 });

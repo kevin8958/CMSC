@@ -111,6 +111,7 @@ export default function Gnb() {
           <a href="/dashboard">
             <img src={LogoBlack} alt="HandS Logo" className="w-[60px]" />
           </a>
+          <span className="w-[1px] h-4 bg-primary-100 mr-2"></span>
           <Dropdown
             buttonVariant="outline"
             items={dropdownItems}

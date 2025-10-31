@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-table";
 import classNames from "classnames";
 import type { RefObject } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LuChevronFirst,
   LuChevronLast,
@@ -19,34 +19,43 @@ import Dropdown from "@/components/Dropdown";
 
 const TableComponent = (props: Common.TableProps) => {
   const scrollRef: RefObject<HTMLDivElement | null> = useRef(null);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const {
     classes,
     data = [],
     columns,
+    totalCount,
     centerAlignHeaders,
     emphasisColumns,
     showPagination = true,
     noLine = false,
     hideHeader = false,
     stickyHeader = true,
-    columnVisibility,
     hideSize = false,
     isDisableRow,
+    onPageChange,
   } = props;
 
   const table = useReactTable({
     data,
     columns,
-    state: { columnVisibility },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 20,
-        pageIndex: 0,
-      },
+    pageCount: Math.ceil((totalCount || 0) / pageSize),
+    manualPagination: true,
+    state: {
+      pagination: { pageIndex, pageSize },
     },
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === "function"
+          ? updater({ pageIndex, pageSize })
+          : updater;
+      setPageIndex(next.pageIndex);
+      setPageSize(next.pageSize);
+      onPageChange?.(next.pageIndex + 1, next.pageSize); // 👈 서버 호출 트리거
+    },
+    getCoreRowModel: getCoreRowModel(),
   });
 
   const dropdownOptions: Common.DropdownItem[] = [
@@ -84,7 +93,14 @@ const TableComponent = (props: Common.TableProps) => {
         ref={scrollRef}
         className="table-wrapper size-full overflow-scroll rounded-md border"
       >
-        <table className="h-max w-full whitespace-nowrap rounded-md bg-white">
+        <table
+          className={classNames(
+            "h-max w-full whitespace-nowrap rounded-md bg-white",
+            {
+              "!h-full": table.getRowModel().rows.length === 0,
+            }
+          )}
+        >
           {!hideHeader && (
             <thead
               className={classNames("bg-primary-50 z-10", {
@@ -117,7 +133,9 @@ const TableComponent = (props: Common.TableProps) => {
               ))}
             </thead>
           )}
-          <tbody>
+          <tbody
+            className={table.getRowModel().rows.length === 0 ? "h-full" : ""}
+          >
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row, index) => (
                 <tr
