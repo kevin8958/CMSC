@@ -19,6 +19,7 @@ const Dropdown = (props: Common.DropdownProps) => {
     buttonSize = "md",
     buttonItem,
     buttonClasses,
+    hideDownIcon = false,
   } = props;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -159,10 +160,14 @@ const Dropdown = (props: Common.DropdownProps) => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <FlexWrapper justify="between" items="center" gap={1} classes="w-full">
-          <p className="w-full truncate max-w-[calc(100%-24px)]">
+          <p
+            className={classNames("w-full max-w-[calc(100%-24px)]", {
+              truncate: !hideDownIcon,
+            })}
+          >
             {buttonItem || "Menu"}
           </p>
-          <LuChevronDown className="shrink-0" />
+          {!hideDownIcon && <LuChevronDown className="shrink-0" />}
         </FlexWrapper>
       </Button>
       <dialog

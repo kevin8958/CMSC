@@ -27,7 +27,7 @@ const PANEL_BORDER: Record<Common.DialogState, string> = {
   success: "border-success border",
   warning: "border-warning border",
   danger: "border-danger border",
-  default: "border-primary-600 border",
+  default: "border-primary-50 border",
 };
 
 const CONFIRM_BTN: Record<Common.DialogState, string> = {
@@ -149,7 +149,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
                     <>{options.body}</>
                   ) : (
                     options?.message && (
-                      <p className="text-sm whitespace-pre-line text-gray-300">
+                      <p className="text-sm whitespace-pre-line text-gray-900">
                         {options.message}
                       </p>
                     )
@@ -168,7 +168,6 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
                       </Button>
                     )}
                     <Button
-                      size="lg"
                       variant="contain"
                       classes={classNames(
                         "min-w-[80px]",

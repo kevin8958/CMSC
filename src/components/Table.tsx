@@ -89,10 +89,7 @@ const TableComponent = (props: Common.TableProps) => {
         classes
       )}
     >
-      <div
-        ref={scrollRef}
-        className="table-wrapper size-full overflow-scroll rounded-md border"
-      >
+      <div ref={scrollRef} className="table-wrapper size-full overflow-scroll">
         <table
           className={classNames(
             "h-max w-full whitespace-nowrap rounded-md bg-white",
@@ -113,7 +110,7 @@ const TableComponent = (props: Common.TableProps) => {
                     <th
                       key={header.id}
                       className={classNames(
-                        "px-4 py-3 text-primary-900 text-left font-semibold text-sm",
+                        "px-4 py-3 text-primary-600 text-left font-normal text-sm",
                         {
                           "!text-center": centerAlignHeaders?.includes(
                             header.id
@@ -149,6 +146,7 @@ const TableComponent = (props: Common.TableProps) => {
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
+                      style={{ width: cell.column.getSize() }}
                       className={classNames("py-3 px-4 text-left text-sm", {
                         "bg-gray-50": emphasisColumns?.includes(cell.column.id),
                         "rounded-t-[16px]":
@@ -218,7 +216,7 @@ const TableComponent = (props: Common.TableProps) => {
               className={classNames(
                 "w-8 h-8 rounded-md text-sm font-medium transition-colors font-bold",
                 {
-                  "bg-primary-900 text-primary-100": currentPage === page,
+                  "bg-green-100 text-green-800": currentPage === page,
                   "hover:bg-gray-100 text-primary-800": currentPage !== page,
                 }
               )}

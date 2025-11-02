@@ -10,6 +10,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+// ---------------------- invite ----------------------
 app.post("/api/invite", async (req, res) => {
   const { email, companyId } = req.body;
   try {
@@ -46,6 +47,43 @@ app.post("/api/invite", async (req, res) => {
   }
 });
 
+// ---------------------- delete ----------------------
+app.post("/api/member/delete", async (req, res) => {
+  const { companyId, userId } = req.body;
+  try {
+    const { data: member } = await supabaseAdmin
+      .from("company_members")
+      .select("joined_at")
+      .eq("company_id", companyId)
+      .eq("user_id", userId)
+      .single();
+
+    if (!member) throw new Error("멤버를 찾을 수 없습니다");
+
+    if (member.joined_at == null) {
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+      await supabaseAdmin
+        .from("company_members")
+        .delete()
+        .eq("company_id", companyId)
+        .eq("user_id", userId);
+
+      await supabaseAdmin.from("profiles").delete().eq("id", userId);
+    } else {
+      await supabaseAdmin
+        .from("company_members")
+        .update({ deleted: true })
+        .eq("company_id", companyId)
+        .eq("user_id", userId);
+    }
+
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ---------------------- server on 하나만 ----------------------
 app.listen(4000, () =>
-  console.log("🟢 Invite API running on http://localhost:4000")
+  console.log("🟢 API Server running at http://localhost:4000")
 );

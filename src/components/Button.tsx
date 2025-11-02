@@ -37,11 +37,12 @@ const Button = forwardRef(
 
     const getClearColorClasses = (buttonColor: Common.ButtonColor) => {
       const colors = {
-        primary: "text-primary-300",
+        primary: "text-gray-300",
         info: "text-info",
         success: "text-success",
         warning: "text-warning",
         danger: "text-danger",
+        green: "text-green-500",
       };
       return colors[buttonColor];
     };
@@ -53,6 +54,7 @@ const Button = forwardRef(
         success: "border-success !text-success",
         warning: "border-warning !text-warning",
         danger: "border-danger !text-danger",
+        green: "border-green-500 !text-green-900",
       };
       return styles[buttonColor];
     };
@@ -65,6 +67,8 @@ const Button = forwardRef(
         success: "bg-success !text-gray-200",
         warning: "bg-warning !text-gray-200",
         danger: "bg-danger !text-gray-200",
+        green:
+          "bg-green-600 hover:bg-green-700 active:bg-green-600 disabled:active:!bg-green-500 disabled:hover:!bg-green-500 text-gray-100 !font-semibold",
       };
       return styles[buttonColor];
     };

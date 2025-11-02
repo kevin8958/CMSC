@@ -41,7 +41,13 @@ namespace Common {
   type ButtonType = "button" | "submit";
   type ButtonSize = "lg" | "md" | "sm";
   type ButtonVariant = "contain" | "outline" | "clear";
-  type ButtonColor = "primary" | "info" | "success" | "warning" | "danger";
+  type ButtonColor =
+    | "primary"
+    | "info"
+    | "success"
+    | "warning"
+    | "danger"
+    | "green";
   type ButtonIconPosition = "left" | "right";
   type ButtonShape = "rect" | "circle";
   interface ButtonProps {
@@ -76,7 +82,13 @@ namespace Common {
 
   /** Badge */
   type BadgeSize = "sm" | "md" | "lg";
-  type BadgeColor = "primary" | "secondary" | "success" | "warning" | "danger";
+  type BadgeColor =
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger"
+    | "green";
   interface BadgeProps {
     children: string | React.ReactNode;
     size?: BadgeSize;
@@ -152,7 +164,7 @@ namespace Common {
     hideBottom?: boolean;
     placement?: DialogPlacement;
     state?: DialogState;
-    onConfirm?: () => boolean;
+    onConfirm?: () => boolean | Promise<boolean>;
   }
   interface DialogContextValue {
     openDialog: (options: DialogProps) => Promise<boolean>;
@@ -205,6 +217,7 @@ namespace Common {
     buttonSize?: ButtonSize;
     buttonItem?: string | React.ReactNode;
     buttonClasses?: string;
+    hideDownIcon?: boolean;
   }
 
   type ProgressSize = "sm" | "md" | "lg";
