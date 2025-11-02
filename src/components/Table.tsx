@@ -168,7 +168,7 @@ const TableComponent = (props: Common.TableProps) => {
             ) : (
               <tr>
                 <td className="!border-none" colSpan={columns.length}>
-                  <div className="flex flex-col items-center justify-center gap-4 p-6">
+                  <div className="flex flex-col items-center justify-center gap-2 p-6">
                     <TbMoodEmpty className="text-4xl text-gray-300" />
                     <p className="text-gray-400">데이터가 없습니다</p>
                   </div>

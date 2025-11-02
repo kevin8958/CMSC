@@ -32,7 +32,7 @@ const parseRole = (role: string) => {
   }
 };
 
-function Member() {
+function Company() {
   const [members, setMembers] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const { currentCompanyId } = useCompanyStore();
@@ -254,7 +254,7 @@ function Member() {
     <>
       <FlexWrapper justify="between" items="center">
         <FlexWrapper gap={2} items="end">
-          <Typography variant="H3">멤버관리</Typography>
+          <Typography variant="H3">회사관리</Typography>
           <Badge color="green" size="md">
             {total}
           </Badge>
@@ -273,7 +273,7 @@ function Member() {
           }}
         >
           <LuPlus className="text-lg" />
-          초대하기
+          추가하기
         </Button>
       </FlexWrapper>
 
@@ -308,4 +308,4 @@ function Member() {
   );
 }
 
-export default Member;
+export default Company;

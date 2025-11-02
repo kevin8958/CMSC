@@ -4,13 +4,14 @@ import classNames from "classnames";
 import BurgerButton from "@/interaction/BurgerButton";
 import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
-import { LuRefreshCcw, LuBell, LuPlus } from "react-icons/lu";
+import { LuRefreshCcw, LuBell } from "react-icons/lu";
 import { motion } from "framer-motion";
 import { useDialog } from "@/hooks/useDialog";
 import { useAlert } from "@/components/AlertProvider";
 import TextInput from "@/components/TextInput";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import LogoBlack from "@/assets/image/logo_hands_black.png";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function Gnb() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +25,7 @@ export default function Gnb() {
   } = useCompanyStore();
   const { openDialog } = useDialog();
   const { showAlert } = useAlert();
+  const role = useAuthStore((s) => s.role);
 
   useEffect(() => {
     fetchCompanies();
@@ -35,12 +37,6 @@ export default function Gnb() {
       id: c.id,
       label: c.name,
     })),
-    {
-      type: "item",
-      id: "add",
-      icon: <LuPlus className="text-base text-primary-500" />,
-      label: <p className="text-primary-500">회사 추가</p>,
-    },
   ] as Common.DropdownItem[];
 
   function DialogBody() {
@@ -108,32 +104,36 @@ export default function Gnb() {
         </FlexWrapper>
       ) : (
         <FlexWrapper gap={2} items="center">
-          <a href="/dashboard">
+          <a href={role === "super_admin" ? "/company" : "/dashboard"}>
             <img src={LogoBlack} alt="HandS Logo" className="w-[60px]" />
           </a>
-          <span className="w-[1px] h-4 bg-primary-100 mr-2"></span>
-          <Dropdown
-            buttonVariant="outline"
-            items={dropdownItems}
-            onChange={async (val) => {
-              if (val === "add") {
-                await openDialog({
-                  title: "회사 추가",
-                  hideBottom: true,
-                  body: <DialogBody />,
-                });
-                return;
-              } else {
-                await selectCompany(val);
-              }
-            }}
-            dialogWidth={160}
-            buttonItem={
-              companies.find((c) => c.id === currentCompanyId)?.name ??
-              "회사 선택"
-            }
-            buttonClasses="w-[120px] !font-normal text-primary-900 !h-10 !border-primary-100"
-          />
+          {role === "admin" && (
+            <>
+              <span className="w-[1px] h-4 bg-primary-100 mr-2"></span>
+              <Dropdown
+                buttonVariant="outline"
+                items={dropdownItems}
+                onChange={async (val) => {
+                  if (val === "add") {
+                    await openDialog({
+                      title: "회사 추가",
+                      hideBottom: true,
+                      body: <DialogBody />,
+                    });
+                    return;
+                  } else {
+                    await selectCompany(val);
+                  }
+                }}
+                dialogWidth={160}
+                buttonItem={
+                  companies.find((c) => c.id === currentCompanyId)?.name ??
+                  "회사 선택"
+                }
+                buttonClasses="w-[120px] !font-normal text-primary-900 !h-10 !border-primary-100"
+              />
+            </>
+          )}
         </FlexWrapper>
       )}
 

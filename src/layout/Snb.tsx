@@ -7,82 +7,96 @@ import {
   LuHardDrive,
   LuBuilding,
   LuSettings,
+  LuCalendarCheck2,
+  LuWalletMinimal,
 } from "react-icons/lu";
 import { AiOutlineTeam } from "react-icons/ai";
+import { useAuthStore } from "@/stores/authStore";
+
 const SNB = () => {
   const { pathname } = useLocation();
+  const role = useAuthStore((s) => s.role);
 
   // ✅ 그룹화된 메뉴 구조
-  const snbGroups = [
-    {
-      title: null, // 대시보드, 업무소통은 상단 공통 그룹 (타이틀 없음)
-      items: [
-        {
-          id: "dashboard",
-          label: "대시보드",
-          href: "/dashboard",
-          icon: <LuChartNoAxesCombined />,
-        },
-        {
-          id: "communication",
-          label: "업무소통",
-          href: "/communication",
-          icon: <LuListChecks />,
-        },
-      ],
-    },
-    // {
-    //   title: "인사지원",
-    //   items: [
-    //     {
-    //       id: "employee",
-    //       label: "인사정보",
-    //       href: "/employee",
-    //       icon: <MdOutlineMedicalInformation />,
-    //     },
-    //     // ✨ 추후 여기에 다른 인사지원 메뉴를 추가할 수 있습니다.
-    //   ],
-    // },
-    {
-      title: "회계정보",
-      items: [
-        {
-          id: "income",
-          label: "손익계산서",
-          href: "/income",
-          icon: <LuArrowUpDown />,
-        },
-      ],
-    },
-    {
-      title: "자료관리",
-      items: [
-        {
-          id: "document",
-          label: "자료관리",
-          href: "/document",
-          icon: <LuHardDrive />,
-        },
-      ],
-    },
-    {
-      title: null,
-      items: [
-        {
-          id: "company",
-          label: "회사관리",
-          href: "/company",
-          icon: <LuBuilding />,
-        },
-        {
-          id: "member",
-          label: "멤버관리",
-          href: "/member",
-          icon: <AiOutlineTeam />,
-        },
-      ],
-    },
-  ];
+  const snbGroups =
+    role === "super_admin"
+      ? [
+          {
+            title: null,
+            items: [
+              {
+                id: "company",
+                label: "회사관리",
+                href: "/company",
+                icon: <LuBuilding />,
+              },
+              {
+                id: "member",
+                label: "멤버관리",
+                href: "/member",
+                icon: <AiOutlineTeam />,
+              },
+            ],
+          },
+        ]
+      : [
+          {
+            title: null, // 대시보드, 업무소통은 상단 공통 그룹 (타이틀 없음)
+            items: [
+              {
+                id: "dashboard",
+                label: "대시보드",
+                href: "/dashboard",
+                icon: <LuChartNoAxesCombined />,
+              },
+              {
+                id: "communication",
+                label: "업무소통",
+                href: "/communication",
+                icon: <LuListChecks />,
+              },
+            ],
+          },
+          {
+            title: "인사지원",
+            items: [
+              {
+                id: "salary",
+                label: "급여대장",
+                href: "/salary",
+                icon: <LuWalletMinimal />,
+              },
+              {
+                id: "vacation",
+                label: "휴가관리",
+                href: "/vacation",
+                icon: <LuCalendarCheck2 />,
+              },
+            ],
+          },
+          {
+            title: "회계정보",
+            items: [
+              {
+                id: "income",
+                label: "손익계산서",
+                href: "/income",
+                icon: <LuArrowUpDown />,
+              },
+            ],
+          },
+          {
+            title: "자료관리",
+            items: [
+              {
+                id: "document",
+                label: "자료관리",
+                href: "/document",
+                icon: <LuHardDrive />,
+              },
+            ],
+          },
+        ];
 
   return (
     <aside className="scrollbar-thin scrollbar-thumb-primary-100 scrollbar-track-transparent z-40 flex flex-col justify-between h-[100dvh] overflow-y-auto pt-[60px] pb-4 pr-0 w-[180px] border-r border-primary-100">

@@ -11,18 +11,28 @@ import Communication from "@/pages/Communication";
 import Employee from "@/pages/Employee";
 import Income from "@/pages/Income";
 import Document from "@/pages/Document";
+import Company from "@/pages/Company";
+import Member from "@/pages/Member";
+import Settings from "@/pages/Settings";
 import Snb from "@/layout/Snb";
 import FlexWrapper from "@/layout/FlexWrapper";
 import { DialogProvider } from "@/hooks/useDialog";
-import Member from "@/pages/Member";
+import { useEffect } from "react";
+import { useAuthStore } from "@/stores/authStore";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const session = useSession();
-  if (session === undefined) return null; // 로딩 중에는 아무것도 안 렌더링
-  if (!session) return <Navigate to="/login" replace />;
+  const { init, initialized, user } = useAuthStore();
+
+  useEffect(() => {
+    init();
+  }, []);
+
+  // 아직 init 중
+  if (!initialized) return null;
+
+  if (!user) return <Navigate to="/login" replace />;
   return children;
 }
-
 // ✅ Outlet 기반 AppLayout
 function AppLayout() {
   return (
@@ -62,7 +72,9 @@ function App() {
                 <Route path="/employee" element={<Employee />} />
                 <Route path="/income" element={<Income />} />
                 <Route path="/document" element={<Document />} />
+                <Route path="/company" element={<Company />} />
                 <Route path="/member" element={<Member />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
             </Routes>
           </BrowserRouter>

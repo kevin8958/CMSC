@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { useAlert } from "@/components/AlertProvider";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuthStore } from "@/stores/authStore";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -77,6 +78,7 @@ function Login() {
       email,
       password,
     });
+
     if (error) {
       setLoading(false);
       showAlert("이메일 또는 비밀번호가 올바르지 않습니다.", {
@@ -86,10 +88,23 @@ function Login() {
       return;
     }
     if (data) {
-      setTimeout(() => {
-        navigate("/dashboard");
-        setLoading(false);
-      }, 500);
+      // 1) auth user 저장
+      useAuthStore.getState().setUser(data.user);
+
+      // 2) role 불러오기
+      const { data: profile, error: pErr } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+      if (!pErr && profile) {
+        useAuthStore.getState().setRole(profile.role);
+      }
+
+      // 3) 라우팅
+      navigate(profile?.role === "super_admin" ? "/company" : "/dashboard");
+      setLoading(false);
     }
   };
 
