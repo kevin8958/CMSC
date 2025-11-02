@@ -3,10 +3,11 @@ import { useLocation } from "react-router-dom";
 import {
   LuChartNoAxesCombined,
   LuListChecks,
-  LuNotebook,
   LuArrowUpDown,
+  LuHardDrive,
+  LuBuilding,
+  LuSettings,
 } from "react-icons/lu";
-import { MdOutlineMedicalInformation } from "react-icons/md";
 import { AiOutlineTeam } from "react-icons/ai";
 const SNB = () => {
   const { pathname } = useLocation();
@@ -30,18 +31,18 @@ const SNB = () => {
         },
       ],
     },
-    {
-      title: "인사지원",
-      items: [
-        {
-          id: "employee",
-          label: "인사정보",
-          href: "/employee",
-          icon: <MdOutlineMedicalInformation />,
-        },
-        // ✨ 추후 여기에 다른 인사지원 메뉴를 추가할 수 있습니다.
-      ],
-    },
+    // {
+    //   title: "인사지원",
+    //   items: [
+    //     {
+    //       id: "employee",
+    //       label: "인사정보",
+    //       href: "/employee",
+    //       icon: <MdOutlineMedicalInformation />,
+    //     },
+    //     // ✨ 추후 여기에 다른 인사지원 메뉴를 추가할 수 있습니다.
+    //   ],
+    // },
     {
       title: "회계정보",
       items: [
@@ -54,19 +55,25 @@ const SNB = () => {
       ],
     },
     {
-      title: "서류관리",
+      title: "자료관리",
       items: [
         {
           id: "document",
-          label: "서류관리",
+          label: "자료관리",
           href: "/document",
-          icon: <LuNotebook />,
+          icon: <LuHardDrive />,
         },
       ],
     },
     {
       title: null,
       items: [
+        {
+          id: "company",
+          label: "회사관리",
+          href: "/company",
+          icon: <LuBuilding />,
+        },
         {
           id: "member",
           label: "멤버관리",
@@ -78,7 +85,7 @@ const SNB = () => {
   ];
 
   return (
-    <aside className="scrollbar-thin scrollbar-thumb-primary-100 scrollbar-track-transparent z-40 flex h-[100dvh] overflow-y-auto pt-[60px] pr-0 w-[180px] border-r border-primary-100">
+    <aside className="scrollbar-thin scrollbar-thumb-primary-100 scrollbar-track-transparent z-40 flex flex-col justify-between h-[100dvh] overflow-y-auto pt-[60px] pb-4 pr-0 w-[180px] border-r border-primary-100">
       <nav className="w-full rounded-xl py-4 px-2">
         <ul className="flex flex-col w-full">
           {snbGroups.map((group, gIdx) => (
@@ -114,6 +121,21 @@ const SNB = () => {
           ))}
         </ul>
       </nav>
+      <div className="px-2">
+        <a
+          href="/settings"
+          className={classNames(
+            "flex items-center gap-3 w-full text-primary-800 hover:bg-primary-100/70 rounded-lg py-3 px-4 text-sm transition-all duration-100 ease-in-out",
+            {
+              "!text-primary-900 bg-primary-100 font-bold":
+                pathname.includes("settings"),
+            }
+          )}
+        >
+          <LuSettings />
+          설정
+        </a>
+      </div>
     </aside>
   );
 };
