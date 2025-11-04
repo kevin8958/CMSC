@@ -6,16 +6,15 @@ import type { ColumnDef } from "@tanstack/react-table";
 import Badge from "@/components/Badge";
 import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useDialog } from "@/hooks/useDialog";
-import { inviteMember, deleteMember } from "@/actions/memberActions";
+import { deleteMember } from "@/actions/memberActions";
 import { useAlert } from "@/components/AlertProvider";
-import TextInput from "@/components/TextInput";
-import { motion } from "motion/react";
+import InviteMemberDialogBody from "@/components/InviteMemberDialogBody";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { LuTrash2, LuPlus } from "react-icons/lu";
+import { useMemberStore } from "@/stores/useMemberStore";
 
 const parseRole = (role: string) => {
   switch (role) {
@@ -32,59 +31,15 @@ const parseRole = (role: string) => {
   }
 };
 
-function Member() {
-  const [members, setMembers] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
+function CompanyMember() {
+  const { currentCompanyId } = useCompanyStore();
   const { openDialog } = useDialog();
   const { showAlert } = useAlert();
-  const [loading, setLoading] = useState(false);
-
-  const fetchMembers = async (page = 1, size = 10) => {
-    setLoading(true);
-
-    const from = (page - 1) * size;
-    const to = from + size - 1;
-
-    const { data, count, error } = await supabase
-      .from("company_members")
-      .select(
-        `
-        user_id,
-        role,
-        joined_at,
-        created_at,
-        profiles(nickname, email)
-      `,
-        { count: "exact" }
-      )
-      .eq("deleted", false)
-      .range(from, to);
-
-    if (error) {
-      console.error("멤버 조회 오류:", error);
-      return;
-    }
-
-    if (data) {
-      setMembers(
-        data.map((m: any) => ({
-          user_id: m.user_id,
-          nickname: m.profiles?.nickname ?? "-",
-          email: m.profiles?.email ?? "-",
-          joined_at: m.joined_at,
-          created_at: m.created_at,
-          role: m.role ?? "-",
-          etc: "-",
-        }))
-      );
-      setTotal(count || 0);
-      setLoading(false);
-    }
-  };
+  const { fetchMembers, members, total } = useMemberStore();
 
   useEffect(() => {
     fetchMembers(1, 10);
-  }, []);
+  }, [currentCompanyId]);
 
   const etcDropdownItems = [
     {
@@ -204,43 +159,40 @@ function Member() {
   return (
     <>
       <FlexWrapper justify="between" items="center">
-        <FlexWrapper gap={2} items="end">
-          <Typography variant="H3">멤버관리</Typography>
+        <FlexWrapper gap={2} items="center">
+          <Typography variant="H4">멤버목록</Typography>
           <Badge color="green" size="md">
             {total}
           </Badge>
         </FlexWrapper>
-      </FlexWrapper>
-
-      {loading ? (
-        <FlexWrapper
-          classes="h-[calc(100%-36px-16px)]"
-          justify="center"
-          items="center"
+        <Button
+          variant="contain"
+          color="green"
+          size="md"
+          classes="gap-1 !px-3"
+          onClick={async () => {
+            await openDialog({
+              title: "멤버 추가",
+              hideBottom: true,
+              body: <InviteMemberDialogBody />,
+            });
+          }}
         >
-          <motion.div
-            className="size-4 rounded-full border-[3px] border-primary-900 border-t-transparent"
-            animate={{ rotate: 360 }}
-            transition={{
-              repeat: Infinity,
-              ease: "linear",
-              duration: 1,
-            }}
-          />
-        </FlexWrapper>
-      ) : (
-        <FlexWrapper classes="h-[calc(100%-36px-16px)] mt-4">
-          <Table
-            data={members || []}
-            columns={columns}
-            hideSize
-            totalCount={total}
-            onPageChange={fetchMembers}
-          />
-        </FlexWrapper>
-      )}
+          <LuPlus className="text-lg" />
+          추가하기
+        </Button>
+      </FlexWrapper>
+      <FlexWrapper classes="h-[400px] mt-4">
+        <Table
+          data={members || []}
+          columns={columns}
+          hideSize
+          totalCount={total}
+          onPageChange={fetchMembers}
+        />
+      </FlexWrapper>
     </>
   );
 }
 
-export default Member;
+export default CompanyMember;

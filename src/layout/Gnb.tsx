@@ -6,9 +6,6 @@ import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
 import { LuRefreshCcw, LuBell } from "react-icons/lu";
 import { motion } from "framer-motion";
-import { useDialog } from "@/hooks/useDialog";
-import { useAlert } from "@/components/AlertProvider";
-import TextInput from "@/components/TextInput";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import LogoBlack from "@/assets/image/logo_hands_black.png";
 import { useAuthStore } from "@/stores/authStore";
@@ -21,10 +18,7 @@ export default function Gnb() {
     currentCompanyId,
     initialized,
     selectCompany,
-    createCompany,
   } = useCompanyStore();
-  const { openDialog } = useDialog();
-  const { showAlert } = useAlert();
   const role = useAuthStore((s) => s.role);
 
   useEffect(() => {
@@ -38,51 +32,6 @@ export default function Gnb() {
       label: c.name,
     })),
   ] as Common.DropdownItem[];
-
-  function DialogBody() {
-    const { close } = useDialog();
-    const [companyName, setCompanyName] = useState("");
-
-    const onSubmit = async (companyName: string) => {
-      try {
-        const company = await createCompany(companyName);
-        if (company) {
-          showAlert(`회사 "${company.name}"가 생성되었습니다.`, {
-            type: "success",
-            durationMs: 3000,
-          });
-        }
-        fetchCompanies();
-        close(true);
-      } catch (err: any) {
-        showAlert(err?.message || "회사 생성 중 오류가 발생했습니다.", {
-          type: "danger",
-          durationMs: 3000,
-        });
-      }
-    };
-    return (
-      <FlexWrapper direction="col" gap={4} classes="w-full">
-        <TextInput
-          label="회사 이름"
-          id="companyName"
-          classes="w-full"
-          onChange={(e) => setCompanyName(e.target.value)}
-        />
-        <Button
-          size="lg"
-          variant="contain"
-          classes="w-full"
-          disabled={companyName.trim() === ""}
-          onClick={() => {
-            onSubmit(companyName);
-          }}
-        >
-          추가하기
-        </Button>
-      </FlexWrapper>
-    );
-  }
 
   return (
     <div
@@ -114,16 +63,7 @@ export default function Gnb() {
                 buttonVariant="outline"
                 items={dropdownItems}
                 onChange={async (val) => {
-                  if (val === "add") {
-                    await openDialog({
-                      title: "회사 추가",
-                      hideBottom: true,
-                      body: <DialogBody />,
-                    });
-                    return;
-                  } else {
-                    await selectCompany(val);
-                  }
+                  await selectCompany(val);
                 }}
                 dialogWidth={160}
                 buttonItem={

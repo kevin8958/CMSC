@@ -219,7 +219,7 @@ export default function FinanceInputTable() {
       </div>
 
       {/* Rows */}
-      <div className="scrollbar-thin scrollbar-thumb-primary-100 scrollbar-track-transparent h-[calc(100dvh-76px-36px-16px-55px-16px)] overflow-y-auto">
+      <div className="scroll-thin h-[calc(100dvh-76px-36px-16px-55px-16px)] overflow-y-auto">
         <motion.div layout="position" className="divide-y divide-gray-100 pb-6">
           {renderRows(data)}
         </motion.div>

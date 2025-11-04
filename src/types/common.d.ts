@@ -83,6 +83,7 @@ namespace Common {
   /** Badge */
   type BadgeSize = "sm" | "md" | "lg";
   type BadgeColor =
+    | "gray"
     | "primary"
     | "secondary"
     | "success"
@@ -263,6 +264,7 @@ namespace Common {
     hideSize?: boolean;
     isDisableRow?: (value: Row<unknown>) => void;
     onPageChange?: (page: number, size: number) => void;
+    onRowClick?: (row: any) => void;
   }
 
   /** TextInput */

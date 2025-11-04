@@ -2,9 +2,13 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { supabase } from "@/lib/supabase";
 
+// @types
 export interface Company {
   id: string;
   name: string;
+  created_at?: string;
+  member_count?: number;
+  admins?: string[];
 }
 
 interface CompanyStore {
@@ -13,7 +17,10 @@ interface CompanyStore {
   loading: boolean;
   initialized: boolean;
   fetching: boolean;
-  fetchCompanies: () => Promise<void>;
+  total: number;
+  page: number;
+  pageSize: number;
+  fetchCompanies: (page?: number, pageSize?: number) => Promise<void>;
   selectCompany: (companyId: string) => Promise<void>;
   createCompany: (name: string) => Promise<Company | null>;
 }
@@ -27,9 +34,16 @@ export const useCompanyStore = create<CompanyStore>()(
       initialized: false,
       fetching: false,
 
-      // ✅ 회사 목록 불러오기
-      fetchCompanies: async () => {
-        set({ fetching: true, loading: true });
+      total: 0,
+      page: 1,
+      pageSize: 20,
+
+      // ✅ 회사 목록 불러오기 (pagination 지원)
+      fetchCompanies: async (page = get().page, pageSize = get().pageSize) => {
+        set({ fetching: true, loading: true, page, pageSize });
+        const offset = (page - 1) * pageSize;
+        const limit = offset + pageSize - 1;
+
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -45,8 +59,21 @@ export const useCompanyStore = create<CompanyStore>()(
           .single();
 
         let companies: Company[] = [];
+        let total = 0;
 
-        if (profile?.role === "admin" || profile?.role === "super_admin") {
+        // ✅ super_admin은 전체 목록 + pagination
+        if (profile?.role === "super_admin") {
+          const { data, count } = await supabase
+            .from("companies_with_stats")
+            .select("*", { count: "exact" })
+            .order("created_at", { ascending: false })
+            .range(offset, limit);
+
+          companies = data ?? [];
+          total = count ?? 0;
+        }
+        // ✅ admin
+        else if (profile?.role === "admin") {
           const { data } = await supabase
             .from("admin_companies")
             .select("companies(id, name)")
@@ -55,19 +82,23 @@ export const useCompanyStore = create<CompanyStore>()(
           companies = (data ?? []).flatMap((r) =>
             Array.isArray(r.companies) ? r.companies : [r.companies]
           ) as Company[];
-        } else if (profile?.company_id) {
+          companies.sort((a, b) => a.name.localeCompare(b.name, "ko"));
+          total = companies.length;
+        }
+        // ✅ 일반사용자
+        else if (profile?.company_id) {
           const { data } = await supabase
             .from("companies")
             .select("id, name")
             .eq("id", profile.company_id)
             .single();
           if (data) companies = [data];
+          total = companies.length;
         }
-
-        companies.sort((a, b) => a.name.localeCompare(b.name, "ko"));
 
         set({
           companies,
+          total,
           currentCompanyId:
             profile?.last_selected_company_id || companies[0]?.id || null,
           loading: false,
@@ -100,7 +131,6 @@ export const useCompanyStore = create<CompanyStore>()(
         } = await supabase.auth.getUser();
         if (!user) return null;
 
-        // 중복 확인
         const { data: existing } = await supabase
           .from("companies")
           .select("id")
@@ -108,7 +138,6 @@ export const useCompanyStore = create<CompanyStore>()(
         if (existing && existing.length > 0)
           throw new Error("이미 존재하는 회사명입니다.");
 
-        // 회사 생성
         const { data: company, error: createError } = await supabase
           .from("companies")
           .insert({ name })
@@ -133,18 +162,19 @@ export const useCompanyStore = create<CompanyStore>()(
             .eq("id", user.id);
         }
 
-        // 새 목록 갱신
         await get().fetchCompanies();
-
         return company;
       },
     }),
     {
-      name: "company-store", // 🧩 localStorage key
+      name: "company-store",
       partialize: (state) => ({
         companies: state.companies,
         currentCompanyId: state.currentCompanyId,
         initialized: state.initialized,
+        page: state.page,
+        pageSize: state.pageSize,
+        total: state.total,
       }),
     }
   )

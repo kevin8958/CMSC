@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import classNames from "classnames";
 import BurgerButton from "@/interaction/BurgerButton";
 import LogoBlack from "@/assets/image/logo_hands_black.png";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "@/components/Button";
 
 export default function IntroGnb() {
@@ -70,7 +69,7 @@ export default function IntroGnb() {
       </div>
       <header
         className={
-          "bg-white scrollbar-thin scrollbar-thumb-primary-900 scrollbar-track-transparent fixed top-0 z-40 pt-[120px] flex h-[100dvh] w-full overflow-y-auto pr-0 " +
+          "bg-white scrollthin fixed top-0 z-40 pt-[120px] flex h-[100dvh] w-full overflow-y-auto pr-0 " +
           (isOpen ? "left-0" : "-left-full")
         }
       >

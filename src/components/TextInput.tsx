@@ -165,12 +165,14 @@ const TextInput = (props: Common.TextInputProps) => {
         </div>
 
         {/* Error Message */}
-        <Typography
-          variant="C1"
-          classes="!text-danger absolute bottom-[-20px] left-0"
-        >
-          {errorMsg}
-        </Typography>
+        {error && (
+          <Typography
+            variant="C1"
+            classes="!text-danger absolute bottom-[-20px] left-0"
+          >
+            {errorMsg}
+          </Typography>
+        )}
       </div>
     </div>
   );

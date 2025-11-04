@@ -115,5 +115,27 @@ export default {
         "2px 4px 16px rgba(0, 0, 0, 0.05), -2px -2px 16px rgba(255, 255, 255, 0.01)",
     },
   },
-  plugins: [require("tailwind-scrollbar")],
+  plugins: [
+    require("tailwind-scrollbar"),
+    function ({ addUtilities, theme }) {
+      const newUtilities = {
+        ".scroll-thin": {
+          scrollbarWidth: "thin",
+          "&::-webkit-scrollbar": {
+            width: "6px",
+            height: "6px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: theme("colors.primary.100"),
+            borderRadius: "4px",
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "transparent",
+          },
+        },
+      };
+
+      addUtilities(newUtilities, ["responsive"]);
+    },
+  ],
 };

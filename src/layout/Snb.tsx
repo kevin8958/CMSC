@@ -99,7 +99,7 @@ const SNB = () => {
         ];
 
   return (
-    <aside className="scrollbar-thin scrollbar-thumb-primary-100 scrollbar-track-transparent z-40 flex flex-col justify-between h-[100dvh] overflow-y-auto pt-[60px] pb-4 pr-0 w-[180px] border-r border-primary-100">
+    <aside className="scroll-thin z-40 flex flex-col justify-between h-[100dvh] overflow-y-auto pt-[60px] pb-4 pr-0 w-[180px] border-r border-primary-100">
       <nav className="w-full rounded-xl py-4 px-2">
         <ul className="flex flex-col w-full">
           {snbGroups.map((group, gIdx) => (

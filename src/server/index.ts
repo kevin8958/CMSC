@@ -13,7 +13,9 @@ const supabaseAdmin = createClient(
 // ---------------------- invite ----------------------
 app.post("/api/invite", async (req, res) => {
   const { email, companyId } = req.body;
+
   try {
+    const origin = process.env.APP_ORIGIN;
     const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
     const existing = existingUsers?.users.find((u) => u.email === email);
 
@@ -22,7 +24,7 @@ app.post("/api/invite", async (req, res) => {
     if (!userId) {
       const { data: invitedUser, error: inviteError } =
         await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-          redirectTo: "http://localhost:5173/auth/callback",
+          redirectTo: `${origin}/signup/invite`,
         });
       if (inviteError) throw inviteError;
       userId = invitedUser.user.id;
@@ -30,6 +32,7 @@ app.post("/api/invite", async (req, res) => {
 
     await supabaseAdmin.from("profiles").upsert({
       id: userId,
+      user_id: userId,
       email,
       role: "user_b",
     });
@@ -81,6 +84,21 @@ app.post("/api/member/delete", async (req, res) => {
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
+});
+
+// ---------------------- member join 처리 ----------------------
+app.post("/api/member/join", async (req, res) => {
+  const { userId } = req.body;
+  if (!userId) return res.status(400).json({ error: "no userId" });
+
+  const { data, error } = await supabaseAdmin
+    .from("company_members")
+    .update({ joined_at: new Date().toISOString() })
+    .eq("user_id", userId);
+
+  console.log("update result", data, error);
+
+  res.json({ ok: true });
 });
 
 // ---------------------- server on 하나만 ----------------------

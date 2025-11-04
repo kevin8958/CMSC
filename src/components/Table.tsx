@@ -36,6 +36,7 @@ const TableComponent = (props: Common.TableProps) => {
     hideSize = false,
     isDisableRow,
     onPageChange,
+    onRowClick,
   } = props;
 
   const table = useReactTable({
@@ -141,7 +142,14 @@ const TableComponent = (props: Common.TableProps) => {
                     "border-b border-[#E5E7EB]": !noLine,
                     "opacity-50 pointer-events-none":
                       isDisableRow && isDisableRow(row),
+                    "cursor-pointer hover:bg-green-50":
+                      onRowClick && !(isDisableRow && isDisableRow(row)),
                   })}
+                  onClick={() => {
+                    if (onRowClick && !(isDisableRow && isDisableRow(row))) {
+                      onRowClick(row.original);
+                    }
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td

@@ -3,7 +3,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { useSession } from "@/hooks/useSession";
 import { Navigate } from "react-router-dom";
 import { AlertProvider } from "@/components/AlertProvider";
 import Gnb from "@/layout/Gnb";
@@ -12,6 +11,7 @@ import Employee from "@/pages/Employee";
 import Income from "@/pages/Income";
 import Document from "@/pages/Document";
 import Company from "@/pages/Company";
+import CompanyDetail from "@/pages/CompanyDetail";
 import Member from "@/pages/Member";
 import Settings from "@/pages/Settings";
 import Snb from "@/layout/Snb";
@@ -19,6 +19,7 @@ import FlexWrapper from "@/layout/FlexWrapper";
 import { DialogProvider } from "@/hooks/useDialog";
 import { useEffect } from "react";
 import { useAuthStore } from "@/stores/authStore";
+import SignupInvite from "./pages/SignupInvite";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -51,8 +52,8 @@ function AppLayout() {
 function App() {
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <DialogProvider>
-        <AlertProvider>
+      <AlertProvider>
+        <DialogProvider>
           <BrowserRouter>
             <Routes>
               {/* 비로그인용 */}
@@ -73,13 +74,15 @@ function App() {
                 <Route path="/income" element={<Income />} />
                 <Route path="/document" element={<Document />} />
                 <Route path="/company" element={<Company />} />
+                <Route path="/company/:companyId" element={<CompanyDetail />} />
                 <Route path="/member" element={<Member />} />
                 <Route path="/settings" element={<Settings />} />
               </Route>
+              <Route path="/signup/invite" element={<SignupInvite />} />
             </Routes>
           </BrowserRouter>
-        </AlertProvider>
-      </DialogProvider>
+        </DialogProvider>
+      </AlertProvider>
     </GoogleOAuthProvider>
   );
 }
