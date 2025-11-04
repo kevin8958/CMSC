@@ -182,7 +182,7 @@ function CompanyMember() {
           추가하기
         </Button>
       </FlexWrapper>
-      <FlexWrapper classes="h-[400px] mt-4">
+      <FlexWrapper classes="h-[380px] mt-4">
         <Table
           data={members || []}
           columns={columns}

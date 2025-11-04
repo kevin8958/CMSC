@@ -10,8 +10,11 @@ import { useDialog } from "@/hooks/useDialog";
 import { useAlert } from "@/components/AlertProvider";
 import TextInput from "@/components/TextInput";
 import { motion } from "motion/react";
-import { LuPlus } from "react-icons/lu";
+import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import Dropdown from "@/components/Dropdown";
+import { deleteCompany } from "@/actions/companyActions";
 
 function Company() {
   const { openDialog } = useDialog();
@@ -23,6 +26,15 @@ function Company() {
   useEffect(() => {
     fetchCompanies(1, 10);
   }, []);
+
+  const etcDropdownItems = [
+    {
+      type: "item",
+      id: "delete",
+      icon: <LuTrash2 className="text-base text-danger" />,
+      label: <p className="text-danger">삭제하기</p>,
+    },
+  ] as Common.DropdownItem[];
 
   const columns: ColumnDef<any>[] = [
     {
@@ -48,6 +60,63 @@ function Company() {
             ? new Date(row.original.created_at).toLocaleDateString()
             : "-"}
         </Typography>
+      ),
+    },
+    {
+      accessorKey: "etc",
+      header: "",
+      size: 24,
+      minSize: 24,
+      maxSize: 24,
+      cell: ({ row }) => (
+        <div
+          onClick={(e) => {
+            e.stopPropagation(); // ✅ 여기 추가
+          }}
+        >
+          <Dropdown
+            buttonVariant="clear"
+            dialogPosition="right"
+            hideDownIcon
+            items={etcDropdownItems}
+            onChange={async (val) => {
+              if (val === "delete") {
+                await openDialog({
+                  title: "삭제하시겠습니까?",
+                  message: `${row.original.name} 회사를 삭제합니다.`,
+                  confirmText: "삭제",
+                  cancelText: "취소",
+                  state: "danger",
+                  onConfirm: async () => {
+                    try {
+                      await deleteCompany(row.original.id);
+                      fetchCompanies();
+                      showAlert("삭제되었습니다.", {
+                        type: "success",
+                        durationMs: 3000,
+                      });
+                      return true;
+                    } catch (err: any) {
+                      showAlert(
+                        err?.message || "삭제 중 오류가 발생했습니다.",
+                        {
+                          type: "danger",
+                          durationMs: 3000,
+                        }
+                      );
+                      return false;
+                    }
+                  },
+                });
+              }
+            }}
+            dialogWidth={140}
+            buttonItem={
+              <HiOutlineDotsVertical className="text-xl text-gray-900" />
+            }
+            buttonClasses="!font-normal text-primary-900 !h-8 !border-primary-100"
+          />
+        </div>
       ),
     },
   ];

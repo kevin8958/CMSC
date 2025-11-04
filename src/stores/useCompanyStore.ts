@@ -66,6 +66,7 @@ export const useCompanyStore = create<CompanyStore>()(
           const { data, count } = await supabase
             .from("companies_with_stats")
             .select("*", { count: "exact" })
+            .eq("deleted", false)
             .order("created_at", { ascending: false })
             .range(offset, limit);
 

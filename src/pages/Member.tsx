@@ -4,18 +4,16 @@ import Table from "@/components/Table";
 import dayjs from "dayjs";
 import type { ColumnDef } from "@tanstack/react-table";
 import Badge from "@/components/Badge";
-import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useDialog } from "@/hooks/useDialog";
-import { inviteMember, deleteMember } from "@/actions/memberActions";
+import { deleteMember } from "@/actions/memberActions";
 import { useAlert } from "@/components/AlertProvider";
-import TextInput from "@/components/TextInput";
 import { motion } from "motion/react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { LuTrash2, LuPlus } from "react-icons/lu";
+import { LuTrash2 } from "react-icons/lu";
 
 const parseRole = (role: string) => {
   switch (role) {

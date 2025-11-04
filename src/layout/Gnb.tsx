@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import LogoBlack from "@/assets/image/logo_hands_black.png";
 import { useAuthStore } from "@/stores/authStore";
+import Typography from "@/foundation/Typography";
 
 export default function Gnb() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,6 +57,11 @@ export default function Gnb() {
           <a href={role === "super_admin" ? "/company" : "/dashboard"}>
             <img src={LogoBlack} alt="HandS Logo" className="w-[60px]" />
           </a>
+          {role === "super_admin" && (
+            <Typography variant="H4" classes="text-gray-700">
+              BACKOFFICE
+            </Typography>
+          )}
           {role === "admin" && (
             <>
               <span className="w-[1px] h-4 bg-primary-100 mr-2"></span>

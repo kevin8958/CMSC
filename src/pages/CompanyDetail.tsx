@@ -53,11 +53,11 @@ function CompanyDetail() {
 
   return (
     <FlexWrapper direction="col" gap={4}>
-      <FlexWrapper direction="col" items="start" gap={1}>
+      <FlexWrapper direction="col" items="start" gap={4}>
         <Button
-          variant="clear"
+          variant="outline"
           size="md"
-          classes="text-primary-600"
+          classes="!text-primary-600 !border-primary-200"
           onClick={() => navigate("/company")}
         >
           <FlexWrapper gap={1} items="center">

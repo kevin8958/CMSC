@@ -100,6 +100,39 @@ app.post("/api/member/join", async (req, res) => {
 
   res.json({ ok: true });
 });
+// ---------------------- delete company ----------------------
+app.post("/api/company/delete", async (req, res) => {
+  const { companyId } = req.body;
+
+  try {
+    // 회사 존재 확인
+    const { data: company } = await supabaseAdmin
+      .from("companies")
+      .select("id")
+      .eq("id", companyId)
+      .single();
+
+    if (!company) {
+      throw new Error("회사를 찾을 수 없습니다");
+    }
+
+    // 1) 회사 삭제(soft delete)
+    await supabaseAdmin
+      .from("companies")
+      .update({ deleted: true })
+      .eq("id", companyId);
+
+    // 2) 회사 멤버들 전부 삭제 플래그
+    await supabaseAdmin
+      .from("company_members")
+      .update({ deleted: true })
+      .eq("company_id", companyId);
+
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 // ---------------------- server on 하나만 ----------------------
 app.listen(4000, () =>
