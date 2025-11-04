@@ -51,10 +51,9 @@ export const useCompanyStore = create<CompanyStore>()(
           set({ companies: [], loading: false, fetching: false });
           return;
         }
-
         const { data: profile } = await supabase
           .from("profiles")
-          .select("role, company_id, last_selected_company_id")
+          .select("role, last_selected_company_id")
           .eq("id", user.id)
           .single();
 
@@ -73,7 +72,8 @@ export const useCompanyStore = create<CompanyStore>()(
           companies = data ?? [];
           total = count ?? 0;
         }
-        // ✅ admin
+
+        // ✅ admin (여러 회사 소유)
         else if (profile?.role === "admin") {
           const { data } = await supabase
             .from("admin_companies")
@@ -86,14 +86,19 @@ export const useCompanyStore = create<CompanyStore>()(
           companies.sort((a, b) => a.name.localeCompare(b.name, "ko"));
           total = companies.length;
         }
-        // ✅ 일반사용자
-        else if (profile?.company_id) {
+
+        // ✅ 일반사용자 (company_members 에서 가져온다)
+        else {
           const { data } = await supabase
-            .from("companies")
-            .select("id, name")
-            .eq("id", profile.company_id)
-            .single();
-          if (data) companies = [data];
+            .from("company_members")
+            .select("companies(id, name)")
+            .eq("user_id", user.id)
+            .eq("deleted", false);
+
+          // 일반사용자는 보통 하나
+          companies = (data ?? []).flatMap((r) =>
+            Array.isArray(r.companies) ? r.companies : [r.companies]
+          ) as Company[];
           total = companies.length;
         }
 
@@ -135,6 +140,7 @@ export const useCompanyStore = create<CompanyStore>()(
         const { data: existing } = await supabase
           .from("companies")
           .select("id")
+          .eq("deleted", false)
           .ilike("name", name.trim());
         if (existing && existing.length > 0)
           throw new Error("이미 존재하는 회사명입니다.");
@@ -145,23 +151,6 @@ export const useCompanyStore = create<CompanyStore>()(
           .select()
           .single();
         if (createError) throw createError;
-
-        // 관리자라면 admin_companies에 연결
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .single();
-        if (profile?.role === "admin") {
-          await supabase
-            .from("admin_companies")
-            .insert({ admin_id: user.id, company_id: company.id });
-        } else {
-          await supabase
-            .from("profiles")
-            .update({ company_id: company.id })
-            .eq("id", user.id);
-        }
 
         await get().fetchCompanies();
         return company;

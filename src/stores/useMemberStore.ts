@@ -38,6 +38,7 @@ export const useMemberStore = create<MemberStore>()((set, get) => ({
 
   fetchMembers: async (page = get().page, size = get().pageSize) => {
     const currentCompanyId = useCompanyStore.getState().currentCompanyId;
+
     if (!currentCompanyId) return;
 
     set({ loading: true, page, pageSize: size });
@@ -49,16 +50,18 @@ export const useMemberStore = create<MemberStore>()((set, get) => ({
       .from("company_members")
       .select(
         `
-        user_id,
-        role,
-        joined_at,
-        created_at,
-        profiles(nickname, email)
-      `,
+    user_id,
+    role,
+    joined_at,
+    created_at,
+    deleted,
+    profile:profiles!left(id,nickname,email)
+  `,
         { count: "exact" }
       )
       .eq("company_id", currentCompanyId)
       .eq("deleted", false)
+      .order("created_at", { ascending: false })
       .range(from, to);
 
     if (error) {
@@ -69,8 +72,8 @@ export const useMemberStore = create<MemberStore>()((set, get) => ({
 
     const members = (data || []).map((m: any) => ({
       user_id: m.user_id,
-      nickname: m.profiles?.nickname ?? "-",
-      email: m.profiles?.email ?? "-",
+      nickname: m.profile?.nickname ?? "-",
+      email: m.profile?.email ?? "-",
       joined_at: m.joined_at,
       created_at: m.created_at,
       role: m.role ?? "-",
@@ -98,15 +101,18 @@ export const useMemberStore = create<MemberStore>()((set, get) => ({
       .maybeSingle();
 
     if (exists) {
+      // revive version → joined_at은 기존 유지
       await supabase
         .from("company_members")
         .update({ deleted: false, role: "admin" })
         .eq("id", exists.id);
     } else {
+      // create version → joined_at = now()
       await supabase.from("company_members").insert({
         company_id: companyId,
         user_id: userId,
         role: "admin",
+        joined_at: new Date().toISOString(), // ✅ 여기 추가
         deleted: false,
       });
     }

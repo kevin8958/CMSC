@@ -44,12 +44,6 @@ export async function createCompany(name: string) {
       company_id: company.id,
     });
     if (linkError) throw linkError;
-  } else {
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ company_id: company.id })
-      .eq("id", user.id);
-    if (updateError) throw updateError;
   }
 
   return company;

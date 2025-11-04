@@ -19,7 +19,7 @@ export function useUserCompanies() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("role, company_id, last_selected_company_id")
+      .select("role, last_selected_company_id")
       .eq("id", user.id)
       .single();
 
@@ -28,14 +28,17 @@ export function useUserCompanies() {
         .from("admin_companies")
         .select("companies(id, name)")
         .eq("admin_id", user.id);
+
       setCompanies(data?.map((r) => r.companies) ?? []);
-    } else if (profile?.company_id) {
+    } else {
       const { data } = await supabase
-        .from("companies")
-        .select("id, name")
-        .eq("id", profile.company_id)
-        .single();
-      setCompanies(data ? [data] : []);
+        .from("company_members")
+        .select("companies(id, name)")
+        .eq("user_id", user.id)
+        .eq("deleted", false);
+
+      // 일반 유저는 1 회사 제한이라면
+      setCompanies(data?.map((r) => r.companies) ?? []);
     }
 
     setLastSelectedId(profile?.last_selected_company_id ?? null);
