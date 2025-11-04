@@ -131,7 +131,7 @@ function InviteMemberDialogBody() {
             gap={0}
             classes="border rounded-lg scroll-thin overflow-y-auto max-h-[240px]"
           >
-            {adminCandidates.map((adm, i) => (
+            {adminCandidates.map((adm) => (
               <FlexWrapper
                 key={adm.id}
                 justify="between"
