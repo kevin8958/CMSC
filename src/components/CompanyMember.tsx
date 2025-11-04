@@ -9,7 +9,7 @@ import Dropdown from "@/components/Dropdown";
 import { useEffect } from "react";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useDialog } from "@/hooks/useDialog";
-import { deleteMember } from "@/actions/memberActions";
+import { deleteMember, updateMemberRole } from "@/actions/memberActions";
 import { useAlert } from "@/components/AlertProvider";
 import InviteMemberDialogBody from "@/components/InviteMemberDialogBody";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -79,12 +79,35 @@ function CompanyMember() {
       accessorKey: "role",
       header: "권한",
       cell: ({ row }) => (
-        <Badge
-          color={row.original.role === "admin" ? "green" : "gray"}
-          size="sm"
-        >
-          {parseRole(row.original.role) || "-"}
-        </Badge>
+        <Dropdown
+          hideDownIcon
+          buttonVariant="clear"
+          items={[
+            { type: "item", id: "admin", label: "관리자" },
+            { type: "item", id: "user_a", label: "유저A" },
+            { type: "item", id: "user_b", label: "유저B" },
+          ]}
+          onChange={async (nextRole) => {
+            await updateMemberRole(
+              useCompanyStore.getState().currentCompanyId!,
+              row.original.user_id,
+              nextRole
+            );
+            showAlert("권한이 변경되었습니다.", {
+              type: "success",
+              durationMs: 3000,
+            });
+            fetchMembers();
+          }}
+          buttonItem={
+            <Badge
+              color={row.original.role === "admin" ? "green" : "gray"}
+              size="sm"
+            >
+              {parseRole(row.original.role)}
+            </Badge>
+          }
+        />
       ),
     },
     {

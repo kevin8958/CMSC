@@ -22,3 +22,19 @@ export async function deleteMember(companyId: string, userId: string) {
   if (!res.ok) throw new Error(data.error || "삭제 실패");
   return data;
 }
+
+export async function updateMemberRole(
+  companyId: string,
+  userId: string,
+  role: string
+) {
+  const res = await fetch("/api/member/update-role", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ companyId, userId, role }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "역할 변경 실패");
+  return data;
+}

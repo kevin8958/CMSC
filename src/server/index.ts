@@ -85,6 +85,29 @@ app.post("/api/member/delete", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+// ---------------------- update role ----------------------
+app.post("/api/member/update-role", async (req, res) => {
+  const { companyId, userId, role } = req.body;
+
+  try {
+    // 유효성
+    if (!companyId || !userId || !role) {
+      return res.status(400).json({ error: "필수 파라미터 누락" });
+    }
+
+    const { error } = await supabaseAdmin
+      .from("company_members")
+      .update({ role })
+      .eq("company_id", companyId)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+
+    res.json({ ok: true });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 // ---------------------- member join 처리 ----------------------
 app.post("/api/member/join", async (req, res) => {
