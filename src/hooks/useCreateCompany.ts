@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createCompany } from "@/api/company";
+import { createCompany } from "@/actions/companyActions";
 
 export function useCreateCompany() {
   const [error, setError] = useState<string | null>(null);
