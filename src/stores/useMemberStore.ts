@@ -43,43 +43,21 @@ export const useMemberStore = create<MemberStore>()((set, get) => ({
 
     set({ loading: true, page, pageSize: size });
 
-    const from = (page - 1) * size;
-    const to = from + size - 1;
+    const res = await fetch(
+      `/api/company-member-list?companyId=${currentCompanyId}&page=${page}&size=${size}`
+    );
+    const { data, count } = await res.json();
 
-    const { data, count, error } = await supabase
-      .from("company_members")
-      .select(
-        `
-    user_id,
-    role,
-    joined_at,
-    created_at,
-    deleted,
-    profile:profiles!left(id,nickname,email)
-  `,
-        { count: "exact" }
-      )
-      .eq("company_id", currentCompanyId)
-      .eq("deleted", false)
-      .order("created_at", { ascending: false })
-      .range(from, to);
-
-    if (error) {
-      console.error("멤버 조회 오류:", error);
-      set({ loading: false });
-      return;
-    }
-
-    const members = (data || []).map((m: any) => ({
+    const members = data.map((m: any) => ({
       user_id: m.user_id,
-      nickname: m.profile?.nickname ?? "-",
-      email: m.profile?.email ?? "-",
+      nickname: m.profiles?.nickname ?? "-",
+      email: m.profiles?.email ?? "-",
       joined_at: m.joined_at,
       created_at: m.created_at,
-      role: m.role ?? "-",
+      role: m.role,
     }));
 
-    members.sort((a, b) => {
+    members.sort((a: any, b: any) => {
       if (a.role === "admin" && b.role !== "admin") return -1;
       if (a.role !== "admin" && b.role === "admin") return 1;
       return 0;

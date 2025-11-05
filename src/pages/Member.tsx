@@ -43,27 +43,8 @@ function Member() {
   const fetchMembers = async (page = 1, size = 10) => {
     setLoading(true);
 
-    const from = (page - 1) * size;
-    const to = from + size - 1;
-
-    const { data, count, error } = await supabase
-      .from("profiles")
-      .select(
-        `
-    id,
-    email,
-    nickname,
-    company_members!inner(role, joined_at)
-  `,
-        { count: "exact" }
-      )
-      .eq("company_members.deleted", false)
-      .range(from, to);
-
-    if (error) {
-      console.error("멤버 조회 오류:", error);
-      return;
-    }
+    const res = await fetch(`/api/member-list?page=${page}&size=${size}`);
+    const { data, count } = await res.json();
 
     if (data) {
       setMembers(
