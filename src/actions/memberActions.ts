@@ -10,12 +10,25 @@ export async function inviteMember(companyId: string, email: string) {
 
   return data;
 }
-
-export async function deleteMember(companyId: string, userId: string) {
-  const res = await fetch("/api/member/delete", {
+export async function removeMemberFromCompany(
+  companyId: string,
+  userId: string
+) {
+  const res = await fetch("/api/member/removeFromCompany", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ companyId, userId }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "삭제 실패");
+  return data;
+}
+export async function deleteMemberCompletely(userId: string) {
+  const res = await fetch("/api/member/deleteUserCompletely", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId }),
   });
 
   const data = await res.json();

@@ -9,7 +9,10 @@ import Dropdown from "@/components/Dropdown";
 import { useEffect } from "react";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useDialog } from "@/hooks/useDialog";
-import { deleteMember, updateMemberRole } from "@/actions/memberActions";
+import {
+  removeMemberFromCompany,
+  updateMemberRole,
+} from "@/actions/memberActions";
 import { useAlert } from "@/components/AlertProvider";
 import InviteMemberDialogBody from "@/components/InviteMemberDialogBody";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -148,7 +151,7 @@ function CompanyMember() {
                 state: "danger",
                 onConfirm: async () => {
                   try {
-                    await deleteMember(
+                    await removeMemberFromCompany(
                       useCompanyStore.getState().currentCompanyId!,
                       row.original.user_id
                     );

@@ -7,9 +7,8 @@ import Badge from "@/components/Badge";
 import Dropdown from "@/components/Dropdown";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useDialog } from "@/hooks/useDialog";
-import { deleteMember } from "@/actions/memberActions";
+import { deleteMemberCompletely } from "@/actions/memberActions";
 import { useAlert } from "@/components/AlertProvider";
 import { motion } from "motion/react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -168,10 +167,7 @@ function Member() {
                 state: "danger",
                 onConfirm: async () => {
                   try {
-                    await deleteMember(
-                      useCompanyStore.getState().currentCompanyId!,
-                      row.original.user_id
-                    );
+                    await deleteMemberCompletely(row.original.user_id);
                     fetchMembers();
                     showAlert("삭제되었습니다.", {
                       type: "success",

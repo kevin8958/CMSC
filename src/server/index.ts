@@ -51,40 +51,44 @@ app.post("/api/invite", async (req, res) => {
 });
 
 // ---------------------- delete ----------------------
-app.post("/api/member/delete", async (req, res) => {
-  const { companyId, userId } = req.body;
+app.post("/api/member/deleteUserCompletely", async (req, res) => {
+  const { userId } = req.body;
   try {
-    const { data: member } = await supabaseAdmin
-      .from("company_members")
-      .select("joined_at")
-      .eq("company_id", companyId)
-      .eq("user_id", userId)
-      .single();
+    await supabaseAdmin.auth.admin.deleteUser(userId);
+    await supabaseAdmin.from("profiles").delete().eq("id", userId);
+    await supabaseAdmin.from("company_members").delete().eq("user_id", userId);
 
-    if (!member) throw new Error("멤버를 찾을 수 없습니다");
-
-    if (member.joined_at == null) {
-      await supabaseAdmin.auth.admin.deleteUser(userId);
-      await supabaseAdmin
-        .from("company_members")
-        .delete()
-        .eq("company_id", companyId)
-        .eq("user_id", userId);
-
-      await supabaseAdmin.from("profiles").delete().eq("id", userId);
-    } else {
-      await supabaseAdmin
-        .from("company_members")
-        .update({ deleted: true })
-        .eq("company_id", companyId)
-        .eq("user_id", userId);
-    }
+    await supabaseAdmin.from("admin_companies").delete().eq("admin_id", userId);
 
     res.json({ success: true });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
 });
+// ---------------------- remove from company ----------------------
+app.post("/api/member/removeFromCompany", async (req, res) => {
+  const { companyId, userId } = req.body;
+  try {
+    const { data: member } = await supabaseAdmin
+      .from("company_members")
+      .select("id")
+      .eq("company_id", companyId)
+      .eq("user_id", userId)
+      .single();
+
+    if (!member) throw new Error("멤버를 찾을 수 없습니다");
+
+    await supabaseAdmin
+      .from("company_members")
+      .update({ deleted: true })
+      .eq("id", member.id);
+
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // ---------------------- update role ----------------------
 app.post("/api/member/update-role", async (req, res) => {
   const { companyId, userId, role } = req.body;
