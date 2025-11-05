@@ -43,18 +43,17 @@ function Member() {
     const to = from + size - 1;
 
     const { data, count, error } = await supabase
-      .from("company_members")
+      .from("profiles")
       .select(
         `
-        user_id,
-        role,
-        joined_at,
-        created_at,
-        profiles(nickname, email)
-      `,
+    id,
+    email,
+    nickname,
+    company_members!inner(role, joined_at)
+  `,
         { count: "exact" }
       )
-      .eq("deleted", false)
+      .eq("company_members.deleted", false)
       .range(from, to);
 
     if (error) {
@@ -65,12 +64,11 @@ function Member() {
     if (data) {
       setMembers(
         data.map((m: any) => ({
-          user_id: m.user_id,
-          nickname: m.profiles?.nickname ?? "-",
-          email: m.profiles?.email ?? "-",
-          joined_at: m.joined_at,
-          created_at: m.created_at,
-          role: m.role ?? "-",
+          user_id: m.id,
+          nickname: m.nickname ?? "-",
+          email: m.email ?? "-",
+          role: m.company_members?.[0]?.role ?? "-",
+          joined_at: m.company_members?.[0]?.joined_at ?? null,
           etc: "-",
         }))
       );
