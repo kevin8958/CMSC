@@ -21,7 +21,7 @@ export function useUserCompanies() {
       .from("profiles")
       .select("role, last_selected_company_id")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
     if (profile?.role === "admin") {
       const { data } = await supabase

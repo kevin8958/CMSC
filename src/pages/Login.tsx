@@ -96,7 +96,7 @@ function Login() {
         .from("profiles")
         .select("role")
         .eq("id", data.user.id)
-        .single();
+        .maybeSingle();
 
       if (!pErr && profile) {
         useAuthStore.getState().setRole(profile.role);

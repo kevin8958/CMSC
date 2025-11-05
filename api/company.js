@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     .from("profiles")
     .select("role")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
   if (profileError) throw profileError;
 
   // 5. 역할에 따라 관계 테이블 업데이트

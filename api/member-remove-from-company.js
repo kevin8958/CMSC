@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       .select("id")
       .eq("company_id", companyId)
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
 
     if (!member) throw new Error("멤버를 찾을 수 없습니다");
 

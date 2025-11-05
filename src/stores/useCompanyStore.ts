@@ -55,7 +55,7 @@ export const useCompanyStore = create<CompanyStore>()(
           .from("profiles")
           .select("role, last_selected_company_id")
           .eq("id", user.id)
-          .single();
+          .maybeSingle();
 
         let companies: Company[] = [];
         let total = 0;
