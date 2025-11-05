@@ -94,18 +94,25 @@ app.post("/api/member/update-role", async (req, res) => {
   const { companyId, userId, role } = req.body;
 
   try {
-    // 유효성
     if (!companyId || !userId || !role) {
       return res.status(400).json({ error: "필수 파라미터 누락" });
     }
 
-    const { error } = await supabaseAdmin
+    // 1) profiles 전체 role 업데이트
+    const { error: profileErr } = await supabaseAdmin
+      .from("profiles")
+      .update({ role })
+      .eq("id", userId);
+
+    if (profileErr) throw profileErr;
+
+    // 2) company_members 에서 해당 유저 모든 row role 업데이트 (회사 여러개일 수도 있음)
+    const { error: cmErr } = await supabaseAdmin
       .from("company_members")
       .update({ role })
-      .eq("company_id", companyId)
       .eq("user_id", userId);
 
-    if (error) throw error;
+    if (cmErr) throw cmErr;
 
     res.json({ ok: true });
   } catch (err: any) {

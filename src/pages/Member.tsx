@@ -8,11 +8,15 @@ import Dropdown from "@/components/Dropdown";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useDialog } from "@/hooks/useDialog";
-import { deleteMemberCompletely } from "@/actions/memberActions";
+import {
+  deleteMemberCompletely,
+  updateMemberRole,
+} from "@/actions/memberActions";
 import { useAlert } from "@/components/AlertProvider";
 import { motion } from "motion/react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { LuTrash2 } from "react-icons/lu";
+import { useCompanyStore } from "@/stores/useCompanyStore";
 
 const parseRole = (role: string) => {
   switch (role) {
@@ -119,12 +123,35 @@ function Member() {
       accessorKey: "role",
       header: "권한",
       cell: ({ row }) => (
-        <Badge
-          color={row.original.role === "admin" ? "green" : "gray"}
-          size="sm"
-        >
-          {parseRole(row.original.role) || "-"}
-        </Badge>
+        <Dropdown
+          hideDownIcon
+          buttonVariant="clear"
+          items={[
+            { type: "item", id: "admin", label: "관리자" },
+            { type: "item", id: "user_a", label: "유저A" },
+            { type: "item", id: "user_b", label: "유저B" },
+          ]}
+          onChange={async (nextRole) => {
+            await updateMemberRole(
+              useCompanyStore.getState().currentCompanyId!,
+              row.original.user_id,
+              nextRole
+            );
+            showAlert("권한이 변경되었습니다.", {
+              type: "success",
+              durationMs: 3000,
+            });
+            fetchMembers();
+          }}
+          buttonItem={
+            <Badge
+              color={row.original.role === "admin" ? "green" : "gray"}
+              size="sm"
+            >
+              {parseRole(row.original.role)}
+            </Badge>
+          }
+        />
       ),
     },
     {
