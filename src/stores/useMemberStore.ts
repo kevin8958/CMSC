@@ -95,24 +95,26 @@ export const useMemberStore = create<MemberStore>()((set, get) => ({
     // 1) company_members 에 추가 or revive
     const { data: exists } = await supabase
       .from("company_members")
-      .select("id, deleted, role")
+      .select("id, deleted, role, joined_at")
       .eq("company_id", companyId)
       .eq("user_id", userId)
       .maybeSingle();
 
     if (exists) {
-      // revive version → joined_at은 기존 유지
       await supabase
         .from("company_members")
-        .update({ deleted: false, role: "admin" })
+        .update({
+          deleted: false,
+          role: "admin",
+          joined_at: exists.joined_at ?? new Date().toISOString(), // ✅ revive 시 joined_at 보정
+        })
         .eq("id", exists.id);
     } else {
-      // create version → joined_at = now()
       await supabase.from("company_members").insert({
         company_id: companyId,
         user_id: userId,
         role: "admin",
-        joined_at: new Date().toISOString(), // ✅ 여기 추가
+        joined_at: new Date().toISOString(), // ✅ create 시 joined_at
         deleted: false,
       });
     }
