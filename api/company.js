@@ -1,9 +1,9 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../src/lib/supabase";
 
 /**
  * 새 회사를 생성하고, 관리자와 연결합니다.
  */
-export async function createCompany(name: string) {
+export default async function handler(req, res) {
   // 1. 로그인된 유저 확인
   const {
     data: { user },

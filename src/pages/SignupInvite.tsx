@@ -60,7 +60,7 @@ function SignupInvite() {
       .update({ nickname })
       .eq("id", session.user.id);
 
-    await fetch("/api/member/join", {
+    await fetch("/api/member-join", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId: session.user.id }),

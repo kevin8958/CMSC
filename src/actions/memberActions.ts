@@ -14,7 +14,7 @@ export async function removeMemberFromCompany(
   companyId: string,
   userId: string
 ) {
-  const res = await fetch("/api/member/removeFromCompany", {
+  const res = await fetch("/api/member-remove-from-company", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ companyId, userId }),
@@ -25,7 +25,7 @@ export async function removeMemberFromCompany(
   return data;
 }
 export async function deleteMemberCompletely(userId: string) {
-  const res = await fetch("/api/member/deleteUserCompletely", {
+  const res = await fetch("/api/member-delete-user-completely", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId }),
@@ -41,7 +41,7 @@ export async function updateMemberRole(
   userId: string,
   role: string
 ) {
-  const res = await fetch("/api/member/update-role", {
+  const res = await fetch("/api/member-update-role", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ companyId, userId, role }),

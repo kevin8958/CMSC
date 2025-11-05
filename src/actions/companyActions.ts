@@ -1,5 +1,5 @@
 export async function deleteCompany(companyId: string) {
-  const res = await fetch("/api/company/delete", {
+  const res = await fetch("/api/company-delete", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ companyId }),
