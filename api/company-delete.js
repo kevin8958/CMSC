@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       .from("companies")
       .select("id")
       .eq("id", companyId)
-      .single();
+      .maybeSingle();
 
     if (!company) throw new Error("회사를 찾을 수 없습니다");
 

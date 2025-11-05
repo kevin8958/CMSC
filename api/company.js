@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     .from("companies")
     .insert({ name: name.trim() })
     .select()
-    .single();
+    .maybeSingle();
   if (createError) throw createError;
 
   // 4. 유저의 프로필 확인

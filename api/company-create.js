@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     .from("companies")
     .insert({ name })
     .select()
-    .single();
+    .maybeSingle();
 
   if (createErr) return res.status(500).json({ error: createErr.message });
 

@@ -149,7 +149,7 @@ export const useCompanyStore = create<CompanyStore>()(
           .from("companies")
           .insert({ name })
           .select()
-          .single();
+          .maybeSingle();
         if (createError) throw createError;
 
         await get().fetchCompanies();
