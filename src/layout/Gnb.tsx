@@ -7,7 +7,7 @@ import Dropdown from "@/components/Dropdown";
 import { LuRefreshCcw, LuBell } from "react-icons/lu";
 import { motion } from "framer-motion";
 import { useCompanyStore } from "@/stores/useCompanyStore";
-import LogoBlack from "@/assets/image/logo_hands_black.png";
+import UspLogo from "@/assets/image/usp_logo.png";
 import { useAuthStore } from "@/stores/authStore";
 import Typography from "@/foundation/Typography";
 
@@ -55,7 +55,7 @@ export default function Gnb() {
       ) : (
         <FlexWrapper gap={2} items="center">
           <a href={role === "super_admin" ? "/company" : "/dashboard"}>
-            <img src={LogoBlack} alt="HandS Logo" className="w-[60px]" />
+            <img src={UspLogo} alt="HandS Logo" className="w-[60px]" />
           </a>
           {role === "super_admin" && (
             <Typography variant="H4" classes="text-gray-700">
