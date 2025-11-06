@@ -6,18 +6,18 @@ import Button from "@/components/Button";
 import ProcessImage1 from "@/assets/image/intro_process_1.jpg";
 import ProcessImage2 from "@/assets/image/intro_process_2.jpg";
 import ProcessImage3 from "@/assets/image/intro_process_3.jpg";
+import { LuArrowRight } from "react-icons/lu";
 
 function Home() {
   return (
     <div className="w-full max-w-[1200px] py-[100px] flex flex-col gap-4 px-4 sm:px-8 items-center">
       <IntroGnb />
-      <div className="w-full rounded-xl flex flex-col items-center justify-center h-[420px] sm:h-[480px] gap-0">
+      <div className="w-full rounded-xl flex flex-col items-center justify-center h-[600px] gap-6">
         <FlexWrapper gap={0} items="center">
-          <p className="text-2xl font-thin">더 효율적인</p>
           <RotatingText
-            texts={["인사업무", "회계업무", "구매업무", "행정업무"]}
-            mainClassName="px-2 sm:px-2 md:px-3 rounded-lg text-black overflow-hidden justify-center"
-            elementLevelClassName="text-2xl font-bold"
+            texts={["인사담당자", "회계담당자", "구매담당자", "사무직원"]}
+            mainClassName="px-8 py-4 rounded-2xl text-black overflow-hidden justify-center bg-green-300/50"
+            elementLevelClassName="text-[48px] font-bold"
             staggerFrom={"first"}
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -29,23 +29,33 @@ function Home() {
           />
         </FlexWrapper>
         <FlexWrapper gap={0} items="center" direction="col">
-          <p className="text-[40px] sm:text-[52px] font-bold tracking-wide">
-            HandS와 함께
+          <p className="text-[36px] font-bold">
+            경영지원이 필요할 땐, UNDER STAND
           </p>
-          <p className="text-[40px] sm:text-[52px] font-bold mt-[-12px]">
-            간편한 경영지원
+          <p className="text-2xl font-semibold text-gray-400">
+            중요하지만 번거로운 경영지원업무, 아웃소싱을 통해 간편하게
           </p>
         </FlexWrapper>
         <Button
           variant="contain"
           color="primary"
           size="lg"
-          classes="mt-6 !w-[248px] sm:!w-[320px]"
+          classes="mt-6 !w-[248px] !text-[26px] !font-bold !rounded-2xl !py-10"
         >
           문의하기
+          <LuArrowRight className="ml-4" />
         </Button>
       </div>
-      <div className="w-full rounded-xl flex flex-col items-start h-fit sm:h-[400px]">
+      <div className="w-full flex flex-col items-center h-fit sm:h-[400px] gap-10">
+        <span className="rounded-full bg-gray-100 py-4 font-bold text-xl px-8">
+          👍 필요한 지원업무를 고를 수 있습니다!
+        </span>
+        <FlexWrapper gap={0} items="center" direction="col">
+          <p className="text-[40px] font-bold">효율성과 전문성은 높이고</p>
+          <p className="text-[40px] font-bold">
+            인간비와 채용 부담을 낮주세요!
+          </p>
+        </FlexWrapper>
         <FlexWrapper
           justify="between"
           direction="col"
@@ -100,9 +110,6 @@ function Home() {
             </Typography>
           </div>
         </FlexWrapper>
-      </div>
-      <div className="w-full rounded-xl bg-primary-100 flex items-center justify-center h-[400px]">
-        section3
       </div>
     </div>
   );

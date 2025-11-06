@@ -5,7 +5,7 @@ import FlexWrapper from "./FlexWrapper";
 import { useEffect, useState } from "react";
 import classNames from "classnames";
 import BurgerButton from "@/interaction/BurgerButton";
-import LogoBlack from "@/assets/image/logo_hands_black.png";
+import UspLogo from "@/assets/image/usp_logo.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "@/components/Button";
 
@@ -46,7 +46,7 @@ export default function IntroGnb() {
       >
         <FlexWrapper gap={4} items="center">
           <a href="/">
-            <img src={LogoBlack} alt="HandS Logo" className="w-[60px]" />
+            <img src={UspLogo} alt="USP Logo" className="w-[60px]" />
           </a>
 
           <FlexWrapper gap={2} items="center" classes="!hidden sm:!flex">
@@ -61,8 +61,7 @@ export default function IntroGnb() {
         </FlexWrapper>
 
         <FlexWrapper gap={4} items="center" classes="!hidden sm:!flex">
-          <GnbButton href="/login">로그인</GnbButton>
-          <GnbButton href="/login">문의하기</GnbButton>
+          <GnbButton href="/login">회원 로그인</GnbButton>
         </FlexWrapper>
 
         <BurgerButton isOpen={isOpen} setIsOpen={setIsOpen} />

@@ -6,7 +6,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import Badge from "@/components/Badge";
 import Dropdown from "@/components/Dropdown";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { useDialog } from "@/hooks/useDialog";
 import {
   deleteMemberCompletely,
