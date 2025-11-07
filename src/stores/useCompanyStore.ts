@@ -41,72 +41,23 @@ export const useCompanyStore = create<CompanyStore>()(
       // ✅ 회사 목록 불러오기 (pagination 지원)
       fetchCompanies: async (page = get().page, pageSize = get().pageSize) => {
         set({ fetching: true, loading: true, page, pageSize });
-        const offset = (page - 1) * pageSize;
-        const limit = offset + pageSize - 1;
+        const s = await supabase.auth.getSession();
+        const token = s.data.session?.access_token;
 
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) {
-          set({ companies: [], loading: false, fetching: false });
-          return;
-        }
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role, last_selected_company_id")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        let companies: Company[] = [];
-        let total = 0;
-
-        // ✅ super_admin은 전체 목록 + pagination
-        if (profile?.role === "super_admin") {
-          const { data, count } = await supabase
-            .from("companies_with_stats")
-            .select("*", { count: "exact" })
-            .eq("deleted", false)
-            .order("created_at", { ascending: false })
-            .range(offset, limit);
-
-          companies = data ?? [];
-          total = count ?? 0;
-        }
-
-        // ✅ admin (여러 회사 소유)
-        else if (profile?.role === "admin") {
-          const { data } = await supabase
-            .from("admin_companies")
-            .select("companies(id, name)")
-            .eq("admin_id", user.id);
-
-          companies = (data ?? []).flatMap((r) =>
-            Array.isArray(r.companies) ? r.companies : [r.companies]
-          ) as Company[];
-          companies.sort((a, b) => a.name.localeCompare(b.name, "ko"));
-          total = companies.length;
-        }
-
-        // ✅ 일반사용자 (company_members 에서 가져온다)
-        else {
-          const { data } = await supabase
-            .from("company_members")
-            .select("companies(id, name)")
-            .eq("user_id", user.id)
-            .eq("deleted", false);
-
-          // 일반사용자는 보통 하나
-          companies = (data ?? []).flatMap((r) =>
-            Array.isArray(r.companies) ? r.companies : [r.companies]
-          ) as Company[];
-          total = companies.length;
-        }
+        const res = await fetch(
+          `/api/fetch-companies?page=${page}&pageSize=${pageSize}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const { companies, total, currentCompanyId } = await res.json();
 
         set({
           companies,
           total,
-          currentCompanyId:
-            profile?.last_selected_company_id || companies[0]?.id || null,
+          currentCompanyId,
           loading: false,
           initialized: true,
           fetching: false,
