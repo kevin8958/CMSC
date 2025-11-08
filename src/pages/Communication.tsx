@@ -215,6 +215,7 @@ export default function Communication() {
     fetchTasks,
     createTask,
     deleteTask,
+    updateTask,
     updateOrder,
     fetchAllMembers,
   } = useTaskStore();
@@ -468,20 +469,40 @@ export default function Communication() {
               });
               return;
             }
-            createTask(
-              currentCompanyId,
-              newStatus,
-              newTitle.trim(),
-              newDescription,
-              newPriority,
-              newDueDate ? dayjs(newDueDate).format("YYYY-MM-DD") : undefined,
-              newAssignee || undefined
-            );
-            showAlert("업무가 추가되었습니다.", {
-              type: "success",
-              durationMs: 3000,
-            });
-            setDrawerOpen(false);
+            if (drawerMode === "edit" && currentTask) {
+              // 수정 모드
+              await updateTask(currentTask.id, {
+                title: newTitle.trim(),
+                status: newStatus,
+                description: newDescription,
+                priority: newPriority,
+                due_date: newDueDate
+                  ? dayjs(newDueDate).format("YYYY-MM-DD")
+                  : undefined,
+                assignee: newAssignee || undefined,
+              });
+              showAlert("업무가 수정되었습니다.", {
+                type: "success",
+                durationMs: 3000,
+              });
+              setDrawerOpen(false);
+              return;
+            } else {
+              createTask(
+                currentCompanyId,
+                newStatus,
+                newTitle.trim(),
+                newDescription,
+                newPriority,
+                newDueDate ? dayjs(newDueDate).format("YYYY-MM-DD") : undefined,
+                newAssignee || undefined
+              );
+              showAlert("업무가 추가되었습니다.", {
+                type: "success",
+                durationMs: 3000,
+              });
+              setDrawerOpen(false);
+            }
           } catch (error) {
             showAlert(`${error}`, {
               type: "danger",

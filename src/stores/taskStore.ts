@@ -27,6 +27,7 @@ type TaskStore = {
     assignee?: string
   ) => Promise<void>;
   deleteTask: (taskId: string) => Promise<void>;
+  updateTask: (taskId: string, fields: Partial<Task>) => Promise<void>;
   updateOrder: (
     companyId: string,
     updates: Array<Pick<Task, "id" | "status" | "sort_index">>
@@ -105,6 +106,29 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       set({ tasks: get().tasks.filter((task) => task.id !== taskId) });
     }
   },
+  updateTask: async (taskId: string, fields: Partial<Task>) => {
+    const session = await supabase.auth.getSession();
+    const token = session.data.session?.access_token;
+
+    const res = await fetch(`/api/tasks/update`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ task_id: taskId, fields }),
+    });
+
+    if (res.ok) {
+      // local state update
+      set({
+        tasks: get().tasks.map((t) =>
+          t.id === taskId ? { ...t, ...fields } : t
+        ),
+      });
+    }
+  },
+
   updateOrder: async (companyId, updates) => {
     // optimistic 은 호출하는 쪽(컴포넌트)에서 setTasks로 이미 반영했다고 가정
     const prev = get().tasks;
