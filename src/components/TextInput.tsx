@@ -116,7 +116,7 @@ const TextInput = (props: Common.TextInputProps) => {
             }
             autoFocus={autoFocus}
             className={classNames(
-              "form-control box-border w-full overflow-hidden border border-gray-300 bg-white p-2 !text-base outline-0 transition-all duration-200 ease-in-out placeholder:text-[#AFAFAF] placeholder:text-sm focus:!border-2 focus:border-info",
+              "form-control box-border w-full overflow-hidden border border-gray-300 bg-white p-2 !text-base outline-0 transition-all duration-200 ease-in-out placeholder:text-gray-300 placeholder:text-sm focus:!border-2 focus:border-info",
               classes,
               {
                 "h-[32px] max-h-[32px]": size === "sm",

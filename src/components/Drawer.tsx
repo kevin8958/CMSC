@@ -1,17 +1,30 @@
 "use client";
 
 import Button from "@/components/Button";
+import FlexWrapper from "@/layout/FlexWrapper";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { IoClose } from "react-icons/io5";
 
 const Drawer = (props: Common.DrawerProps) => {
-  const { open, title, children, showFooter, onConfirm, onCancel, onClose } =
-    props;
+  const {
+    open,
+    title,
+    children,
+    showFooter,
+    confirmText,
+    cancelText,
+    deleteText,
+    onConfirm,
+    onCancel,
+    onDelete,
+    onClose,
+  } = props;
+
   return (
     <>
       <Transition show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-[999]" onClose={() => onClose()}>
+        <Dialog as="div" className="relative z-[90]" onClose={() => onClose()}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -35,33 +48,45 @@ const Drawer = (props: Common.DrawerProps) => {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="bg-primary-900 absolute right-0 flex h-full w-xl flex-col shadow-xl">
-                  <div className="flex items-center justify-between p-4 text-white">
+                <Dialog.Panel className="bg-white absolute right-0 flex h-full w-xl flex-col shadow-xl">
+                  <div className="flex items-center justify-between p-4 text-gray-900">
                     <Dialog.Title className="text-lg font-medium">
                       {title}
                     </Dialog.Title>
                     <Button variant="clear" onClick={() => onClose()}>
-                      <IoClose className="text-xl" />
+                      <IoClose className="text-xl text-gray-500" />
                     </Button>
                   </div>
-                  <div className="flex-1 overflow-y-auto p-4">{children}</div>
+                  <div className="flex-1 overflow-y-auto px-4">{children}</div>
                   {showFooter && (
-                    <div className="flex justify-end gap-2 px-4 py-3">
+                    <FlexWrapper justify="between" classes="w-full p-2">
+                      {onCancel && (
+                        <Button
+                          classes="min-w-[80px] text-gray-900"
+                          variant="clear"
+                          onClick={onCancel ?? onClose}
+                        >
+                          {cancelText || "취소"}
+                        </Button>
+                      )}
+                      {onDelete && (
+                        <Button
+                          classes="min-w-[80px] !text-danger !border-danger"
+                          variant="outline"
+                          onClick={onDelete}
+                        >
+                          {deleteText || "삭제"}
+                        </Button>
+                      )}
                       <Button
                         classes="min-w-[80px]"
-                        variant="outline"
-                        onClick={onCancel ?? onClose}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        classes="min-w-[80px]"
+                        color="green"
                         variant="contain"
                         onClick={onConfirm}
                       >
-                        Confirm
+                        {confirmText || "등록"}
                       </Button>
-                    </div>
+                    </FlexWrapper>
                   )}
                 </Dialog.Panel>
               </Transition.Child>

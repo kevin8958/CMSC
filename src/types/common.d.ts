@@ -175,11 +175,15 @@ namespace Common {
   /** Drawer */
   interface DrawerProps {
     open: boolean;
-    title?: string;
+    title?: string | React.ReactNode;
     children?: React.ReactNode;
     showFooter?: boolean;
+    confirmText?: string;
+    cancelText?: string;
+    deleteText?: string;
     onConfirm?: () => void;
     onCancel?: () => void;
+    onDelete?: () => void;
     onClose: () => void;
   }
 
@@ -218,6 +222,7 @@ namespace Common {
     buttonSize?: ButtonSize;
     buttonItem?: string | React.ReactNode;
     buttonClasses?: string;
+    itemClasses?: string;
     hideDownIcon?: boolean;
   }
 
@@ -231,6 +236,13 @@ namespace Common {
     label?: string;
     labelPosition?: LabelPosition;
     isCircle?: boolean;
+  }
+
+  /** Label */
+  interface LabelProps {
+    text: string;
+    classes?: string;
+    required?: boolean;
   }
 
   /** SimpleTable */
@@ -265,6 +277,17 @@ namespace Common {
     isDisableRow?: (value: Row<unknown>) => void;
     onPageChange?: (page: number, size: number) => void;
     onRowClick?: (row: any) => void;
+  }
+  /** TextArea */
+  interface TextareaProps {
+    label?: string;
+    placeholder?: string;
+    error?: boolean;
+    errorMsg?: string;
+    textareaProps?: React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+    disabled?: boolean;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   }
 
   /** TextInput */

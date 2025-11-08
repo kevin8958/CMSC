@@ -19,6 +19,7 @@ const Dropdown = (props: Common.DropdownProps) => {
     buttonSize = "md",
     buttonItem,
     buttonClasses,
+    itemClasses,
     hideDownIcon = false,
   } = props;
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +49,10 @@ const Dropdown = (props: Common.DropdownProps) => {
                 variant="clear"
                 size="md"
                 color={item.danger ? "danger" : "primary"}
-                classes="!p-4 !w-full !justify-start truncate text-primary-900 !rounded-none"
+                classes={
+                  "!p-4 !w-full !justify-start truncate text-primary-900 !rounded-none " +
+                  itemClasses
+                }
                 onClick={() => {
                   item.onClick?.();
                   onChange?.(item.id);
@@ -60,8 +64,8 @@ const Dropdown = (props: Common.DropdownProps) => {
                     gap={2}
                     items="center"
                     classes={
-                      item.label === buttonItem
-                        ? "max-w-[calc(100%-24px)]"
+                      item.label === buttonItem && !hideDownIcon
+                        ? "max-w-[calc(100%-16px)]"
                         : "max-w-full"
                     }
                   >
@@ -161,8 +165,9 @@ const Dropdown = (props: Common.DropdownProps) => {
       >
         <FlexWrapper justify="between" items="center" gap={1} classes="w-full">
           <p
-            className={classNames("w-full max-w-[calc(100%-24px)]", {
-              truncate: !hideDownIcon,
+            className={classNames("w-full ", {
+              "truncate max-w-[calc(100%-16px)]": !hideDownIcon,
+              "max-w-full": hideDownIcon,
             })}
           >
             {buttonItem || "Menu"}
@@ -172,7 +177,7 @@ const Dropdown = (props: Common.DropdownProps) => {
       </Button>
       <dialog
         className={classNames(
-          "border-primary-100 shadow-custom-dark right-0 z-50 mt-2 !block rounded-md border p-0 transition-all duration-200 ease-in-out overflow-hidden",
+          "border-primary-300 shadow-custom-dark right-0 z-50 mt-2 !block rounded-md border p-0 transition-all duration-200 ease-in-out overflow-hidden",
           {
             "left-0": dialogPosition === "left",
             "right-0 left-[unset]": dialogPosition === "right",

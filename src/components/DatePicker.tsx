@@ -153,7 +153,7 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
         showPopperArrow={false}
         popperPlacement={isMonthPicker ? "bottom-start" : undefined}
         calendarClassName={classNames(
-          "bg-white text-primary-900 rounded-xl border border-primary-100 overflow-hidden p-4 [&_.react-datepicker__day-names]:hidden",
+          "bg-white text-primary-900 rounded-xl border border-primary-100 overflow-hidden p-4 pt-0 [&_.react-datepicker__day-names]:hidden",
           { "!p-3 !pt-0": isMonthPicker }
         )}
         renderMonthContent={(monthIndex) => (
@@ -177,7 +177,7 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
               "border-2 border-primary-600 leading-[28px]"
           )
         }
-        popperClassName="!z-[70]"
+        popperClassName="!z-[100]"
         renderCustomHeader={({
           date,
           // prevMonthButtonDisabled,
