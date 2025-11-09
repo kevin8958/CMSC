@@ -8,9 +8,16 @@ import Section3 from "@/components/home/Section3";
 import Section4 from "@/components/home/Section4";
 import Section5 from "@/components/home/Section5";
 import Footer from "@/components/home/Footer";
+import { useDialog } from "@/hooks/useDialog";
+import InquiryDialogBody from "@/components/home/InquiryDialogBody";
+import { supabase } from "@/lib/supabase";
+import { useAlert } from "@/components/AlertProvider";
 
 function Home() {
   const navigate = useNavigate();
+  const { openDialog } = useDialog();
+  const { showAlert } = useAlert();
+
   return (
     <>
       <div className="w-full max-w-[1200px] pb-[100px] px-4 sm:px-8 relative min-h-screen">
@@ -46,6 +53,33 @@ function Home() {
             // color="green"
             size="lg"
             classes="!w-[200px] !text-xl !font-bold !rounded-lg !py-6"
+            onClick={() => {
+              openDialog({
+                title: "문의하기",
+                hideBottom: true, // 아래 confirm/cancel 안 쓰고 body에서 버튼 있음
+                body: (
+                  <InquiryDialogBody
+                    onSubmit={async (data) => {
+                      const session = await supabase.auth.getSession();
+                      const token = session.data.session?.access_token;
+
+                      await fetch("/api/inquiry/create", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                          ...data,
+                        }),
+                      });
+
+                      showAlert("문의가 접수되었습니다!", { type: "success" });
+                    }}
+                  />
+                ),
+              });
+            }}
           >
             문의하기
           </Button>

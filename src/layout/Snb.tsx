@@ -9,6 +9,7 @@ import {
   LuSettings,
   LuCalendarCheck2,
   LuWalletMinimal,
+  LuMailCheck,
 } from "react-icons/lu";
 import { AiOutlineTeam } from "react-icons/ai";
 import { useAuthStore } from "@/stores/authStore";
@@ -35,6 +36,12 @@ const SNB = () => {
                 label: "멤버관리",
                 href: "/member",
                 icon: <AiOutlineTeam />,
+              },
+              {
+                id: "inquiry",
+                label: "문의관리",
+                href: "/inquiry",
+                icon: <LuMailCheck />,
               },
             ],
           },

@@ -113,7 +113,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
           </Transition.Child>
 
           <FlexWrapper
-            classes="fixed inset-0 p-10"
+            classes="fixed inset-0 p-4 sm:p-10"
             justify="center"
             items={items}
           >

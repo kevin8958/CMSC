@@ -20,6 +20,7 @@ import { DialogProvider } from "@/hooks/useDialog";
 import { useEffect } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import SignupInvite from "./pages/SignupInvite";
+import Inquiry from "./pages/Inquiry";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -76,6 +77,7 @@ function App() {
                 <Route path="/company" element={<Company />} />
                 <Route path="/company/:companyId" element={<CompanyDetail />} />
                 <Route path="/member" element={<Member />} />
+                <Route path="/inquiry" element={<Inquiry />} />
                 <Route path="/settings" element={<Settings />} />
               </Route>
               <Route path="/signup/invite" element={<SignupInvite />} />
