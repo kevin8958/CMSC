@@ -1,7 +1,6 @@
 import FlexWrapper from "@/layout/FlexWrapper";
 import Button from "@/components/Button";
 import UspLogo from "@/assets/image/usp_logo.png";
-import { LuArrowRight } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import Section1 from "@/components/home/Section1";
 import Section2 from "@/components/home/Section2";
@@ -49,7 +48,6 @@ function Home() {
             classes="!w-[200px] !text-xl !font-bold !rounded-lg !py-6"
           >
             문의하기
-            {/* <LuArrowRight className="ml-4" /> */}
           </Button>
         </div>
       </div>
