@@ -161,7 +161,7 @@ export default function TaskBoard() {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col w-full min-w-[248px]"
+                    className="bg-gray-50 rounded-md p-2 min-h-[calc(100dvh-36px-76px-24px-16px)] flex flex-col w-full min-w-[248px]"
                   >
                     <FlexWrapper
                       justify="between"

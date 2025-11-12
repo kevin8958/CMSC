@@ -57,7 +57,7 @@ namespace Salary {
     user_id: string | null;
     user_name?: string | null; // ✅ 추가
 
-    pay_month: Date;
+    pay_month: string;
     status?: SalaryStatus;
     emp_type?: EmpType;
 
@@ -102,7 +102,7 @@ namespace Salary {
   // ────────────────────────────────
   interface FormData {
     member: string; // user_id
-    pay_month: Date;
+    pay_month: string;
     status: SalaryStatus;
     emp_type: EmpType;
 

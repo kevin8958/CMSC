@@ -50,7 +50,7 @@ export default function SalaryDrawer({
 }: SalaryDrawerProps) {
   const [form, setForm] = useState({
     member: "",
-    pay_month: new Date(),
+    pay_month: dayjs().format("YYYY-MM"),
     status: "pending" as Salary.SalaryStatus,
     emp_type: "정규직" as Salary.EmpType,
     work_days: "",
@@ -76,7 +76,7 @@ export default function SalaryDrawer({
     if (salary) {
       setForm({
         member: salary.user_id || "",
-        pay_month: dayjs(salary.pay_month).toDate(),
+        pay_month: dayjs(salary.pay_month).format("YYYY-MM"),
         status: salary.status || "pending",
         emp_type: salary.emp_type || "정규직",
         work_days: salary.work_days?.toString() || "",
@@ -98,7 +98,7 @@ export default function SalaryDrawer({
     } else {
       setForm({
         member: "",
-        pay_month: new Date(),
+        pay_month: dayjs().format("YYYY-MM"),
         status: "pending",
         emp_type: "정규직",
         work_days: "",
@@ -171,7 +171,9 @@ export default function SalaryDrawer({
     if (mode === "create") {
       await onConfirm({
         user_id: form.member,
-        pay_month: dayjs(form.pay_month).toDate(),
+        user_name:
+          members.find((m) => m.user_id === form.member)?.nickname || "",
+        pay_month: dayjs(form.pay_month).format("YYYY-MM"),
         status: form.status,
         emp_type: form.emp_type,
         work_days: Number(form.work_days) || 0,
@@ -201,7 +203,9 @@ export default function SalaryDrawer({
       await onEdit({
         id: salary.id,
         user_id: form.member,
-        pay_month: dayjs(form.pay_month).toDate(),
+        user_name:
+          members.find((m) => m.user_id === form.member)?.nickname || "",
+        pay_month: dayjs(form.pay_month).format("YYYY-MM"),
         status: form.status,
         emp_type: form.emp_type,
         work_days: Number(form.work_days) || 0,
@@ -277,7 +281,11 @@ export default function SalaryDrawer({
             <Typography variant="H4">기본정보</Typography>
           </FlexWrapper>
           <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="대상자" required />
               </div>
@@ -301,7 +309,11 @@ export default function SalaryDrawer({
               />
             </FlexWrapper>
             {/* 고용형태 */}
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="고용형태" />
               </div>
@@ -348,7 +360,11 @@ export default function SalaryDrawer({
             </FlexWrapper>
           </FlexWrapper>
           <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="소정근로일수" />
               </div>
@@ -364,7 +380,11 @@ export default function SalaryDrawer({
               />
             </FlexWrapper>
 
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="미달근무일" />
               </div>
@@ -398,7 +418,11 @@ export default function SalaryDrawer({
           </FlexWrapper>
 
           <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="기본급" />
               </div>
@@ -414,7 +438,11 @@ export default function SalaryDrawer({
               />
             </FlexWrapper>
 
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[80px]">
                 <Label text="비과세급" />
                 <Tooltip text="식대 및 자가운전보조금 등 비과세 급여의 합" />
@@ -442,7 +470,11 @@ export default function SalaryDrawer({
                 {recognized_amount.toLocaleString()} 원
               </Typography>
             </FlexWrapper>
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="상여금" />
               </div>
@@ -458,7 +490,11 @@ export default function SalaryDrawer({
               />
             </FlexWrapper>
 
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="수당" />
               </div>
@@ -504,7 +540,11 @@ export default function SalaryDrawer({
           </FlexWrapper>
 
           <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[80px]">
                 <Label text="소득세" />
                 <Tooltip
@@ -524,7 +564,11 @@ export default function SalaryDrawer({
               />
             </FlexWrapper>
 
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[80px]">
                 <Label text="지방소득세" />
                 <Tooltip
@@ -571,7 +615,11 @@ export default function SalaryDrawer({
             </FlexWrapper>
 
             <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
-              <FlexWrapper items="center" gap={2} classes="col-span-6">
+              <FlexWrapper
+                items="center"
+                gap={2}
+                classes="col-span-12 sm:col-span-6"
+              >
                 <FlexWrapper
                   items="center"
                   gap={1}
@@ -595,7 +643,11 @@ export default function SalaryDrawer({
                 />
               </FlexWrapper>
 
-              <FlexWrapper items="center" gap={2} classes="col-span-6">
+              <FlexWrapper
+                items="center"
+                gap={2}
+                classes="col-span-12 sm:col-span-6"
+              >
                 <FlexWrapper
                   items="center"
                   gap={1}
@@ -619,7 +671,11 @@ export default function SalaryDrawer({
                 />
               </FlexWrapper>
 
-              <FlexWrapper items="center" gap={2} classes="col-span-6">
+              <FlexWrapper
+                items="center"
+                gap={2}
+                classes="col-span-12 sm:col-span-6"
+              >
                 <FlexWrapper
                   items="center"
                   gap={1}
@@ -645,7 +701,11 @@ export default function SalaryDrawer({
                 />
               </FlexWrapper>
 
-              <FlexWrapper items="center" gap={2} classes="col-span-6">
+              <FlexWrapper
+                items="center"
+                gap={2}
+                classes="col-span-12 sm:col-span-6"
+              >
                 <FlexWrapper
                   items="center"
                   gap={1}
@@ -706,7 +766,11 @@ export default function SalaryDrawer({
           </FlexWrapper>
 
           <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <div className="shrink-0 !w-[80px]">
                 <Label text="기타공제" />
               </div>
@@ -723,7 +787,11 @@ export default function SalaryDrawer({
                 }
               />
             </FlexWrapper>
-            <FlexWrapper items="center" gap={2} classes="col-span-6">
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
               <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[100px]">
                 <Label text="실지급액" />
                 <Tooltip

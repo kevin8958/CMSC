@@ -13,21 +13,28 @@ function SalaryHeader({ onAddClick }: SalaryHeaderProps) {
   const { total, totalAmountSum = 0, netAmountSum = 0 } = useSalaryStore();
 
   return (
-    <FlexWrapper justify="between" items="end" classes="mt-4">
+    <FlexWrapper
+      justify="between"
+      items="start"
+      direction="col"
+      classes="mt-4 sm:flex-row sm:items-end"
+    >
       <FlexWrapper items="center" gap={10}>
         <FlexWrapper direction="col" items="start" gap={1}>
           <Label text="총 인원" />
-          <Typography variant="H3">{total.toLocaleString()}명</Typography>
+          <Typography variant="H4" classes="md:text-[24px]">
+            {total.toLocaleString()}명
+          </Typography>
         </FlexWrapper>
         <FlexWrapper direction="col" items="start" gap={1}>
           <Label text="총 지급액" />
-          <Typography variant="H3">
+          <Typography variant="H4" classes="md:text-[24px]">
             {totalAmountSum.toLocaleString()}원
           </Typography>
         </FlexWrapper>
         <FlexWrapper direction="col" items="start" gap={1}>
           <Label text="실 지급액" />
-          <Typography variant="H3">
+          <Typography variant="H4" classes="md:text-[24px]">
             {netAmountSum.toLocaleString()}원
           </Typography>
         </FlexWrapper>

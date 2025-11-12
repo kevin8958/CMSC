@@ -21,7 +21,7 @@ function Salary() {
     useSalaryStore();
 
   useEffect(() => {
-    fetchSalaries();
+    fetchSalaries(1, 10, selectedMonth);
   }, [currentCompanyId]);
   const { fetchAllMembers } = useTaskStore();
 
@@ -35,7 +35,7 @@ function Salary() {
       (async () => {
         const memberList = await fetchAllMembers(currentCompanyId);
         setMembers(memberList);
-        await fetchSalaries();
+        await fetchSalaries(1, 10, selectedMonth);
       })();
     }
   }, [currentCompanyId]);
@@ -72,6 +72,7 @@ function Salary() {
       />
 
       <SalaryTable
+        month={selectedMonth}
         onRowClick={(row: Salary.Row) => {
           setDrawerMode("edit");
           setCurrentSalary(row);

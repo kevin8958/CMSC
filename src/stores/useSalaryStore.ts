@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import dayjs from "dayjs";
 
 interface SalaryState {
   list: Salary.Row[];
@@ -11,7 +12,11 @@ interface SalaryState {
   totalAmountSum?: number;
   netAmountSum?: number;
 
-  fetchSalaries: (page?: number, pageSize?: number) => Promise<void>;
+  fetchSalaries: (
+    page?: number,
+    pageSize?: number,
+    month?: Date | null
+  ) => Promise<void>;
   addSalary: (data: Salary.Insert) => Promise<void>;
   updateSalary: (id: string, data: Salary.Update) => Promise<void>;
   deleteSalary: (id: string) => Promise<void>;
@@ -26,26 +31,35 @@ export const useSalaryStore = create<SalaryState>((set, get) => ({
   pageSize: 10,
 
   // ✅ 급여 목록 불러오기 (페이징 지원)
-  fetchSalaries: async (page = 1, pageSize = 10) => {
+  fetchSalaries: async (page = 1, pageSize = 10, month?: Date | null) => {
     const { currentCompanyId } = useCompanyStore.getState();
     set({ loading: true, page, pageSize });
 
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    // ✅ Supabase에서 count 옵션 추가 (정확한 전체 개수 계산)
-    const { data, count, error } = await supabase
+    let query = supabase
       .from("salaries")
       .select("*", { count: "exact" })
       .eq("company_id", currentCompanyId)
       .order("pay_month", { ascending: false })
       .range(from, to);
 
+    if (month) {
+      const formatted = dayjs(month).format("YYYY-MM");
+      query = query.eq("pay_month", formatted);
+    }
+    const { data, count, error } = await query;
+
+    const formattedMonth = month ? dayjs(month).format("YYYY-MM") : null;
+
     const { data: sums, error: sumError } = await supabase.rpc(
       "get_salary_sums",
-      { p_company_id: currentCompanyId }
+      {
+        p_company_id: currentCompanyId,
+        p_pay_month: formattedMonth, // ✅ 추가
+      }
     );
-
     const totalAmountSum = sums?.[0]?.total_amount_sum ?? 0;
     const netAmountSum = sums?.[0]?.net_amount_sum ?? 0;
 

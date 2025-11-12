@@ -7,14 +7,17 @@ import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useSalaryStore } from "@/stores/useSalaryStore";
 import SalaryStatusBadge from "./SalaryStatusBadge";
 
-function SalaryTable(props: { onRowClick?: (row: Salary.Row) => void }) {
-  const { onRowClick } = props;
+function SalaryTable(props: {
+  month: Date | null;
+  onRowClick?: (row: Salary.Row) => void;
+}) {
+  const { month, onRowClick } = props;
   const { currentCompanyId } = useCompanyStore();
   const { list, total, fetchSalaries } = useSalaryStore();
 
   useEffect(() => {
-    fetchSalaries(1, 10);
-  }, [currentCompanyId]);
+    fetchSalaries(1, 10, month);
+  }, [currentCompanyId, month]);
 
   const columns: ColumnDef<any>[] = [
     {
@@ -127,13 +130,13 @@ function SalaryTable(props: { onRowClick?: (row: Salary.Row) => void }) {
 
   return (
     <>
-      <FlexWrapper classes="h-[480px] mt-4">
+      <FlexWrapper classes="h-screen mt-4">
         <Table
           data={list || []}
           columns={columns}
           hideSize
           totalCount={total}
-          onPageChange={fetchSalaries}
+          onPageChange={(page, size) => fetchSalaries(page, size, month)}
           onRowClick={(row) => {
             onRowClick?.(row);
           }}
