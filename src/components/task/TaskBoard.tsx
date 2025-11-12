@@ -131,7 +131,7 @@ export default function TaskBoard() {
   };
 
   return (
-    <div>
+    <>
       <FlexWrapper classes="mb-6" items="center" justify="between">
         <Typography variant="H3">업무소통</Typography>
         <Button
@@ -154,14 +154,14 @@ export default function TaskBoard() {
         <TaskBoardSkeleton />
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="overflow-x-auto flex w-full gap-2">
             {statusKeys.map((status) => (
               <Droppable droppableId={status} key={status}>
                 {(provided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col"
+                    className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col w-full min-w-[248px]"
                   >
                     <FlexWrapper
                       justify="between"
@@ -229,7 +229,6 @@ export default function TaskBoard() {
           </div>
         </DragDropContext>
       )}
-
       <TaskDrawer
         open={drawerOpen}
         mode={drawerMode}
@@ -277,6 +276,6 @@ export default function TaskBoard() {
             : undefined
         }
       />
-    </div>
+    </>
   );
 }

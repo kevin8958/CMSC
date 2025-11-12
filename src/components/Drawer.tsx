@@ -35,7 +35,7 @@ const Drawer = (props: Common.DrawerProps) => {
           <div className="fixed inset-0 bg-black/30" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-hidden">
+        <div className="fixed inset-0 overflow-hidden max-w-full">
           <div className="absolute inset-0 overflow-hidden">
             <Transition.Child
               as={Fragment}
@@ -46,7 +46,7 @@ const Drawer = (props: Common.DrawerProps) => {
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <Dialog.Panel className="bg-white absolute right-0 flex h-full w-xl flex-col shadow-xl">
+              <Dialog.Panel className="bg-white absolute right-0 flex h-full w-xl max-w-full flex-col shadow-xl">
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-2 text-gray-900 border-b">
                   <Dialog.Title className="text-lg font-medium">

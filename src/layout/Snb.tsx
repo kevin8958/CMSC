@@ -6,7 +6,7 @@ import {
   LuArrowUpDown,
   LuHardDrive,
   LuBuilding,
-  LuSettings,
+  // LuSettings,
   LuCalendarCheck2,
   LuWalletMinimal,
   LuMailCheck,

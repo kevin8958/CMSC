@@ -5,11 +5,11 @@ const statusKeys = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
 
 export default function TaskBoardSkeleton() {
   return (
-    <div className="grid grid-cols-5 gap-2 animate-pulse">
+    <div className="overflow-x-auto flex w-full gap-2animate-pulse">
       {statusKeys.map((status) => (
         <div
           key={status}
-          className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col"
+          className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col min-w-[248px]"
         >
           {/* 컬럼 헤더 */}
           <FlexWrapper justify="between" items="center" classes="mb-2">
