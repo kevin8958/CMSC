@@ -2,8 +2,14 @@ import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
 import FinanceInputTable from "@/components/income/FinanceInputTable";
 import FinanceWaterfallChart from "@/components/income/FinanceWaterfallChart";
+import CustomDatePicker from "@/components/DatePicker";
+import { useState } from "react";
+import dayjs from "dayjs";
 
 function Income() {
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(
+    dayjs().toDate()
+  );
   const sampleData = [
     {
       id: "sales",
@@ -56,7 +62,20 @@ function Income() {
 
   return (
     <>
-      <Typography variant="H3">손익계산서</Typography>
+      <FlexWrapper gap={4} items="start" justify="between" classes="w-full">
+        <Typography variant="H3" classes="shrink-0">
+          손익계산서
+        </Typography>
+        <CustomDatePicker
+          variant="outline"
+          size="md"
+          type="month"
+          isMonthPicker
+          dateFormat="YYYY.MM.dd"
+          value={selectedMonth}
+          onChange={(date) => setSelectedMonth(date)}
+        />
+      </FlexWrapper>
       <FlexWrapper gap={1} classes="flex-1 pb-4 pt-4">
         <div className="flex-1">
           <FinanceInputTable />

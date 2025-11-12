@@ -11,7 +11,7 @@ import Employee from "@/pages/Employee";
 import Income from "@/pages/Income";
 import Document from "@/pages/Document";
 import Company from "@/pages/Company";
-import CompanyDetail from "@/pages/CompanyDetail";
+import CompanyDetail from "@/components/company/CompanyDetail";
 import Member from "@/pages/Member";
 import Settings from "@/pages/Settings";
 import Snb from "@/layout/Snb";
@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import SignupInvite from "./pages/SignupInvite";
 import Inquiry from "./pages/Inquiry";
+import Salary from "./pages/Salary";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -73,6 +74,7 @@ function App() {
                 <Route path="/communication" element={<Communication />} />
                 <Route path="/employee" element={<Employee />} />
                 <Route path="/income" element={<Income />} />
+                <Route path="/salary" element={<Salary />} />
                 <Route path="/document" element={<Document />} />
                 <Route path="/company" element={<Company />} />
                 <Route path="/company/:companyId" element={<CompanyDetail />} />

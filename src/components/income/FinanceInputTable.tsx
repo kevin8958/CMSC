@@ -4,8 +4,6 @@ import { LuSave, LuChevronDown, LuChevronRight } from "react-icons/lu";
 import classNames from "classnames";
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
-import CustomDatePicker from "@/components/DatePicker";
-import dayjs from "dayjs";
 
 interface Row {
   id: string;
@@ -64,9 +62,6 @@ const initialData: Row[] = [
 export default function FinanceInputTable() {
   const [data, setData] = useState<Row[]>(initialData);
   const [editMode, setEditMode] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState<Date | null>(
-    dayjs().toDate()
-  );
   const [openRows, setOpenRows] = useState<Record<string, boolean>>(() => {
     const allIds: Record<string, boolean> = {};
     const traverse = (rows: Row[]) => {
@@ -172,19 +167,7 @@ export default function FinanceInputTable() {
   return (
     <div className="flex flex-col border border-gray-300 rounded-xl bg-white shadow-custom-dark overflow-hidden">
       {/* Header */}
-      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
-        <h2 className="font-semibold text-gray-800">
-          <CustomDatePicker
-            classes="w-[200px]"
-            variant="outline"
-            size="sm"
-            type="month"
-            isMonthPicker
-            dateFormat="YYYY.MM.dd"
-            value={selectedMonth}
-            onChange={(date) => setSelectedMonth(date)}
-          />
-        </h2>
+      <div className="flex-shrink-0 flex items-center justify-end px-4 py-3 border-b border-gray-200 bg-gray-50">
         {!editMode ? (
           <Button
             variant="contain"

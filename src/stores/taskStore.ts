@@ -1,21 +1,10 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
 
-export type Task = {
-  id: string;
-  title: string;
-  status: string;
-  description?: string;
-  priority?: string;
-  assignee?: string;
-  due_date?: string;
-  sort_index: number;
-};
-
 type TaskStore = {
-  tasks: Task[];
+  tasks: Task.Task[];
   fetching: boolean;
-  setTasks: (tasks: Task[]) => void;
+  setTasks: (tasks: Task.Task[]) => void;
   fetchTasks: (companyId: string) => Promise<void>;
   createTask: (
     companyId: string,
@@ -27,10 +16,10 @@ type TaskStore = {
     assignee?: string
   ) => Promise<void>;
   deleteTask: (taskId: string) => Promise<void>;
-  updateTask: (taskId: string, fields: Partial<Task>) => Promise<void>;
+  updateTask: (taskId: string, fields: Partial<Task.Task>) => Promise<void>;
   updateOrder: (
     companyId: string,
-    updates: Array<Pick<Task, "id" | "status" | "sort_index">>
+    updates: Array<Pick<Task.Task, "id" | "status" | "sort_index">>
   ) => Promise<void>;
   fetchAllMembers: (currentCompanyId: string) => Promise<any[]>;
 };
@@ -106,7 +95,7 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       set({ tasks: get().tasks.filter((task) => task.id !== taskId) });
     }
   },
-  updateTask: async (taskId: string, fields: Partial<Task>) => {
+  updateTask: async (taskId: string, fields: Partial<Task.Task>) => {
     const session = await supabase.auth.getSession();
     const token = session.data.session?.access_token;
 

@@ -1,14 +1,14 @@
 import FlexWrapper from "@/layout/FlexWrapper";
 import Typography from "@/foundation/Typography";
-import type { Task } from "@/stores/taskStore";
 import Badge from "@/components/Badge";
 import {
   LuCalendar,
   LuSquareUserRound,
   LuMessageCircleMore,
 } from "react-icons/lu";
+import dayjs from "dayjs";
 interface TaskCardProps {
-  task: Task;
+  task: Task.Task;
   members: Array<{ user_id: string; nickname: string }>;
 }
 
@@ -44,7 +44,9 @@ export default function TaskCard({ task, members }: TaskCardProps) {
         <FlexWrapper justify="between" classes="w-full">
           <FlexWrapper gap={1} items="center">
             <LuCalendar />
-            <span className="text-sm">{task.due_date || "-"}</span>
+            <span className="text-sm">
+              {dayjs(task.due_date).format("YYYY.MM.DD") || "-"}
+            </span>
           </FlexWrapper>
           <Badge
             classes={

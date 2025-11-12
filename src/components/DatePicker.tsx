@@ -17,16 +17,57 @@ import { forwardRef } from "react";
 // ✅ MonthPicker 전용 커스텀 인풋
 const MonthPickerInput = forwardRef<
   HTMLDivElement,
-  { value?: string; onClick?: () => void }
->(({ value, onClick }, ref) => {
+  {
+    variant?: "outline" | "contain" | "clear";
+    value?: string;
+    onClick?: () => void;
+    onPrev?: () => void;
+    onNext?: () => void;
+  }
+>(({ variant, value, onClick, onPrev, onNext }, ref) => {
+  const showArrows = variant === "outline";
+
   return (
     <div
       ref={ref}
-      onClick={onClick}
-      className="flex items-center gap-1 text-gray-800 cursor-pointer select-none"
+      className={classNames(
+        "inline-flex items-center text-gray-800 select-none bg-white",
+        "border rounded-lg",
+        variant === "outline" && "cursor-default"
+      )}
+      onClick={onClick} // 화살표형이면 가운데는 클릭해도 calendar 안띄움
     >
-      <span className="font-medium">{value || "-"}</span>
-      <LuChevronDown size={16} className="text-gray-500" />
+      {showArrows && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrev?.();
+          }}
+          className="text-gray-600 hover:text-gray-900 px-2 h-[40px]"
+        >
+          <LuChevronLeft className="text-lg" />
+        </button>
+      )}
+
+      <span className="font-medium w-[140px] text-center border-x px-4 py-2">
+        {value || "-"}
+      </span>
+
+      {showArrows && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext?.();
+          }}
+          className="text-gray-600 hover:text-gray-900 px-2 h-[40px]"
+        >
+          <LuChevronRight className="text-lg" />
+        </button>
+      )}
+
+      {!showArrows && <LuChevronDown size={16} className="text-gray-500" />}
     </div>
   );
 });
@@ -63,7 +104,7 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
   }, [startDate, endDate]);
 
   // ✅ 월 선택 모드일 경우 dateFormat 강제 변경
-  const effectiveDateFormat = isMonthPicker ? "yy.MM" : dateFormat;
+  const effectiveDateFormat = isMonthPicker ? "yyyy년 MM월" : dateFormat;
 
   // ✅ 현재 연도 기준으로 10년 전후 제한
   const currentYear = dayjs().year();
@@ -79,31 +120,26 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
       <DatePicker
         portalId="datepicker-portal"
         className={classNames(
-          "box-border !rounded-lg text-center !text-sm !outline-none placeholder:text-gray-300 focus:z-10",
+          "box-border !rounded-lg text-center !text-sm !outline-none placeholder:text-gray-300 focus:z-10 px-4 h-full",
           classes,
           {
             // ✅ 일반 모드 스타일
-            "px-4 h-full": !isMonthPicker,
-            "border-danger focus:!border-danger !border-2":
-              !isMonthPicker && isError,
+            "border-danger focus:!border-danger !border-2": isError,
             "focus:!border-primary-600 border-gray-100 focus:!border-2":
-              !isMonthPicker && !isError && !isFilter,
-            "focus:!border-primary-600 border-gray-100":
-              !isMonthPicker && !isError && isFilter,
+              !isError && !isFilter,
+            "focus:!border-primary-600 border-gray-100": !isError && isFilter,
             "bg-newPrimary-50 cursor-not-allowed !text-[#8C9097]": disabled,
             "h-[32px] min-h-[32px]": size === "sm" && !isMonthPicker,
             "h-[40px] min-h-[40px]": size === "md" && !isMonthPicker,
             "h-[48px] min-h-[48px]": size === "lg" && !isMonthPicker,
             "hover:bg-primary-100 active:bg-primary-200 bg-white text-gray-800 disabled:hover:!bg-white disabled:active:!bg-white":
-              !isMonthPicker && variant === "contain",
+              variant === "contain",
             "border-primary-100 text-primary-900 border bg-transparent":
-              !isMonthPicker && variant === "outline",
-            "text-primary-300 bg-transparent":
-              !isMonthPicker && variant === "clear",
-
-            // ✅ MonthPicker 전용 스타일
-            "!border-none !bg-transparent !p-0 !text-gray-800 cursor-pointer !w-[40px]":
-              isMonthPicker,
+              variant === "outline",
+            "text-primary-300 bg-transparent": variant === "clear",
+            // // ✅ MonthPicker 전용 스타일
+            // "!border-none !bg-transparent !p-0 !text-gray-800 cursor-pointer !w-[40px]":
+            //   isMonthPicker,
           }
         )}
         dateFormat={effectiveDateFormat}
@@ -119,7 +155,26 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
             ? { selectsMultiple: true as const }
             : {})}
         placeholderText={placeholder || "-"}
-        customInput={isMonthPicker ? <MonthPickerInput /> : undefined}
+        customInput={
+          isMonthPicker ? (
+            <MonthPickerInput
+              variant={variant}
+              onPrev={() => {
+                // value 를 기준으로 한달 이전으로
+                if (value) {
+                  const next = dayjs(value).subtract(1, "month").toDate();
+                  onChange?.(next);
+                }
+              }}
+              onNext={() => {
+                if (value) {
+                  const next = dayjs(value).add(1, "month").toDate();
+                  onChange?.(next);
+                }
+              }}
+            />
+          ) : undefined
+        }
         showMonthYearPicker={isMonthPicker}
         onChange={(update: any) => {
           if (!onChange) return;

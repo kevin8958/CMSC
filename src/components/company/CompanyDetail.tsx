@@ -5,7 +5,7 @@ import FlexWrapper from "@/layout/FlexWrapper";
 import Typography from "@/foundation/Typography";
 import Button from "@/components/Button";
 import { LuChevronLeft } from "react-icons/lu";
-import CompanyMember from "@/components/CompanyMember";
+import CompanyMember from "@/components/company/CompanyMember";
 import { motion } from "motion/react";
 
 function CompanyDetail() {

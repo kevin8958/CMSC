@@ -181,6 +181,7 @@ namespace Common {
     confirmText?: string;
     cancelText?: string;
     deleteText?: string;
+    disableConfirm?: boolean;
     onConfirm?: () => void;
     onCancel?: () => void;
     onDelete?: () => void;
