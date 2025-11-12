@@ -4,8 +4,8 @@ import classNames from "classnames";
 import BurgerButton from "@/interaction/BurgerButton";
 import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
-import { LuRefreshCcw, LuBell } from "react-icons/lu";
-import { motion } from "framer-motion";
+// import { LuRefreshCcw, LuBell } from "react-icons/lu";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import UspLogo from "@/assets/image/usp_logo.png";
 import { useAuthStore } from "@/stores/authStore";
@@ -40,7 +40,13 @@ export default function Gnb() {
 
   const onLogout = async () => {
     await supabase.auth.signOut(); // ✅ 세션 제거
+    setIsOpen(false);
     navigate("/login"); // ✅ 로그인페이지로 이동
+  };
+
+  const handleMove = (url: string) => {
+    setIsOpen(false);
+    navigate(url);
   };
 
   return (
@@ -109,6 +115,87 @@ export default function Gnb() {
       </FlexWrapper>
 
       <BurgerButton isOpen={isOpen} setIsOpen={setIsOpen} />
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              className="fixed top-[60px] right-0 h-[calc(100dvh-60px)] w-full bg-white shadow-xl z-[999] flex flex-col"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.3 }}
+            >
+              <div className="flex-1 overflow-y-auto pb-4 px-4 space-y-3">
+                <FlexWrapper
+                  direction="col"
+                  items="start"
+                  justify="between"
+                  classes="h-full"
+                >
+                  <FlexWrapper direction="col" gap={0} classes="w-full">
+                    <Button
+                      variant="clear"
+                      size="lg"
+                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                      onClick={() => handleMove("/dashboard")}
+                    >
+                      대시보드
+                    </Button>
+                    <Button
+                      variant="clear"
+                      size="lg"
+                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                      onClick={() => handleMove("/communication")}
+                    >
+                      업무소통
+                    </Button>
+                    <Button
+                      variant="clear"
+                      size="lg"
+                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                      onClick={() => handleMove("/salary")}
+                    >
+                      급여대장
+                    </Button>
+                    <Button
+                      variant="clear"
+                      size="lg"
+                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                      onClick={() => handleMove("/vacation")}
+                    >
+                      휴가관리
+                    </Button>
+                    <Button
+                      variant="clear"
+                      size="lg"
+                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                      onClick={() => handleMove("/income")}
+                    >
+                      손익계산서
+                    </Button>
+                    <Button
+                      variant="clear"
+                      size="lg"
+                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                      onClick={() => handleMove("/document")}
+                    >
+                      자료관리
+                    </Button>
+                  </FlexWrapper>
+                  <Button
+                    variant="clear"
+                    size="lg"
+                    classes="w-full justify-center !text-primary-900"
+                    onClick={onLogout}
+                  >
+                    로그아웃
+                  </Button>
+                </FlexWrapper>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
