@@ -15,7 +15,7 @@ import { useAlert } from "@/components/AlertProvider";
 import { useDialog } from "@/hooks/useDialog";
 import TaskCard from "@/components/task/TaskCard";
 import TaskDrawer from "./TaskDrawer";
-import { STATUS_CONFIG } from "@/constants/TaskConfigs";
+import { STATUS_CONFIG } from "@/constants/TaskConfigs_fixed";
 import TaskStatusBadge from "@/components/task/TaskStatusBadge";
 import dayjs from "dayjs";
 
@@ -78,7 +78,7 @@ function reorderWithDragResult({
   }
 
   const nextAll = statusKeys.flatMap((s) =>
-    byStatus[s].sort((a, b) => a.sort_index - b.sort_index)
+    byStatus[s].sort((a, b) => (a.sort_index ?? 0) - (b.sort_index ?? 0))
   );
 
   return { nextAll, changed: updates };
@@ -168,6 +168,7 @@ export default function TaskBoard() {
                         setDrawerMode("create");
                         setCurrentTask({
                           id: "",
+                          company_id: currentCompanyId || "",
                           title: "",
                           status,
                           priority: "medium",
@@ -175,6 +176,9 @@ export default function TaskBoard() {
                           assignee: "",
                           sort_index: 0,
                           due_date: dayjs().format("YYYY-MM-DD"),
+                          task_comments: [],
+                          created_at: dayjs().toString(),
+                          updated_at: dayjs().toString(),
                         });
                         setDrawerOpen(true);
                       }}

@@ -8,7 +8,7 @@ import TextInput from "@/components/TextInput";
 import Textarea from "@/components/TextArea";
 import dayjs from "dayjs";
 import SalaryStatusBadge from "./SalaryStatusBadge";
-import { STATUS_CONFIG } from "@/constants/SalaryConfigs";
+import { STATUS_CONFIG } from "@/constants/SalaryConfigs_fixed";
 
 interface SalaryDrawerProps {
   open: boolean;
@@ -227,7 +227,7 @@ export default function SalaryDrawer({
       disableConfirm={!!Object.keys(errors).length}
       onDelete={mode === "create" ? undefined : onDelete}
     >
-      <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6">
+      <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6 px-4">
         <FlexWrapper
           items="start"
           direction="col"

@@ -34,7 +34,8 @@ export default async function handler(req, res) {
   const { data: tasks, error } = await supabaseAdmin
     .from("tasks")
     .select(
-      "id, title, status, sort_index, due_date, assignee, priority, description"
+      `id, title, status, sort_index, due_date, assignee, priority, description, 
+      task_comments(count)`
     )
     .eq("company_id", company_id)
     .order("status", { ascending: true })

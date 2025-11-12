@@ -1,5 +1,5 @@
 import Badge from "@/components/Badge";
-import { PRIORITY_CONFIG } from "@/constants/TaskConfigs";
+import { PRIORITY_CONFIG } from "@/constants/TaskConfigs_fixed";
 
 interface TaskPriorityBadgeProps {
   priority: keyof typeof PRIORITY_CONFIG;

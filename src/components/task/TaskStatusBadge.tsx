@@ -1,5 +1,5 @@
 import Badge from "@/components/Badge";
-import { STATUS_CONFIG } from "@/constants/TaskConfigs";
+import { STATUS_CONFIG } from "@/constants/TaskConfigs_fixed";
 
 interface TaskStatusBadgeProps {
   status: keyof typeof STATUS_CONFIG;

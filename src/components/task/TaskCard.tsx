@@ -32,12 +32,12 @@ export default function TaskCard({ task, members }: TaskCardProps) {
     <FlexWrapper direction="col" gap={0}>
       <FlexWrapper direction="col" gap={1} classes="p-2">
         {/* 제목 */}
-        <Typography variant="B2" classes="!font-bold">
+        <Typography variant="B2" classes="!font-bold truncate w-full">
           {task.title}
         </Typography>
 
         {/* 설명 */}
-        <Typography variant="B2" classes="!text-gray-500">
+        <Typography variant="B2" classes="!text-gray-500 truncate w-full">
           {task.description || "-"}
         </Typography>
 
@@ -76,7 +76,7 @@ export default function TaskCard({ task, members }: TaskCardProps) {
         </FlexWrapper>
         <FlexWrapper gap={1} items="center">
           <LuMessageCircleMore className="text-base" />
-          <span className="text-sm">0</span>
+          <span className="text-sm">{task.task_comments?.[0]?.count ?? 0}</span>
         </FlexWrapper>
       </FlexWrapper>
     </FlexWrapper>

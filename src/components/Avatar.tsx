@@ -53,7 +53,7 @@ const Avatar = (props: Common.AvatarProps) => {
       style={{ width: dimension, height: dimension }}
       className="relative"
     >
-      <div className="bg-secondary-100 flex size-full items-center justify-center overflow-hidden rounded-full">
+      <div className="bg-green-100 flex size-full items-center justify-center overflow-hidden rounded-full">
         {content}
       </div>
       {state !== "none" && (

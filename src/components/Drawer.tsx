@@ -57,7 +57,7 @@ const Drawer = (props: Common.DrawerProps) => {
                   </Button>
                 </div>
 
-                <div className="relative flex-1 overflow-y-auto px-4 scroll-thin">
+                <div className="relative flex-1 overflow-y-auto scroll-thin">
                   {children}
                 </div>
 

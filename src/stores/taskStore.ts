@@ -22,6 +22,9 @@ type TaskStore = {
     updates: Array<Pick<Task.Task, "id" | "status" | "sort_index">>
   ) => Promise<void>;
   fetchAllMembers: (currentCompanyId: string) => Promise<any[]>;
+  fetchComments: (taskId: string) => Promise<void>;
+  addComment: (taskId: string, content: string) => Promise<void>;
+  deleteComment: (commentId: string, taskId: string) => Promise<void>;
 };
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
@@ -157,13 +160,70 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
       role: m.role,
     }));
 
-    // admin 먼저 나오게 정렬은 유지
     members.sort((a: any, b: any) => {
       if (a.role === "admin" && b.role !== "admin") return -1;
       if (a.role !== "admin" && b.role === "admin") return 1;
       return 0;
     });
 
-    return members; // ← 여기 set 하지마. 이건 그냥 리턴!
+    return members;
+  },
+  fetchComments: async (taskId: string) => {
+    const res = await fetch(`/api/tasks/comments/list?task_id=${taskId}`);
+    const { comments } = await res.json();
+    set({
+      tasks: get().tasks.map((t) => (t.id === taskId ? { ...t, comments } : t)),
+    });
+  },
+
+  addComment: async (taskId: string, content: string) => {
+    const session = await supabase.auth.getSession();
+    const token = session.data.session?.access_token;
+
+    const res = await fetch(`/api/tasks/comments/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ task_id: taskId, content }),
+    });
+
+    const { comment } = await res.json();
+    if (comment) {
+      set({
+        tasks: get().tasks.map((t) =>
+          t.id === taskId
+            ? { ...t, task_comments: [...(t.task_comments ?? []), comment] }
+            : t
+        ),
+      });
+    }
+  },
+
+  deleteComment: async (commentId: string, taskId: string) => {
+    const session = await supabase.auth.getSession();
+    const token = session.data.session?.access_token;
+
+    await fetch(`/api/tasks/comments/delete`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ comment_id: commentId }),
+    });
+
+    set({
+      tasks: get().tasks.map((t) =>
+        t.id === taskId
+          ? {
+              ...t,
+              task_comments:
+                t.task_comments?.filter((c: any) => c.id !== commentId) ?? [],
+            }
+          : t
+      ),
+    });
   },
 }));

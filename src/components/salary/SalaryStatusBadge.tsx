@@ -1,5 +1,5 @@
 import Badge from "@/components/Badge";
-import { STATUS_CONFIG } from "@/constants/SalaryConfigs";
+import { STATUS_CONFIG } from "@/constants/SalaryConfigs_fixed";
 
 interface SalaryStatusBadgeProps {
   status: keyof typeof STATUS_CONFIG;

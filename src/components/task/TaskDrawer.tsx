@@ -7,10 +7,11 @@ import Label from "@/components/Label";
 import TextInput from "@/components/TextInput";
 import Textarea from "@/components/TextArea";
 import CustomDatePicker from "@/components/DatePicker";
-import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/constants/TaskConfigs";
+import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/constants/TaskConfigs_fixed";
 import TaskStatusBadge from "@/components/task/TaskStatusBadge";
 import TaskPriorityBadge from "@/components/task/TaskPriorityBadge";
 import dayjs from "dayjs";
+import TaskComments from "./TaskComments";
 
 type StatusKey = keyof typeof STATUS_CONFIG;
 type PriorityKey = keyof typeof PRIORITY_CONFIG;
@@ -105,7 +106,7 @@ export default function TaskDrawer({
       onDelete={onDelete}
       onConfirm={handleSubmit}
     >
-      <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6">
+      <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6 px-4">
         {/* 제목 */}
         <FlexWrapper items="center" gap={2}>
           <div className="shrink-0 !w-[60px]">
@@ -200,6 +201,7 @@ export default function TaskDrawer({
           placeholder="업무 설명을 입력하세요"
         />
       </FlexWrapper>
+      {mode === "edit" && task?.id && <TaskComments taskId={task.id} />}
     </Drawer>
   );
 }
