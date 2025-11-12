@@ -8,6 +8,8 @@ interface SalaryState {
   loading: boolean;
   page: number;
   pageSize: number;
+  totalAmountSum?: number;
+  netAmountSum?: number;
 
   fetchSalaries: (page?: number, pageSize?: number) => Promise<void>;
   addSalary: (data: Salary.Insert) => Promise<void>;
@@ -39,8 +41,19 @@ export const useSalaryStore = create<SalaryState>((set, get) => ({
       .order("pay_month", { ascending: false })
       .range(from, to);
 
-    if (error) {
-      console.error("❌ fetchSalaries error:", error.message);
+    const { data: sums, error: sumError } = await supabase.rpc(
+      "get_salary_sums",
+      { p_company_id: currentCompanyId }
+    );
+
+    const totalAmountSum = sums?.[0]?.total_amount_sum ?? 0;
+    const netAmountSum = sums?.[0]?.net_amount_sum ?? 0;
+
+    if (error || sumError) {
+      console.error(
+        "❌ fetchSalaries error:",
+        error?.message || sumError?.message
+      );
       set({ loading: false });
       return;
     }
@@ -48,6 +61,8 @@ export const useSalaryStore = create<SalaryState>((set, get) => ({
     set({
       list: data || [],
       total: count || 0,
+      totalAmountSum: totalAmountSum || 0,
+      netAmountSum: netAmountSum || 0,
       loading: false,
     });
   },

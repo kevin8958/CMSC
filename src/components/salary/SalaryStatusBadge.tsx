@@ -16,7 +16,7 @@ export default function SalaryStatusBadge({
   return (
     <Badge classes={`${cfg.color} ${classes}`} size={size}>
       {cfg.icon}
-      <span className="ml-2 text-sm font-normal">{cfg.label}</span>
+      <span className="ml-1 text-sm font-normal">{cfg.label}</span>
     </Badge>
   );
 }

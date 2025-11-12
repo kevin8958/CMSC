@@ -8,7 +8,7 @@ import SalaryHeader from "@/components/salary/SalaryHeader";
 import SalaryTable from "@/components/salary/SalaryTable";
 import Badge from "@/components/Badge";
 import { useSalaryStore } from "@/stores/useSalaryStore";
-import SalaryDrawer from "@/components/salary/SalaryDrawer"; // ✅ 추가
+import SalaryDrawer from "@/components/salary/SalaryDrawer";
 import { useTaskStore } from "@/stores/taskStore";
 
 function Salary() {
@@ -17,7 +17,7 @@ function Salary() {
   );
   const [members, setMembers] = useState<any[]>([]);
   const { currentCompanyId } = useCompanyStore();
-  const { list, total, fetchSalaries, addSalary, updateSalary, deleteSalary } =
+  const { total, fetchSalaries, addSalary, updateSalary, deleteSalary } =
     useSalaryStore();
 
   useEffect(() => {
@@ -64,7 +64,6 @@ function Salary() {
 
       {/* ✅ Header에서 Drawer 여는 핸들러 전달 */}
       <SalaryHeader
-        members={list}
         onAddClick={() => {
           setDrawerMode("create");
           setCurrentSalary(null);
@@ -72,7 +71,13 @@ function Salary() {
         }}
       />
 
-      <SalaryTable />
+      <SalaryTable
+        onRowClick={(row: Salary.Row) => {
+          setDrawerMode("edit");
+          setCurrentSalary(row);
+          setDrawerOpen(true);
+        }}
+      />
 
       {/* ✅ Drawer 연결 */}
       <SalaryDrawer

@@ -9,6 +9,8 @@ import Textarea from "@/components/TextArea";
 import dayjs from "dayjs";
 import SalaryStatusBadge from "./SalaryStatusBadge";
 import { STATUS_CONFIG } from "@/constants/SalaryConfigs_fixed";
+import Tooltip from "@/components/Tooltip";
+import { calcSalary } from "@/utils/salaryCalc";
 
 interface SalaryDrawerProps {
   open: boolean;
@@ -116,19 +118,20 @@ export default function SalaryDrawer({
         note: "",
       });
     }
-  }, [salary]);
+  }, [salary, open]);
 
   const handleChange = (key: string, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
   // ✅ 실시간 계산값 (DB에서는 generated column으로 처리되지만, 화면 표시용)
-  const recognized_amount =
+  const recognized_amount = Math.floor(
     (Number(form.base_salary) + Number(form.non_taxable)) *
-    (Number(form.base_work_days) > 0
-      ? (Number(form.work_days) - Number(form.absent_days || 0)) /
-        Number(form.base_work_days)
-      : 0);
+      (Number(form.base_work_days) > 0
+        ? (Number(form.base_work_days) - Number(form.absent_days || 0)) /
+          Number(form.base_work_days)
+        : 0)
+  );
 
   const total_amount =
     recognized_amount + Number(form.bonus) + Number(form.allowance);
@@ -149,15 +152,31 @@ export default function SalaryDrawer({
       setErrors({ member: "직원을 선택해주세요." });
       return;
     }
+    const computed = calcSalary({
+      base_salary: Number(form.base_salary),
+      non_taxable: Number(form.non_taxable),
+      base_work_days: Number(form.base_work_days),
+      absent_days: Number(form.absent_days),
+      bonus: Number(form.bonus),
+      allowance: Number(form.allowance),
+      income_tax: Number(form.income_tax),
+      local_tax: Number(form.local_tax),
+      pension_fee: Number(form.pension_fee),
+      health_fee: Number(form.health_fee),
+      employment_fee: Number(form.employment_fee),
+      longterm_care_fee: Number(form.longterm_care_fee),
+      deduction_other: Number(form.deduction_other),
+    });
 
     if (mode === "create") {
       await onConfirm({
         user_id: form.member,
-        pay_month: dayjs(form.pay_month).format("YYYY-MM"),
+        pay_month: dayjs(form.pay_month).toDate(),
         status: form.status,
         emp_type: form.emp_type,
         work_days: Number(form.work_days) || 0,
         base_work_days: Number(form.base_work_days) || 0,
+        absent_days: Number(form.absent_days) || 0,
         base_salary: Number(form.base_salary) || 0,
         non_taxable: Number(form.non_taxable) || 0,
         bonus: Number(form.bonus) || 0,
@@ -170,16 +189,24 @@ export default function SalaryDrawer({
         longterm_care_fee: Number(form.longterm_care_fee) || 0,
         deduction_other: Number(form.deduction_other) || 0,
         note: form.note,
+
+        // ✅ 계산된 값들
+        recognized_amount: computed.recognized_amount,
+        total_amount: computed.total_amount,
+        tax_total: computed.tax_total,
+        insurance_total: computed.insurance_total,
+        net_amount: computed.net_amount,
       });
     } else {
       await onEdit({
         id: salary.id,
         user_id: form.member,
-        pay_month: dayjs(form.pay_month).format("YYYY-MM"),
+        pay_month: dayjs(form.pay_month).toDate(),
         status: form.status,
         emp_type: form.emp_type,
         work_days: Number(form.work_days) || 0,
         base_work_days: Number(form.base_work_days) || 0,
+        absent_days: Number(form.absent_days) || 0,
         base_salary: Number(form.base_salary) || 0,
         non_taxable: Number(form.non_taxable) || 0,
         bonus: Number(form.bonus) || 0,
@@ -192,6 +219,13 @@ export default function SalaryDrawer({
         longterm_care_fee: Number(form.longterm_care_fee) || 0,
         deduction_other: Number(form.deduction_other) || 0,
         note: form.note,
+
+        // ✅ 계산된 값들
+        recognized_amount: computed.recognized_amount,
+        total_amount: computed.total_amount,
+        tax_total: computed.tax_total,
+        insurance_total: computed.insurance_total,
+        net_amount: computed.net_amount,
       });
     }
   };
@@ -302,9 +336,16 @@ export default function SalaryDrawer({
             classes="py-2 px-4 bg-gray-50 w-full border-b rounded-t-lg"
           >
             <Typography variant="H4">근무일</Typography>
-            <Typography variant="B2">
-              근무인정일 <strong>{form.work_days}</strong> 일
-            </Typography>
+            <FlexWrapper items="center" gap={1}>
+              <Tooltip text="소정근로일수 - 미달근무일" />
+              <Typography variant="B2">
+                근무인정일
+                <strong className="mx-1">
+                  {Number(form.base_work_days) - Number(form.absent_days) || 0}
+                </strong>
+                일
+              </Typography>
+            </FlexWrapper>
           </FlexWrapper>
           <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
             <FlexWrapper items="center" gap={2} classes="col-span-6">
@@ -364,34 +405,39 @@ export default function SalaryDrawer({
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.base_salary,
                   placeholder: "0",
                 }}
+                type="number"
                 suffix="원"
                 onChange={(e) => handleChange("base_salary", e.target.value)}
               />
             </FlexWrapper>
 
             <FlexWrapper items="center" gap={2} classes="col-span-6">
-              <div className="shrink-0 !w-[80px]">
+              <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[80px]">
                 <Label text="비과세급" />
-              </div>
+                <Tooltip text="식대 및 자가운전보조금 등 비과세 급여의 합" />
+              </FlexWrapper>
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.non_taxable,
                   placeholder: "0",
                 }}
+                type="number"
                 suffix="원"
                 onChange={(e) => handleChange("non_taxable", e.target.value)}
               />
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-12">
-              <div className="shrink-0 !w-[100px]">
+              <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[100px]">
                 <Label text="실질인정금액" />
-              </div>
+                <Tooltip
+                  text="(기본급 + 비과세급) X (근무인정일 / 소정근로일수)"
+                  position="top-right"
+                />
+              </FlexWrapper>
               <Typography variant="B2" classes="text-gray-500 !font-bold">
                 {recognized_amount.toLocaleString()} 원
               </Typography>
@@ -403,10 +449,10 @@ export default function SalaryDrawer({
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.bonus,
                   placeholder: "0",
                 }}
+                type="number"
                 suffix="원"
                 onChange={(e) => handleChange("bonus", e.target.value)}
               />
@@ -419,20 +465,24 @@ export default function SalaryDrawer({
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.allowance,
                   placeholder: "0",
                 }}
+                type="number"
                 suffix="원"
                 onChange={(e) => handleChange("allowance", e.target.value)}
               />
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-12">
-              <div className="shrink-0 !w-[100px]">
+              <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[100px]">
                 <Label text="급여 총액" />
-              </div>
+                <Tooltip
+                  text="실질인정금액 + 상여금 + 수당"
+                  position="top-right"
+                />
+              </FlexWrapper>
               <Typography variant="B2" classes="text-gray-500 !font-bold">
-                {total_amount} 원
+                {total_amount.toLocaleString()} 원
               </Typography>
             </FlexWrapper>
           </div>
@@ -455,32 +505,40 @@ export default function SalaryDrawer({
 
           <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
             <FlexWrapper items="center" gap={2} classes="col-span-6">
-              <div className="shrink-0 !w-[80px]">
+              <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[80px]">
                 <Label text="소득세" />
-              </div>
+                <Tooltip
+                  text="과세표준 = 실질인정기본급 + 상여금 + 수당 (비과세 제외) × 3% → 10원 미만 절사"
+                  position="top-right"
+                />
+              </FlexWrapper>
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.income_tax,
                   placeholder: "0",
                 }}
+                type="number"
                 suffix="원"
                 onChange={(e) => handleChange("income_tax", e.target.value)}
               />
             </FlexWrapper>
 
             <FlexWrapper items="center" gap={2} classes="col-span-6">
-              <div className="shrink-0 !w-[80px]">
+              <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[80px]">
                 <Label text="지방소득세" />
-              </div>
+                <Tooltip
+                  text="과세표준 = 실질인정기본급 + 상여금 + 수당 (비과세 제외) × 0.3% → 10원 미만 절사"
+                  position="top"
+                />
+              </FlexWrapper>
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.local_tax,
                   placeholder: "0",
                 }}
+                type="number"
                 suffix="원"
                 onChange={(e) => handleChange("local_tax", e.target.value)}
               />
@@ -490,7 +548,7 @@ export default function SalaryDrawer({
                 <Label text="세금 총액" />
               </div>
               <Typography variant="B2" classes="text-gray-500 !font-bold">
-                {tax_total} 원
+                {tax_total.toLocaleString()} 원
               </Typography>
             </FlexWrapper>
           </div>
@@ -514,48 +572,72 @@ export default function SalaryDrawer({
 
             <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
               <FlexWrapper items="center" gap={2} classes="col-span-6">
-                <div className="shrink-0 !w-[80px]">
+                <FlexWrapper
+                  items="center"
+                  gap={1}
+                  classes="shrink-0 !w-[100px]"
+                >
                   <Label text="국민연금" />
-                </div>
+                  <Tooltip
+                    text="표준보수월액(하한 400,000원, 상한 6,370,000원) × 4.5% → 천원 미만 절사 → 10원 미만 절사"
+                    position="top-right"
+                  />
+                </FlexWrapper>
                 <TextInput
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
-                    type: "number",
                     value: form.pension_fee,
                     placeholder: "0",
                   }}
+                  type="number"
                   suffix="원"
                   onChange={(e) => handleChange("pension_fee", e.target.value)}
                 />
               </FlexWrapper>
 
               <FlexWrapper items="center" gap={2} classes="col-span-6">
-                <div className="shrink-0 !w-[80px]">
+                <FlexWrapper
+                  items="center"
+                  gap={1}
+                  classes="shrink-0 !w-[100px]"
+                >
                   <Label text="건강보험" />
-                </div>
+                  <Tooltip
+                    text="실질인정기본급 × 3.545% (하한 19,780원, 상한 4,504,170원) → 10원 미만 절사"
+                    position="top"
+                  />
+                </FlexWrapper>
                 <TextInput
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
-                    type: "number",
                     value: form.health_fee,
                     placeholder: "0",
                   }}
+                  type="number"
                   suffix="원"
                   onChange={(e) => handleChange("health_fee", e.target.value)}
                 />
               </FlexWrapper>
 
               <FlexWrapper items="center" gap={2} classes="col-span-6">
-                <div className="shrink-0 !w-[80px]">
+                <FlexWrapper
+                  items="center"
+                  gap={1}
+                  classes="shrink-0 !w-[100px]"
+                >
                   <Label text="고용보험" />
-                </div>
+                  <Tooltip
+                    text="실질인정기본급 × 0.9% → 10원 미만 절사 (대표자 제외)"
+                    position="top-right"
+                  />
+                </FlexWrapper>
                 <TextInput
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
-                    type: "number",
                     value: form.employment_fee,
                     placeholder: "0",
                   }}
+                  type="number"
                   suffix="원"
                   onChange={(e) =>
                     handleChange("employment_fee", e.target.value)
@@ -564,16 +646,24 @@ export default function SalaryDrawer({
               </FlexWrapper>
 
               <FlexWrapper items="center" gap={2} classes="col-span-6">
-                <div className="shrink-0 !w-[80px]">
+                <FlexWrapper
+                  items="center"
+                  gap={1}
+                  classes="shrink-0 !w-[100px]"
+                >
                   <Label text="장기요양보험" />
-                </div>
+                  <Tooltip
+                    text="건강보험료 × 12.95% → 10원 미만 절사"
+                    position="top"
+                  />
+                </FlexWrapper>
                 <TextInput
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
-                    type: "number",
                     value: form.longterm_care_fee,
                     placeholder: "0",
                   }}
+                  type="number"
                   suffix="원"
                   onChange={(e) =>
                     handleChange("longterm_care_fee", e.target.value)
@@ -581,9 +671,17 @@ export default function SalaryDrawer({
                 />
               </FlexWrapper>
               <FlexWrapper items="center" gap={2} classes="col-span-12">
-                <div className="shrink-0 !w-[100px]">
+                <FlexWrapper
+                  items="center"
+                  gap={1}
+                  classes="shrink-0 !w-[120px]"
+                >
                   <Label text="4대보험료 총액" />
-                </div>
+                  <Tooltip
+                    text="국민연금 + 건강보험 + 고용보험 + 장기요양보험"
+                    position="top-right"
+                  />
+                </FlexWrapper>
                 <Typography variant="B2" classes="text-gray-500 !font-bold">
                   {insurance_total} 원
                 </Typography>
@@ -615,10 +713,10 @@ export default function SalaryDrawer({
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.deduction_other,
                   placeholder: "0",
                 }}
+                type="number"
                 suffix="원"
                 onChange={(e) =>
                   handleChange("deduction_other", e.target.value)
@@ -626,11 +724,15 @@ export default function SalaryDrawer({
               />
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-6">
-              <div className="shrink-0 !w-[60px]">
+              <FlexWrapper items="center" gap={1} classes="shrink-0 !w-[100px]">
                 <Label text="실지급액" />
-              </div>
+                <Tooltip
+                  text="급여 총액 - 세금 총액 - 사대보험료 총액 - 기타 공제"
+                  position="top-right"
+                />
+              </FlexWrapper>
               <Typography variant="B2" classes="text-gray-500 !font-bold">
-                {net_amount} 원
+                {net_amount.toLocaleString()} 원
               </Typography>
             </FlexWrapper>
           </div>

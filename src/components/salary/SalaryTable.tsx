@@ -1,90 +1,47 @@
 import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Table from "@/components/Table";
-import dayjs from "dayjs";
 import type { ColumnDef } from "@tanstack/react-table";
-import Badge from "@/components/Badge";
-import Dropdown from "@/components/Dropdown";
 import { useEffect } from "react";
 import { useCompanyStore } from "@/stores/useCompanyStore";
-import { useDialog } from "@/hooks/useDialog";
-import { useAlert } from "@/components/AlertProvider";
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import { LuTrash2 } from "react-icons/lu";
 import { useSalaryStore } from "@/stores/useSalaryStore";
+import SalaryStatusBadge from "./SalaryStatusBadge";
 
-function SalaryTable() {
+function SalaryTable(props: { onRowClick?: (row: Salary.Row) => void }) {
+  const { onRowClick } = props;
   const { currentCompanyId } = useCompanyStore();
-  const { openDialog } = useDialog();
-  const { showAlert } = useAlert();
-  const { list, total, page, pageSize, fetchSalaries, deleteSalary } =
-    useSalaryStore();
+  const { list, total, fetchSalaries } = useSalaryStore();
 
   useEffect(() => {
     fetchSalaries(1, 10);
   }, [currentCompanyId]);
 
-  const etcDropdownItems = [
-    {
-      type: "item",
-      id: "delete",
-      icon: <LuTrash2 className="text-base text-danger" />,
-      label: <p className="text-danger">삭제하기</p>,
-    },
-  ] as Common.DropdownItem[];
-
   const columns: ColumnDef<any>[] = [
     {
-      accessorKey: "name",
+      accessorKey: "user_name",
       header: "이름",
       cell: ({ row }) => (
-        <Typography variant="B2">{row.original.name}</Typography>
-      ),
-    },
-    {
-      accessorKey: "pay_month",
-      header: "급여귀속일",
-      cell: ({ row }) => (
-        <Typography variant="B2">
-          {dayjs(row.original.pay_month).format("YYYY-MM")}
-        </Typography>
+        <Typography variant="B2">{row.original.user_name}</Typography>
       ),
     },
     {
       accessorKey: "status",
       header: "상태",
       cell: ({ row }) => {
-        const map = {
-          pending: {
-            label: "지급대기",
-            color: "bg-yellow-200 text-yellow-800",
-          },
-          reviewed: {
-            label: "검토완료",
-            color: "bg-purple-200 text-purple-800",
-          },
-          paid: { label: "지급완료", color: "bg-green-200 text-green-800" },
-        } as const;
-        const st = map[row.original.status as keyof typeof map];
-
-        return (
-          <Badge classes={st?.color || "gray"} size="sm">
-            {st?.label || "-"}
-          </Badge>
-        );
+        return <SalaryStatusBadge status={row.original.status} />;
       },
     },
-    {
-      accessorKey: "send_date",
-      header: "명세서 발송",
-      cell: ({ row }) => (
-        <Typography variant="B2">
-          {row.original.send_date
-            ? dayjs(row.original.send_date).format("YYYY-MM-DD")
-            : "-"}
-        </Typography>
-      ),
-    },
+    // {
+    //   accessorKey: "send_date",
+    //   header: "명세서 발송",
+    //   cell: ({ row }) => (
+    //     <Typography variant="B2">
+    //       {row.original.send_date
+    //         ? dayjs(row.original.send_date).format("YYYY-MM-DD")
+    //         : "-"}
+    //     </Typography>
+    //   ),
+    // },
     {
       accessorKey: "emp_type",
       header: "고용형태",
@@ -96,74 +53,75 @@ function SalaryTable() {
       accessorKey: "work_days",
       header: "근무인정일",
       cell: ({ row }) => (
-        <Typography variant="B2">{row.original.work_days}일</Typography>
+        <Typography variant="B2">
+          {Number(row.original.base_work_days) -
+            Number(row.original.absent_days)}
+          일
+        </Typography>
       ),
     },
     {
       accessorKey: "total_amount",
       header: "급여총액",
-      cell: ({ row }) => (
-        <Typography variant="B2">
-          {row.original.total_amount?.toLocaleString()}원
-        </Typography>
-      ),
+      cell: ({ row }) => {
+        const recognized_amount = Math.floor(
+          (Number(row.original.base_salary) +
+            Number(row.original.non_taxable)) *
+            (Number(row.original.base_work_days) > 0
+              ? (Number(row.original.base_work_days) -
+                  Number(row.original.absent_days || 0)) /
+                Number(row.original.base_work_days)
+              : 0)
+        );
+
+        const total_amount =
+          recognized_amount +
+          Number(row.original.bonus) +
+          Number(row.original.allowance);
+        return (
+          <Typography variant="B2">
+            {total_amount.toLocaleString()}원
+          </Typography>
+        );
+      },
     },
     {
       accessorKey: "net_amount",
       header: "실지급액",
-      cell: ({ row }) => (
-        <Typography variant="B2">
-          {row.original.net_amount?.toLocaleString()}원
-        </Typography>
-      ),
-    },
-    {
-      accessorKey: "etc",
-      header: "",
-      size: 24,
-      minSize: 24,
-      maxSize: 24,
-      cell: ({ row }) => (
-        <Dropdown
-          buttonVariant="clear"
-          dialogPosition="right"
-          hideDownIcon
-          items={etcDropdownItems}
-          onChange={async (val) => {
-            if (val === "delete") {
-              await openDialog({
-                title: "삭제하시겠습니까?",
-                message: `${row.original.email} 멤버를 이 회사에서 제거합니다.`,
-                confirmText: "삭제",
-                cancelText: "취소",
-                state: "danger",
-                onConfirm: async () => {
-                  try {
-                    await deleteSalary(row.original.id);
-                    fetchSalaries(page, pageSize);
-                    showAlert("삭제되었습니다.", {
-                      type: "success",
-                      durationMs: 3000,
-                    });
-                    return true;
-                  } catch (err: any) {
-                    showAlert(err?.message || "삭제 중 오류가 발생했습니다.", {
-                      type: "danger",
-                      durationMs: 3000,
-                    });
-                    return false;
-                  }
-                },
-              });
-            }
-          }}
-          dialogWidth={140}
-          buttonItem={
-            <HiOutlineDotsVertical className="text-xl text-gray-900" />
-          }
-          buttonClasses="!font-normal text-primary-900 !h-8 !border-primary-100"
-        />
-      ),
+      cell: ({ row }) => {
+        const recognized_amount = Math.floor(
+          (Number(row.original.base_salary) +
+            Number(row.original.non_taxable)) *
+            (Number(row.original.base_work_days) > 0
+              ? (Number(row.original.base_work_days) -
+                  Number(row.original.absent_days || 0)) /
+                Number(row.original.base_work_days)
+              : 0)
+        );
+
+        const total_amount =
+          recognized_amount +
+          Number(row.original.bonus) +
+          Number(row.original.allowance);
+
+        const tax_total =
+          Number(row.original.income_tax) + Number(row.original.local_tax);
+
+        const insurance_total =
+          Number(row.original.pension_fee) +
+          Number(row.original.health_fee) +
+          Number(row.original.employment_fee) +
+          Number(row.original.longterm_care_fee);
+
+        const net_amount =
+          total_amount -
+          tax_total -
+          insurance_total -
+          Number(row.original.deduction_other);
+        return (
+          <Typography variant="B2">{net_amount.toLocaleString()}원</Typography>
+        );
+      },
     },
   ];
 
@@ -176,6 +134,9 @@ function SalaryTable() {
           hideSize
           totalCount={total}
           onPageChange={fetchSalaries}
+          onRowClick={(row) => {
+            onRowClick?.(row);
+          }}
         />
       </FlexWrapper>
     </>

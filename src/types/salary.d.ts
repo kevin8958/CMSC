@@ -12,8 +12,9 @@ namespace Salary {
     id: string;
     company_id: string;
     user_id: string | null;
+    user_name: string | null; // ✅ 추가
 
-    pay_month: string; // YYYY-MM-DD 형식
+    pay_month: string; // YYYY-MM 형식
     status: SalaryStatus;
     emp_type: EmpType;
 
@@ -37,7 +38,6 @@ namespace Salary {
     deduction_other: number;
     note: string | null;
 
-    // 계산 컬럼 (Generated)
     recognized_amount: number;
     total_amount: number;
     tax_total: number;
@@ -55,8 +55,9 @@ namespace Salary {
   interface Insert {
     company_id: string;
     user_id: string | null;
+    user_name?: string | null; // ✅ 추가
 
-    pay_month: string; // YYYY-MM-DD
+    pay_month: Date;
     status?: SalaryStatus;
     emp_type?: EmpType;
 
@@ -80,6 +81,12 @@ namespace Salary {
     deduction_other?: number;
     note?: string;
 
+    recognized_amount?: number;
+    total_amount?: number;
+    tax_total?: number;
+    insurance_total?: number;
+    net_amount?: number;
+
     send_date?: string | null;
   }
 
@@ -91,7 +98,7 @@ namespace Salary {
   }
 
   // ────────────────────────────────
-  // Frontend 전용 (UI에서 쓰기 좋은 타입)
+  // Frontend 전용 (UI Form 데이터)
   // ────────────────────────────────
   interface FormData {
     member: string; // user_id
