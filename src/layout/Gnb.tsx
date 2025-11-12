@@ -10,6 +10,8 @@ import { useCompanyStore } from "@/stores/useCompanyStore";
 import UspLogo from "@/assets/image/usp_logo.png";
 import { useAuthStore } from "@/stores/authStore";
 import Typography from "@/foundation/Typography";
+import { supabase } from "@/lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 export default function Gnb() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +24,8 @@ export default function Gnb() {
   } = useCompanyStore();
   const role = useAuthStore((s) => s.role);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchCompanies();
   }, []);
@@ -33,6 +37,11 @@ export default function Gnb() {
       label: c.name,
     })),
   ] as Common.DropdownItem[];
+
+  const onLogout = async () => {
+    await supabase.auth.signOut(); // ✅ 세션 제거
+    navigate("/login"); // ✅ 로그인페이지로 이동
+  };
 
   return (
     <div
@@ -84,11 +93,18 @@ export default function Gnb() {
       )}
 
       <FlexWrapper gap={2} items="center" classes="!hidden sm:!flex">
-        <Button variant="clear" classes="!size-10 !p-2 !text-primary-900">
+        {/* <Button variant="clear" classes="!size-10 !p-2 !text-primary-900">
           <LuRefreshCcw className="text-lg" />
         </Button>
         <Button variant="clear" classes="!size-10 !p-2 !text-primary-900">
           <LuBell className="text-lg" />
+        </Button> */}
+        <Button
+          variant="outline"
+          classes="!text-primary-900"
+          onClick={onLogout}
+        >
+          로그아웃
         </Button>
       </FlexWrapper>
 

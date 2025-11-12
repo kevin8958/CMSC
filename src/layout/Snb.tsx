@@ -142,7 +142,7 @@ const SNB = () => {
           ))}
         </ul>
       </nav>
-      <div className="px-2">
+      {/* <div className="px-2">
         <a
           href="/settings"
           className={classNames(
@@ -156,7 +156,7 @@ const SNB = () => {
           <LuSettings />
           설정
         </a>
-      </div>
+      </div> */}
     </aside>
   );
 };
