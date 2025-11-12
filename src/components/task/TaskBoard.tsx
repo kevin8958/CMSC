@@ -18,6 +18,7 @@ import TaskDrawer from "./TaskDrawer";
 import { STATUS_CONFIG } from "@/constants/TaskConfigs_fixed";
 import TaskStatusBadge from "@/components/task/TaskStatusBadge";
 import dayjs from "dayjs";
+import TaskBoardSkeleton from "./TaskBoardSkeleton";
 
 const statusKeys = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
 
@@ -91,6 +92,7 @@ export default function TaskBoard() {
   const [members, setMembers] = useState<any[]>([]);
   const {
     tasks,
+    fetching,
     setTasks,
     fetchTasks,
     createTask,
@@ -148,77 +150,85 @@ export default function TaskBoard() {
         </Button>
       </FlexWrapper>
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid grid-cols-5 gap-2">
-          {statusKeys.map((status) => (
-            <Droppable droppableId={status} key={status}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col"
-                >
-                  <FlexWrapper justify="between" items="center" classes="mb-2">
-                    <TaskStatusBadge status={status} />
-                    <Button
-                      variant="clear"
-                      size="sm"
-                      classes="!text-gray-500"
-                      onClick={() => {
-                        setDrawerMode("create");
-                        setCurrentTask({
-                          id: "",
-                          company_id: currentCompanyId || "",
-                          title: "",
-                          status,
-                          priority: "medium",
-                          description: "",
-                          assignee: "",
-                          sort_index: 0,
-                          due_date: dayjs().format("YYYY-MM-DD"),
-                          task_comments: [],
-                          created_at: dayjs().toString(),
-                          updated_at: dayjs().toString(),
-                        });
-                        setDrawerOpen(true);
-                      }}
+      {fetching ? (
+        <TaskBoardSkeleton />
+      ) : (
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="grid grid-cols-5 gap-2">
+            {statusKeys.map((status) => (
+              <Droppable droppableId={status} key={status}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col"
+                  >
+                    <FlexWrapper
+                      justify="between"
+                      items="center"
+                      classes="mb-2"
                     >
-                      <LuPlus className="text-lg" />
-                    </Button>
-                  </FlexWrapper>
-
-                  {tasks
-                    .filter((t) => t.status === status)
-                    .map((task, index) => (
-                      <Draggable
-                        draggableId={task.id}
-                        index={index}
-                        key={task.id}
+                      <TaskStatusBadge status={status} />
+                      <Button
+                        variant="clear"
+                        size="sm"
+                        classes="!text-gray-500"
+                        onClick={() => {
+                          setDrawerMode("create");
+                          setCurrentTask({
+                            id: "",
+                            company_id: currentCompanyId || "",
+                            title: "",
+                            status,
+                            priority: "medium",
+                            description: "",
+                            assignee: "",
+                            sort_index: 0,
+                            due_date: dayjs().format("YYYY-MM-DD"),
+                            task_comments: [],
+                            created_at: dayjs().toString(),
+                            updated_at: dayjs().toString(),
+                          });
+                          setDrawerOpen(true);
+                        }}
                       >
-                        {(p) => (
-                          <div
-                            ref={p.innerRef}
-                            {...p.draggableProps}
-                            {...p.dragHandleProps}
-                            onClick={() => {
-                              setDrawerMode("edit");
-                              setCurrentTask(task);
-                              setDrawerOpen(true);
-                            }}
-                            className="bg-white rounded-lg shadow mb-3 cursor-pointer hover:shadow-custom-light transition duration-300 shadow-custom-dark"
-                          >
-                            <TaskCard task={task} members={members} />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))}
-        </div>
-      </DragDropContext>
+                        <LuPlus className="text-lg" />
+                      </Button>
+                    </FlexWrapper>
+
+                    {tasks
+                      .filter((t) => t.status === status)
+                      .map((task, index) => (
+                        <Draggable
+                          draggableId={task.id}
+                          index={index}
+                          key={task.id}
+                        >
+                          {(p) => (
+                            <div
+                              ref={p.innerRef}
+                              {...p.draggableProps}
+                              {...p.dragHandleProps}
+                              onClick={() => {
+                                setDrawerMode("edit");
+                                setCurrentTask(task);
+                                setDrawerOpen(true);
+                              }}
+                              className="bg-white rounded-lg shadow mb-3 cursor-pointer hover:shadow-custom-light transition duration-300 shadow-custom-dark"
+                            >
+                              <TaskCard task={task} members={members} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            ))}
+          </div>
+        </DragDropContext>
+      )}
 
       <TaskDrawer
         open={drawerOpen}

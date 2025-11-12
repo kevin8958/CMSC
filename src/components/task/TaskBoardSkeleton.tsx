@@ -1,0 +1,38 @@
+import FlexWrapper from "@/layout/FlexWrapper";
+import { STATUS_CONFIG } from "@/constants/TaskConfigs_fixed";
+
+const statusKeys = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
+
+export default function TaskBoardSkeleton() {
+  return (
+    <div className="grid grid-cols-5 gap-2 animate-pulse">
+      {statusKeys.map((status) => (
+        <div
+          key={status}
+          className="bg-gray-50 rounded-md p-2 min-h-[400px] flex flex-col"
+        >
+          {/* 컬럼 헤더 */}
+          <FlexWrapper justify="between" items="center" classes="mb-2">
+            <div className="h-5 w-24 bg-gray-200 rounded" />
+            <div className="h-5 w-5 bg-gray-200 rounded" />
+          </FlexWrapper>
+
+          {/* 카드 3개 정도 */}
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-lg shadow mb-3 p-3 space-y-2 border border-gray-100"
+            >
+              <div className="h-4 w-3/4 bg-gray-200 rounded" />
+              <div className="h-3 w-1/2 bg-gray-100 rounded" />
+              <div className="flex justify-between">
+                <div className="h-3 w-10 bg-gray-100 rounded" />
+                <div className="h-3 w-8 bg-gray-100 rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
