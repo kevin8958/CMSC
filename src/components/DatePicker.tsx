@@ -134,7 +134,7 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
             "h-[48px] min-h-[48px]": size === "lg" && !isMonthPicker,
             "hover:bg-primary-100 active:bg-primary-200 bg-white text-gray-800 disabled:hover:!bg-white disabled:active:!bg-white":
               variant === "contain",
-            "border-primary-100 text-primary-900 border bg-transparent":
+            "border-gray-300 text-primary-900 border bg-transparent":
               variant === "outline",
             "text-primary-300 bg-transparent": variant === "clear",
             // // ✅ MonthPicker 전용 스타일
@@ -257,7 +257,7 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
             </Button>
           );
 
-          const shortWeekDays = ["S", "M", "T", "W", "T", "F", "S"];
+          const shortWeekDays = ["일", "월", "화", "수", "목", "금", "토"];
           const year = dayjs(date).year();
 
           return (

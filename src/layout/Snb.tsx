@@ -74,9 +74,9 @@ const SNB = () => {
                 icon: <LuWalletMinimal />,
               },
               {
-                id: "vacation",
-                label: "휴가관리",
-                href: "/vacation",
+                id: "attendance",
+                label: "연차관리",
+                href: "/attendance",
                 icon: <LuCalendarCheck2 />,
               },
             ],

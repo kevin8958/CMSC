@@ -371,10 +371,10 @@ export default function SalaryDrawer({
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.base_work_days,
-                  placeholder: "0",
                 }}
+                type="number"
+                placeholder="0"
                 suffix="일"
                 onChange={(e) => handleChange("base_work_days", e.target.value)}
               />
@@ -391,10 +391,10 @@ export default function SalaryDrawer({
               <TextInput
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
-                  type: "number",
                   value: form.absent_days,
-                  placeholder: "0",
                 }}
+                type="number"
+                placeholder="0"
                 suffix="일"
                 onChange={(e) => handleChange("absent_days", e.target.value)}
               />
@@ -430,9 +430,9 @@ export default function SalaryDrawer({
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
                   value: form.base_salary,
-                  placeholder: "0",
                 }}
                 type="number"
+                placeholder="0"
                 suffix="원"
                 onChange={(e) => handleChange("base_salary", e.target.value)}
               />
@@ -451,9 +451,9 @@ export default function SalaryDrawer({
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
                   value: form.non_taxable,
-                  placeholder: "0",
                 }}
                 type="number"
+                placeholder="0"
                 suffix="원"
                 onChange={(e) => handleChange("non_taxable", e.target.value)}
               />
@@ -482,9 +482,9 @@ export default function SalaryDrawer({
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
                   value: form.bonus,
-                  placeholder: "0",
                 }}
                 type="number"
+                placeholder="0"
                 suffix="원"
                 onChange={(e) => handleChange("bonus", e.target.value)}
               />
@@ -502,9 +502,9 @@ export default function SalaryDrawer({
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
                   value: form.allowance,
-                  placeholder: "0",
                 }}
                 type="number"
+                placeholder="0"
                 suffix="원"
                 onChange={(e) => handleChange("allowance", e.target.value)}
               />
@@ -556,9 +556,9 @@ export default function SalaryDrawer({
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
                   value: form.income_tax,
-                  placeholder: "0",
                 }}
                 type="number"
+                placeholder="0"
                 suffix="원"
                 onChange={(e) => handleChange("income_tax", e.target.value)}
               />
@@ -580,9 +580,9 @@ export default function SalaryDrawer({
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
                   value: form.local_tax,
-                  placeholder: "0",
                 }}
                 type="number"
+                placeholder="0"
                 suffix="원"
                 onChange={(e) => handleChange("local_tax", e.target.value)}
               />
@@ -635,9 +635,9 @@ export default function SalaryDrawer({
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
                     value: form.pension_fee,
-                    placeholder: "0",
                   }}
                   type="number"
+                  placeholder="0"
                   suffix="원"
                   onChange={(e) => handleChange("pension_fee", e.target.value)}
                 />
@@ -663,9 +663,9 @@ export default function SalaryDrawer({
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
                     value: form.health_fee,
-                    placeholder: "0",
                   }}
                   type="number"
+                  placeholder="0"
                   suffix="원"
                   onChange={(e) => handleChange("health_fee", e.target.value)}
                 />
@@ -691,9 +691,9 @@ export default function SalaryDrawer({
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
                     value: form.employment_fee,
-                    placeholder: "0",
                   }}
                   type="number"
+                  placeholder="0"
                   suffix="원"
                   onChange={(e) =>
                     handleChange("employment_fee", e.target.value)
@@ -721,9 +721,9 @@ export default function SalaryDrawer({
                   classes="!text-sm !h-[42px] max-h-[42px]"
                   inputProps={{
                     value: form.longterm_care_fee,
-                    placeholder: "0",
                   }}
                   type="number"
+                  placeholder="0"
                   suffix="원"
                   onChange={(e) =>
                     handleChange("longterm_care_fee", e.target.value)
@@ -778,9 +778,9 @@ export default function SalaryDrawer({
                 classes="!text-sm !h-[42px] max-h-[42px]"
                 inputProps={{
                   value: form.deduction_other,
-                  placeholder: "0",
                 }}
                 type="number"
+                placeholder="0"
                 suffix="원"
                 onChange={(e) =>
                   handleChange("deduction_other", e.target.value)
