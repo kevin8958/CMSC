@@ -16,6 +16,7 @@ import { motion } from "motion/react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { LuTrash2 } from "react-icons/lu";
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import TableSkeleton from "@/layout/TableSkeleton";
 
 const parseRole = (role: string) => {
   switch (role) {
@@ -213,19 +214,11 @@ function Member() {
 
       {loading ? (
         <FlexWrapper
-          classes="h-[calc(100%-36px-16px)]"
+          classes="h-[calc(100%-36px-16px)] mt-4"
           justify="center"
-          items="center"
+          items="start"
         >
-          <motion.div
-            className="size-4 rounded-full border-[3px] border-primary-900 border-t-transparent"
-            animate={{ rotate: 360 }}
-            transition={{
-              repeat: Infinity,
-              ease: "linear",
-              duration: 1,
-            }}
-          />
+          <TableSkeleton rows={8} columns={6} />
         </FlexWrapper>
       ) : (
         <FlexWrapper classes="h-[calc(100%-36px-16px)] mt-4">

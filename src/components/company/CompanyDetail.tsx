@@ -7,6 +7,7 @@ import Button from "@/components/Button";
 import { LuChevronLeft } from "react-icons/lu";
 import CompanyMember from "@/components/company/CompanyMember";
 import { motion } from "motion/react";
+import { useMemberStore } from "@/stores/useMemberStore";
 
 function CompanyDetail() {
   const { companyId } = useParams();
@@ -26,6 +27,11 @@ function CompanyDetail() {
   }, [company]);
 
   useEffect(() => {
+    useMemberStore.setState({
+      members: [],
+      total: 0,
+      loading: true,
+    });
     if (companyId && currentCompanyId !== companyId) {
       selectCompany(companyId);
     }
@@ -92,7 +98,7 @@ function CompanyDetail() {
       </FlexWrapper>
 
       <FlexWrapper direction="col" gap={3}>
-        <CompanyMember />
+        <CompanyMember companyId={company.id} />
       </FlexWrapper>
     </FlexWrapper>
   );

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Dropdown from "@/components/Dropdown";
 import { deleteCompany } from "@/actions/companyActions";
+import TableSkeleton from "@/layout/TableSkeleton";
 
 function Company() {
   const { openDialog } = useDialog();
@@ -196,19 +197,11 @@ function Company() {
 
       {loading ? (
         <FlexWrapper
-          classes="h-[calc(100%-36px-16px)]"
+          classes="h-[calc(100%-36px-16px)] mt-4"
           justify="center"
-          items="center"
+          items="start"
         >
-          <motion.div
-            className="size-4 rounded-full border-[3px] border-primary-900 border-t-transparent"
-            animate={{ rotate: 360 }}
-            transition={{
-              repeat: Infinity,
-              ease: "linear",
-              duration: 1,
-            }}
-          />
+          <TableSkeleton rows={8} columns={6} />
         </FlexWrapper>
       ) : (
         <FlexWrapper classes="h-[calc(100%-36px-16px)] mt-4">

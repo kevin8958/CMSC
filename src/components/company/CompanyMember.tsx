@@ -18,6 +18,7 @@ import InviteMemberDialogBody from "@/components/InviteMemberDialogBody";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { LuTrash2, LuPlus } from "react-icons/lu";
 import { useMemberStore } from "@/stores/useMemberStore";
+import TableSkeleton from "@/layout/TableSkeleton";
 
 const parseRole = (role: string) => {
   switch (role) {
@@ -34,14 +35,17 @@ const parseRole = (role: string) => {
   }
 };
 
-function CompanyMember() {
+function CompanyMember(props: { companyId?: string }) {
+  const { companyId } = props;
   const { currentCompanyId } = useCompanyStore();
   const { openDialog } = useDialog();
   const { showAlert } = useAlert();
-  const { fetchMembers, members, total } = useMemberStore();
+  const { fetchMembers, loading, members, total } = useMemberStore();
 
   useEffect(() => {
-    fetchMembers(1, 10);
+    if (currentCompanyId === companyId) {
+      fetchMembers(1, 10);
+    }
   }, [currentCompanyId]);
 
   const etcDropdownItems = [
@@ -188,7 +192,7 @@ function CompanyMember() {
         <FlexWrapper gap={2} items="center">
           <Typography variant="H4">멤버목록</Typography>
           <Badge color="green" size="md">
-            {total}
+            {loading || companyId !== currentCompanyId ? 0 : total}
           </Badge>
         </FlexWrapper>
         <Button
@@ -208,15 +212,22 @@ function CompanyMember() {
           추가하기
         </Button>
       </FlexWrapper>
-      <FlexWrapper classes="h-[380px] mt-4">
-        <Table
-          data={members || []}
-          columns={columns}
-          hideSize
-          totalCount={total}
-          onPageChange={fetchMembers}
-        />
-      </FlexWrapper>
+
+      {loading || companyId !== currentCompanyId ? (
+        <FlexWrapper classes="h-[400px] mt-4" justify="center" items="start">
+          <TableSkeleton rows={8} columns={6} />
+        </FlexWrapper>
+      ) : (
+        <FlexWrapper classes="h-[400px] mt-4">
+          <Table
+            data={members || []}
+            columns={columns}
+            hideSize
+            totalCount={total}
+            onPageChange={fetchMembers}
+          />
+        </FlexWrapper>
+      )}
     </>
   );
 }
