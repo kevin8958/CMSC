@@ -5,7 +5,6 @@ import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
 import { useDialog } from "@/hooks/useDialog";
 import { useAlert } from "@/components/AlertProvider";
-import { supabase } from "@/lib/supabase";
 import { useMemberStore } from "@/stores/useMemberStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { inviteMember } from "@/actions/memberActions";
@@ -23,28 +22,16 @@ function InviteMemberDialogBody() {
     const loadAdmins = async () => {
       if (!currentCompanyId) return;
 
-      // ① 전체 admin
-      const { data: allAdmins } = await supabase
-        .from("profiles")
-        .select("id, nickname, email")
-        .eq("role", "admin");
-
-      // ② 현재 회사 멤버 중 admin
-      const { data: companyAdmins } = await supabase
-        .from("company_members")
-        .select("user_id")
-        .eq("company_id", currentCompanyId)
-        .eq("role", "admin")
-        .eq("deleted", false);
-
-      const assignedIds = new Set(companyAdmins?.map((r) => r.user_id));
-
-      const list = (allAdmins ?? []).map((adm) => ({
-        ...adm,
-        alreadyAssigned: assignedIds.has(adm.id),
-      }));
-
-      setAdminCandidates(list);
+      try {
+        const res = await fetch(
+          `/api/backoffice/admin-candidates?company_id=${currentCompanyId}`
+        );
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Failed to load admins");
+        setAdminCandidates(json.data || []);
+      } catch (err) {
+        console.error("❌ loadAdmins error:", err);
+      }
     };
 
     loadAdmins();
