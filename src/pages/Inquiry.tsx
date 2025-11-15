@@ -8,7 +8,6 @@ import Dropdown from "@/components/Dropdown";
 import { useEffect, useState } from "react";
 import { useDialog } from "@/hooks/useDialog";
 import { useAlert } from "@/components/AlertProvider";
-import { motion } from "motion/react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { LuTrash2 } from "react-icons/lu";
 import TableSkeleton from "@/layout/TableSkeleton";

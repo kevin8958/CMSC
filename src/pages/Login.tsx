@@ -4,8 +4,8 @@ import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Button from "@/components/Button";
 import UspLogo from "@/assets/image/usp_logo.png";
-import { FcGoogle } from "react-icons/fc";
-import { useGoogleLogin } from "@react-oauth/google";
+// import { FcGoogle } from "react-icons/fc";
+// import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { useAlert } from "@/components/AlertProvider";
@@ -20,12 +20,12 @@ function Login() {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      console.log(tokenResponse);
-    },
-    onError: () => console.log("Login Failed"),
-  });
+  // const googleLogin = useGoogleLogin({
+  //   onSuccess: (tokenResponse) => {
+  //     console.log(tokenResponse);
+  //   },
+  //   onError: () => console.log("Login Failed"),
+  // });
 
   const validateEmail = (value: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -120,7 +120,7 @@ function Login() {
           <img src={UspLogo} alt="USP Logo" className="w-[60px]" />
         </a>
         <FlexWrapper gap={4} items="start" direction="col" classes="w-full">
-          <Button
+          {/* <Button
             classes="w-full"
             variant="outline"
             size="lg"
@@ -142,7 +142,7 @@ function Login() {
             <span className="h-px flex-1 bg-gray-200" />
             <p className="my-2 text-sm text-gray-400">OR</p>
             <span className="h-px flex-1 bg-gray-200" />
-          </div>
+          </div> */}
           <div className="flex flex-col w-full items-center gap-[20px] mb-2">
             <TextInput
               label="이메일"

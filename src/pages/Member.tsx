@@ -12,7 +12,6 @@ import {
   updateMemberRole,
 } from "@/actions/memberActions";
 import { useAlert } from "@/components/AlertProvider";
-import { motion } from "motion/react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { LuTrash2 } from "react-icons/lu";
 import { useCompanyStore } from "@/stores/useCompanyStore";
