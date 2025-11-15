@@ -66,19 +66,16 @@ export const useCompanyStore = create<CompanyStore>()(
 
       // ✅ 회사 선택 시 DB 업데이트
       selectCompany: async (companyId: string) => {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { error } = await supabase
-          .from("profiles")
-          .update({ last_selected_company_id: companyId })
-          .eq("id", user.id);
-
-        if (!error) {
-          set({ currentCompanyId: companyId });
-        }
+        const s = await supabase.auth.getSession();
+        await fetch("/api/set-current-company", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${s.data.session?.access_token}`,
+          },
+          body: JSON.stringify({ company_id: companyId }),
+        });
+        set({ currentCompanyId: companyId });
       },
 
       // ✅ 새 회사 생성
