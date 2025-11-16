@@ -172,7 +172,7 @@ export default function FinanceInputTable() {
           <Button
             variant="contain"
             size="sm"
-            color="primary"
+            color="green"
             onClick={() => setEditMode(true)}
           >
             편집하기

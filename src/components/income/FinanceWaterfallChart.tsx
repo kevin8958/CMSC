@@ -14,7 +14,7 @@ const RoundedBar = ({ x, y, width, height, value }: any) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const isPositive = value >= 0;
-  const color = isHovered ? "#A7B3C5" : "#C6CEDA";
+  const color = isHovered ? "#3BAC87" : "#47D0A2";
   const radius = 8;
 
   const d = isPositive
@@ -66,7 +66,7 @@ const CustomTooltip = ({
           fontSize: 12,
         }}
       >
-        <div style={{ color: "#6b7280" /* gray-500 */ }}>{name}</div>
+        <div style={{ color: "#6b7280" }}>{name}</div>
         <span style={{ fontWeight: "bold" }}>{value}</span>
       </div>
     );
