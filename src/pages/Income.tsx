@@ -76,7 +76,11 @@ function Income() {
           onChange={(date) => setSelectedMonth(date)}
         />
       </FlexWrapper>
-      <FlexWrapper gap={1} classes="flex-1 pb-4 pt-4">
+      <FlexWrapper
+        gap={1}
+        direction="col-reverse"
+        classes="md:flex-row flex-1 pb-4 pt-4"
+      >
         <div className="flex-1">
           <FinanceInputTable />
         </div>

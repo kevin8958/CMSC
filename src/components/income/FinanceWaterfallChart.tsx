@@ -90,7 +90,7 @@ const FinanceWaterfallChart = ({ data }: { data: any[] }) => {
   });
 
   return (
-    <div className="h-[calc(100dvh-76px-36px-16px-16px)] p-4">
+    <div className="h-[200px] sm:h-[300px] md:h-[calc(100dvh-76px-36px-16px-16px)] p-4">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={formatted}>
           {/* 격자선 유지 (가로만) */}

@@ -29,6 +29,8 @@ const FlexWrapper = (props: Layout.FlexWrapperProps) => {
       className={classNames("flex", classes, gapMap[gap] ?? "", {
         "flex-row": direction === "row",
         "flex-col": direction === "col",
+        "flex-row-reverse": direction === "row-reverse",
+        "flex-col-reverse": direction === "col-reverse",
         "justify-start": justify === "start",
         "justify-end": justify === "end",
         "justify-center": justify === "center",
