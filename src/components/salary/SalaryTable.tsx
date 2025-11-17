@@ -130,7 +130,7 @@ function SalaryTable(props: {
 
   return (
     <>
-      <FlexWrapper classes="h-screen mt-4">
+      <FlexWrapper classes="h- mt-4">
         <Table
           data={list || []}
           columns={columns}
