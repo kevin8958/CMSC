@@ -115,6 +115,21 @@ input[type="number"] {
   font-weight: bold !important;
 }
 
+.recharts-surface:focus,
+.recharts-surface:focus-visible,
+.recharts-surface:active,
+.recharts-sector:focus,
+.recharts-sector:focus-visible,
+.recharts-sector:active {
+  outline: none !important;
+}
+
+/* 혹시 전역 focus-visible 규칙이 SVG에도 먹는 경우 방어용 */
+svg *:focus,
+svg *:focus-visible {
+  outline: none !important;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
