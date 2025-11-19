@@ -39,27 +39,38 @@ function Dashboard() {
 
   return (
     <>
-      <FlexWrapper gap={4} direction="col" classes="w-full">
-        <FlexWrapper justify="between" items="center" classes="w-full">
+      <FlexWrapper gap={4} direction="col" classes="w-full flex-1">
+        <FlexWrapper
+          direction="col"
+          justify="between"
+          items="start"
+          classes="w-full md:flex-row md:items-center"
+        >
           <FlexWrapper direction="col" items="start" gap={0}>
             <Typography variant="H3">{userName}님 안녕하세요</Typography>
             <Typography variant="B2" classes="!text-gray-500">
               이번 달 데이터를 확인해주세요.
             </Typography>
           </FlexWrapper>
-          <CustomDatePicker
-            variant="outline"
-            size="md"
-            type="month"
-            isMonthPicker
-            dateFormat="YYYY.MM"
-            value={selectedMonth}
-            onChange={(date) => setSelectedMonth(date)}
-          />
+          <FlexWrapper justify="center" gap={0} classes="w-full md:w-fit">
+            <CustomDatePicker
+              variant="outline"
+              size="md"
+              type="month"
+              isMonthPicker
+              dateFormat="YYYY.MM"
+              value={selectedMonth}
+              onChange={(date) => setSelectedMonth(date)}
+            />
+          </FlexWrapper>
         </FlexWrapper>
-        <FlexWrapper gap={4} direction="col" classes="lg:flex-row w-full">
-          <Expense />
-          <Assets selectedMonth={selectedMonth} />
+        <FlexWrapper
+          gap={4}
+          direction="col"
+          classes="lg:flex-row w-full flex-1 pb-4"
+        >
+          <Expense month={selectedMonth} />
+          <Assets month={selectedMonth} />
         </FlexWrapper>
       </FlexWrapper>
     </>

@@ -3,8 +3,8 @@ import Typography from "@/foundation/Typography";
 import AssetStackedChart from "./AssetStackedChart";
 import dayjs from "dayjs";
 
-function Assets(props: { selectedMonth: Date | null }) {
-  const { selectedMonth } = props;
+function Assets(props: { month: Date | null }) {
+  const { month } = props;
   return (
     <>
       <FlexWrapper
@@ -13,10 +13,10 @@ function Assets(props: { selectedMonth: Date | null }) {
         gap={0}
         classes="border rounded-lg p-4 lg:flex-1 h-[360px]"
       >
-        <Typography variant="H4">자산</Typography>
+        <Typography variant="H3">자산</Typography>
         <Typography variant="H3">300,000원</Typography>
         <AssetStackedChart
-          selectedMonth={selectedMonth || dayjs().toDate()}
+          selectedMonth={month || dayjs().toDate()}
           data={[
             { month: "2025-06", netAsset: 500, cash: 200, etc: 50 },
             { month: "2025-07", netAsset: 550, cash: 190, etc: 70 },

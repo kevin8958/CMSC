@@ -1,0 +1,83 @@
+// components/Expense/ExpenseGaugeTable.tsx
+
+import Typography from "@/foundation/Typography";
+import FlexWrapper from "@/layout/FlexWrapper";
+import Table from "@/components/Table";
+import type { ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import TableSkeleton from "@/layout/TableSkeleton";
+import { useExpenseStore } from "@/stores/useExpenseStore";
+
+dayjs.locale("ko");
+
+export interface ExpenseItem {
+  id: string;
+  date: string; // ISO date
+  method: string; // 거래수단
+  place: string; // 사용처
+  amount: number; // 금액
+}
+
+interface Props {
+  data: ExpenseItem[];
+  onRowClick?: (data: ExpenseItem) => void;
+}
+
+export default function ExpenseGaugeTable({ data, onRowClick }: Props) {
+  const { loading } = useExpenseStore();
+  const columns: ColumnDef<ExpenseItem>[] = [
+    {
+      accessorKey: "date",
+      header: "일시",
+      cell: ({ row }) => {
+        const d = dayjs(row.original.date);
+        return <Typography variant="B2">{d.format("M월 D일 (dd)")}</Typography>;
+      },
+    },
+    {
+      accessorKey: "method",
+      header: "거래수단",
+      cell: ({ row }) => (
+        <Typography variant="B2">{row.original.method}</Typography>
+      ),
+    },
+    {
+      accessorKey: "place",
+      header: "사용처",
+      cell: ({ row }) => (
+        <Typography variant="B2">{row.original.place}</Typography>
+      ),
+    },
+    {
+      accessorKey: "amount",
+      header: "금액",
+      cell: ({ row }) => (
+        <Typography variant="B2">
+          {(row.original.amount || 0).toLocaleString()}원
+        </Typography>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      {loading ? (
+        <FlexWrapper classes="w-full h-[400px]" justify="center" items="start">
+          <TableSkeleton rows={4} columns={4} />
+        </FlexWrapper>
+      ) : (
+        <FlexWrapper classes="w-full h-[400px]">
+          <Table
+            data={data}
+            columns={columns}
+            hideSize
+            onRowClick={(row) => {
+              onRowClick?.(row);
+            }}
+          />
+        </FlexWrapper>
+      )}
+    </>
+  );
+}

@@ -46,6 +46,20 @@ export default function AttendanceAddDrawer({
     }
   }, [form.start_date, form.end_date]);
 
+  useEffect(() => {
+    if (open) {
+      setForm({
+        member: "",
+        start_date: new Date(),
+        end_date: new Date(),
+        reason: "",
+        note: "",
+      });
+      setRangeValue([null, null]);
+      setErrors({});
+    }
+  }, [open]);
+
   const handleChange = (key: string, value: any) => {
     if (key === "member" && value) {
       setErrors((prev) => {

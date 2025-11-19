@@ -89,7 +89,10 @@ const TableComponent = (props: Common.TableProps) => {
         classes
       )}
     >
-      <div ref={scrollRef} className="table-wrapper size-full overflow-scroll">
+      <div
+        ref={scrollRef}
+        className="table-wrapper size-full overflow-scroll scroll-thin"
+      >
         <table
           className={classNames(
             "h-max w-full whitespace-nowrap rounded-md bg-white",
