@@ -15,6 +15,7 @@ interface ExpenseGaugeCardProps {
   other: number;
   onTabChange?: (tab: "fixed" | "variable" | "other") => void;
   onRowClick?: (data: ExpenseItem) => void;
+  onPageChange: (nextPage: number) => void;
 }
 
 export default function ExpenseGaugeCard({
@@ -23,6 +24,7 @@ export default function ExpenseGaugeCard({
   other,
   onTabChange,
   onRowClick,
+  onPageChange,
 }: ExpenseGaugeCardProps) {
   const [currentTab, setCurrentTab] = useState<"fixed" | "variable" | "other">(
     "fixed"
@@ -182,7 +184,11 @@ export default function ExpenseGaugeCard({
           />
         ))}
       </FlexWrapper>
-      <ExpenseGaugeTable data={tableData} onRowClick={onRowClick} />
+      <ExpenseGaugeTable
+        data={tableData}
+        onRowClick={onRowClick}
+        onPageChange={onPageChange}
+      />
     </FlexWrapper>
   );
 }

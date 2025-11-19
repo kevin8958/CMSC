@@ -28,7 +28,7 @@ function Expense(props: { month: Date | null }) {
   useEffect(() => {
     if (!user || !month) return;
     if (currentCompanyId) {
-      loadExpenses(currentCompanyId, currentTab, month);
+      loadExpenses(currentCompanyId, currentTab, month, 1);
       loadSummary(currentCompanyId, month);
     }
   }, [currentCompanyId, currentTab, month]);
@@ -77,6 +77,10 @@ function Expense(props: { month: Date | null }) {
             setOpenDrawer(true);
             setDrawerMode("edit");
           }}
+          onPageChange={async (nextPage: number) => {
+            if (!month || !currentCompanyId) return;
+            await loadExpenses(currentCompanyId!, currentTab, month, nextPage);
+          }}
         />
         <ExpenseDrawer
           mode={drawerMode}
@@ -104,7 +108,7 @@ function Expense(props: { month: Date | null }) {
             }
 
             // 수정 후 최신 데이터 다시 불러오기
-            await loadExpenses(currentCompanyId!, currentTab, month);
+            await loadExpenses(currentCompanyId!, currentTab, month, 1);
             await loadSummary(currentCompanyId!, month);
 
             setOpenDrawer(false);
@@ -113,7 +117,7 @@ function Expense(props: { month: Date | null }) {
             if (!month) return;
             await deleteExpense(currentExpense.id);
 
-            await loadExpenses(currentCompanyId!, currentTab, month);
+            await loadExpenses(currentCompanyId!, currentTab, month, 1);
             await loadSummary(currentCompanyId!, month);
             showAlert("소비내역이 삭제되었습니다.", { type: "success" });
 

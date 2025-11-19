@@ -22,9 +22,14 @@ export interface ExpenseItem {
 interface Props {
   data: ExpenseItem[];
   onRowClick?: (data: ExpenseItem) => void;
+  onPageChange: (nextPage: number) => void;
 }
 
-export default function ExpenseGaugeTable({ data, onRowClick }: Props) {
+export default function ExpenseGaugeTable({
+  data,
+  onRowClick,
+  onPageChange,
+}: Props) {
   const { loading } = useExpenseStore();
   const columns: ColumnDef<ExpenseItem>[] = [
     {
@@ -74,6 +79,9 @@ export default function ExpenseGaugeTable({ data, onRowClick }: Props) {
             hideSize
             onRowClick={(row) => {
               onRowClick?.(row);
+            }}
+            onPageChange={(nextPage) => {
+              onPageChange(nextPage);
             }}
           />
         </FlexWrapper>

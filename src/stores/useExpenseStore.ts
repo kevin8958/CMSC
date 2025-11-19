@@ -33,7 +33,8 @@ interface ExpenseStore {
   loadExpenses: (
     companyId: string,
     category: "fixed" | "variable" | "other",
-    month: Date
+    month: Date,
+    page: number
   ) => Promise<void>;
 
   addExpense: (payload: {
@@ -72,12 +73,13 @@ export const useExpenseStore = create<ExpenseStore>((set) => ({
       },
     });
   },
-  loadExpenses: async (companyId, category, month) => {
+  loadExpenses: async (companyId, category, month, page) => {
     set({ loading: true });
     const data = await fetchExpenses({
       company_id: companyId,
       category,
       month,
+      page,
     });
     set({ list: data, loading: false });
   },

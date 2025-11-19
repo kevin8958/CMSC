@@ -30,10 +30,13 @@ export async function fetchExpenses(params: {
   company_id: string;
   category: "fixed" | "variable" | "other";
   month: Date;
+  page: number;
 }) {
   const start = dayjs(params.month).startOf("month").format("YYYY-MM-DD");
   const end = dayjs(params.month).endOf("month").format("YYYY-MM-DD");
 
+  const from = (params.page - 1) * 10;
+  const to = from + 10 - 1;
   const { data, error } = await supabase
     .from("expenses")
     .select(`*`)
@@ -41,7 +44,8 @@ export async function fetchExpenses(params: {
     .eq("category", params.category)
     .gte("date", start)
     .lte("date", end)
-    .order("date", { ascending: false });
+    .order("date", { ascending: false })
+    .range(from, to);
 
   if (error) throw error;
   return data;
