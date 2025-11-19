@@ -39,7 +39,6 @@ export default function ExpenseDrawer({
   const [method, setMethod] = useState(""); // 거래수단
   const [place, setPlace] = useState("");
   const [amount, setAmount] = useState("");
-  const [errors, setErrors] = useState({});
   const [currentCategory, setCurrentCategory] = useState<CategoryKey>("fixed");
   const { showAlert } = useAlert();
 
@@ -103,7 +102,6 @@ export default function ExpenseDrawer({
       onCancel={onClose}
       onConfirm={handleSubmit}
       onDelete={onDelete}
-      disableConfirm={!!Object.keys(errors).length}
     >
       <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6 px-4">
         <FlexWrapper items="center" gap={2}>
