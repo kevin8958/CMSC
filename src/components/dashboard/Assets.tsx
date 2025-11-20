@@ -3,6 +3,7 @@ import Typography from "@/foundation/Typography";
 
 function Assets(props: { month: Date | null }) {
   const { month } = props;
+  console.log(month);
   return (
     <>
       <FlexWrapper
