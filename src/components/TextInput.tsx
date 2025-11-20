@@ -161,7 +161,9 @@ const TextInput = (props: Common.TextInputProps) => {
             </button>
           ) : (
             suffix && (
-              <div className="absolute right-3 bottom-3 text-sm">{suffix}</div>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm">
+                {suffix}
+              </div>
             )
           )}
         </div>

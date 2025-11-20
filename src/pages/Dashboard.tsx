@@ -5,7 +5,8 @@ import CustomDatePicker from "@/components/DatePicker";
 import { supabase } from "@/lib/supabase";
 import dayjs from "dayjs";
 import Expense from "@/components/dashboard/Expense";
-import Assets from "@/components/dashboard/Assets";
+// import Assets from "@/components/dashboard/Assets";
+import Sales from "@/components/dashboard/Sales";
 
 function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
@@ -70,7 +71,8 @@ function Dashboard() {
           classes="lg:flex-row w-full flex-1 pb-4"
         >
           <Expense month={selectedMonth} />
-          <Assets month={selectedMonth} />
+          <Sales month={selectedMonth} />
+          {/* <Assets month={selectedMonth} /> */}
         </FlexWrapper>
       </FlexWrapper>
     </>

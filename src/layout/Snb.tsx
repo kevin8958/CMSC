@@ -81,17 +81,17 @@ const SNB = () => {
               },
             ],
           },
-          {
-            title: "회계정보",
-            items: [
-              {
-                id: "income",
-                label: "손익계산서",
-                href: "/income",
-                icon: <LuArrowUpDown />,
-              },
-            ],
-          },
+          // {
+          //   title: "회계정보",
+          //   items: [
+          //     {
+          //       id: "income",
+          //       label: "손익계산서",
+          //       href: "/income",
+          //       icon: <LuArrowUpDown />,
+          //     },
+          //   ],
+          // },
           {
             title: "자료관리",
             items: [

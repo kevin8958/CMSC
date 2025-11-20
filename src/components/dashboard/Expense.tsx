@@ -39,7 +39,7 @@ function Expense(props: { month: Date | null }) {
         direction="col"
         items="start"
         gap={0}
-        classes="border rounded-lg p-4 lg:flex-1 lg:max-w-[520px]"
+        classes="border rounded-xl p-4 lg:flex-1 lg:max-w-[520px]"
       >
         <FlexWrapper items="start" justify="between" classes="w-full flex-wrap">
           <FlexWrapper direction="col" items="start" gap={0}>
