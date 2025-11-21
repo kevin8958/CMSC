@@ -163,7 +163,15 @@ export default function Gnb() {
                       classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
                       onClick={() => handleMove("/vacation")}
                     >
-                      휴가관리
+                      연차관리
+                    </Button>
+                    <Button
+                      variant="clear"
+                      size="lg"
+                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                      onClick={() => handleMove("/expense")}
+                    >
+                      고정비와 변동비
                     </Button>
                     <Button
                       variant="clear"

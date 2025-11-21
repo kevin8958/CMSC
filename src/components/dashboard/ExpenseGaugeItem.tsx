@@ -21,7 +21,6 @@ export default function ExpenseGaugeItem({
   hovered,
   onClick,
   onHover,
-  noBorder = false,
 }: ExpenseGaugeItemProps) {
   return (
     <button
@@ -29,8 +28,7 @@ export default function ExpenseGaugeItem({
       onMouseEnter={() => onHover(id)}
       onMouseLeave={() => onHover(null)}
       className={`
-        flex-1 p-2 cursor-pointer transition-colors flex flex-col gap-1 transition-all duration-500
-        ${!noBorder ? "border-r" : ""}
+        flex-1 p-2 cursor-pointer transition-colors flex flex-col gap-1 transition-all duration-500 rounded-lg border min-w-[180px]
         ${active ? "bg-gray-200" : hovered ? "bg-gray-100" : ""}
       `}
     >

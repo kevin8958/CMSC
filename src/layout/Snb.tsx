@@ -3,7 +3,8 @@ import { useLocation } from "react-router-dom";
 import {
   LuChartNoAxesCombined,
   LuListChecks,
-  // LuArrowUpDown,
+  LuGitPullRequestDraft,
+  LuArrowUpDown,
   LuHardDrive,
   LuBuilding,
   // LuSettings,
@@ -81,17 +82,23 @@ const SNB = () => {
               },
             ],
           },
-          // {
-          //   title: "회계정보",
-          //   items: [
-          //     {
-          //       id: "income",
-          //       label: "손익계산서",
-          //       href: "/income",
-          //       icon: <LuArrowUpDown />,
-          //     },
-          //   ],
-          // },
+          {
+            title: "회계정보",
+            items: [
+              {
+                id: "expense",
+                label: "고정비와 변동비",
+                href: "/expense",
+                icon: <LuGitPullRequestDraft />,
+              },
+              {
+                id: "income",
+                label: "손익계산서",
+                href: "/income",
+                icon: <LuArrowUpDown />,
+              },
+            ],
+          },
           {
             title: "자료관리",
             items: [
