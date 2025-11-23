@@ -1,5 +1,5 @@
 import {
-  TbCircleDashed,
+  // TbCircleDashed,
   TbDotsCircleHorizontal,
   TbProgress,
   TbCircleDashedCheck,
@@ -7,11 +7,11 @@ import {
 } from "react-icons/tb";
 
 export const STATUS_CONFIG = {
-  backlog: {
-    label: "백로그",
-    color: "bg-gray-200 text-gray-800",
-    icon: <TbCircleDashed className="text-base text-gray-800" />,
-  },
+  // backlog: {
+  //   label: "백로그",
+  //   color: "bg-gray-200 text-gray-800",
+  //   icon: <TbCircleDashed className="text-base text-gray-800" />,
+  // },
   todo: {
     label: "할 일",
     color: "bg-third-200 text-third-800",
