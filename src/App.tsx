@@ -8,7 +8,6 @@ import { AlertProvider } from "@/components/AlertProvider";
 import Gnb from "@/layout/Gnb";
 import Communication from "@/pages/Communication";
 import Employee from "@/pages/Employee";
-import Income from "@/pages/Income";
 import Document from "@/pages/Document";
 import Company from "@/pages/Company";
 import CompanyDetail from "@/components/company/CompanyDetail";
@@ -24,6 +23,7 @@ import Inquiry from "./pages/Inquiry";
 import Salary from "./pages/Salary";
 import Attendance from "./pages/Attendance";
 import Expense from "./pages/Expense";
+import Sales from "./pages/Sales";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -76,7 +76,7 @@ function App() {
                 <Route path="/communication" element={<Communication />} />
                 <Route path="/employee" element={<Employee />} />
                 <Route path="/expense" element={<Expense />} />
-                <Route path="/income" element={<Income />} />
+                <Route path="/sales" element={<Sales />} />
                 <Route path="/salary" element={<Salary />} />
                 <Route path="/attendance" element={<Attendance />} />
                 <Route path="/document" element={<Document />} />

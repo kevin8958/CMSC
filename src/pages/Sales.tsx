@@ -1,15 +1,18 @@
 import FlexWrapper from "@/layout/FlexWrapper";
 import Button from "@/components/Button";
 import Typography from "@/foundation/Typography";
-import RevenueSection from "@/components/dashboard/RevenueSection";
-import OperatingProfitSection from "@/components/dashboard/OperatingProfitSection";
-import PreTaxProfitSection from "@/components/dashboard/PreTaxProfitSection";
+import RevenueSection from "@/components/sales/RevenueSection";
+import OperatingProfitSection from "@/components/sales/OperatingProfitSection";
+import PreTaxProfitSection from "@/components/sales/PreTaxProfitSection";
 import { LuSave } from "react-icons/lu";
 import { useState, useMemo } from "react";
+import dayjs from "dayjs";
+import CustomDatePicker from "@/components/DatePicker";
 
-function Sales(props: { month: Date | null }) {
-  const { month } = props;
-  console.log(month);
+function Sales() {
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(
+    dayjs().toDate()
+  );
   const [editMode, setEditMode] = useState(false);
 
   const [revenue, setRevenue] = useState<string>("");
@@ -53,53 +56,58 @@ function Sales(props: { month: Date | null }) {
 
   return (
     <>
-      <FlexWrapper
-        direction="col"
-        items="start"
-        gap={4}
-        classes="border rounded-xl lg:flex-1 lg:max-w-[520px] p-4"
-      >
-        <FlexWrapper items="start" justify="between" classes="w-full flex-wrap">
-          <FlexWrapper direction="col" items="start" gap={0}>
-            <Typography variant="H3">매출</Typography>
-            <Typography variant="H3">
-              {(10000000).toLocaleString()}원
-            </Typography>
-          </FlexWrapper>
-          <div className="flex-shrink-0 flex items-start justify-end">
-            {!editMode ? (
+      <FlexWrapper items="start" justify="between" classes="w-full flex-wrap">
+        <FlexWrapper direction="col" items="start" gap={0}>
+          <Typography variant="H3">손익계산서</Typography>
+        </FlexWrapper>
+        <FlexWrapper justify="center" gap={0} classes="w-full md:w-fit">
+          <CustomDatePicker
+            variant="outline"
+            size="md"
+            type="month"
+            isMonthPicker
+            dateFormat="YYYY.MM"
+            value={selectedMonth}
+            onChange={(date) => setSelectedMonth(date)}
+          />
+        </FlexWrapper>
+      </FlexWrapper>
+      <FlexWrapper items="start" justify="end" classes="w-full pt-2">
+        <div className="flex-shrink-0 flex items-start justify-end">
+          {!editMode ? (
+            <Button
+              variant="contain"
+              size="md"
+              color="green"
+              onClick={() => setEditMode(true)}
+            >
+              편집하기
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setEditMode(false)}
+                size="md"
+                color="primary"
+                classes="flex items-center gap-2"
+              >
+                취소
+              </Button>
               <Button
                 variant="contain"
+                onClick={() => setEditMode(false)}
                 size="md"
-                color="green"
-                onClick={() => setEditMode(true)}
+                color="primary"
+                classes="flex items-center gap-2"
               >
-                편집하기
+                <LuSave size={16} /> 저장
               </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setEditMode(false)}
-                  size="md"
-                  color="primary"
-                  classes="flex items-center gap-2"
-                >
-                  취소
-                </Button>
-                <Button
-                  variant="contain"
-                  onClick={() => setEditMode(false)}
-                  size="md"
-                  color="primary"
-                  classes="flex items-center gap-2"
-                >
-                  <LuSave size={16} /> 저장
-                </Button>
-              </div>
-            )}
-          </div>
-        </FlexWrapper>
+            </div>
+          )}
+        </div>
+      </FlexWrapper>
+      <FlexWrapper direction="col" gap={6} classes="w-[400px] flex-1 pt-4">
         <RevenueSection
           editMode={editMode}
           revenue={revenue}
@@ -109,7 +117,6 @@ function Sales(props: { month: Date | null }) {
           onChangeRevenue={setRevenue}
           onChangeCogs={setCogs}
         />
-
         <OperatingProfitSection
           editMode={editMode}
           revenue={revenueNum}
@@ -119,7 +126,6 @@ function Sales(props: { month: Date | null }) {
           operatingMargin={operatingMargin}
           onChangeSga={setSga}
         />
-
         <PreTaxProfitSection
           editMode={editMode}
           revenue={revenueNum}

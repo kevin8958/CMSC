@@ -3,7 +3,7 @@ import Typography from "@/foundation/Typography";
 import Button from "@/components/Button";
 import { LuPlus } from "react-icons/lu";
 import { useEffect, useRef, useState } from "react";
-import ExpenseDrawer from "../components/dashboard/ExpenseDrawer";
+import ExpenseDrawer from "../components/expense/ExpenseDrawer";
 import { useExpenseStore } from "@/stores/useExpenseStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
@@ -14,8 +14,8 @@ import Label from "@/components/Label";
 import CustomDatePicker from "@/components/DatePicker";
 import ExpenseGaugeTable, {
   type ExpenseItem,
-} from "@/components/dashboard/ExpenseGaugeTable";
-import ExpenseGaugeItem from "@/components/dashboard/ExpenseGaugeItem";
+} from "@/components/expense/ExpenseGaugeTable";
+import ExpenseGaugeItem from "@/components/expense/ExpenseGaugeItem";
 
 function Expense() {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
