@@ -1,7 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-"use client";
-
 import classNames from "classnames";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
