@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -24,6 +30,7 @@ import Salary from "./pages/Salary";
 import Attendance from "./pages/Attendance";
 import Expense from "./pages/Expense";
 import Sales from "./pages/Sales";
+import classNames from "classnames";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -40,12 +47,22 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 // ✅ Outlet 기반 AppLayout
 function AppLayout() {
+  const location = useLocation();
+  const pathname = location.pathname;
   return (
     <div className="min-h-screen w-full">
       <Gnb />
       <FlexWrapper items="start" gap={0}>
         <Snb />
-        <main className="pt-[76px] px-4 flex-1 h-screen flex flex-col overflow-scroll">
+        <main
+          className={classNames(
+            "pt-[76px] px-4 flex-1 h-screen flex flex-col overflow-scroll",
+            {
+              "bg-[linear-gradient(to_bottom,#F3FCF9_0%,#F3FCF9_90%,white_100%)]":
+                pathname === "/dashboard",
+            }
+          )}
+        >
           <Outlet /> {/* ✅ 여기에 자식 페이지들이 자동으로 렌더 */}
         </main>
       </FlexWrapper>

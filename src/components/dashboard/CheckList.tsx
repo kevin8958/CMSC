@@ -10,7 +10,7 @@ import Button from "@/components/Button";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Typography from "@/foundation/Typography";
 import Badge from "@/components/Badge";
-import { LuPlus } from "react-icons/lu";
+import { LuLayoutList, LuPlus } from "react-icons/lu";
 import dayjs from "dayjs";
 
 import CheckListSkeleton from "./CheckListSkeleton";
@@ -64,7 +64,7 @@ export default function CheckList() {
         <CheckListSkeleton />
       ) : (
         <div className="rounded-md h-[288px] flex flex-col w-full border rounded-xl">
-          <FlexWrapper justify="between" items="center" classes="p-4">
+          <FlexWrapper justify="between" items="center" classes="p-4 pb-0">
             <FlexWrapper gap={2} items="center">
               <Typography variant="H4">확인해주세요</Typography>
               <Badge color="green" size="md">
@@ -75,7 +75,7 @@ export default function CheckList() {
             <Button
               variant="contain"
               color="green"
-              size="md"
+              size="sm"
               classes="gap-1 !px-2"
               onClick={() => {
                 setDrawerMode("create");
@@ -92,50 +92,57 @@ export default function CheckList() {
                 setDrawerOpen(true);
               }}
             >
-              <LuPlus className="text-lg" />
+              <LuPlus className="text-base" />
             </Button>
           </FlexWrapper>
           <DragDropContext onDragEnd={onDragEnd}>
-            <div className="w-full">
-              <Droppable droppableId="checklist-droppable">
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="rounded-md h-[200px] overflow-y-auto scroll-thin flex flex-col w-full px-4"
-                  >
-                    {/* Header */}
+            {list.length > 0 ? (
+              <div className="w-full">
+                <Droppable droppableId="checklist-droppable">
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="rounded-md h-[200px] overflow-y-auto scroll-thin flex flex-col w-full px-4 pt-2"
+                    >
+                      {/* Header */}
 
-                    {/* Checklist List */}
-                    {list.map((item, index) => (
-                      <Draggable
-                        draggableId={item.id}
-                        index={index}
-                        key={item.id}
-                      >
-                        {(p) => (
-                          <div
-                            ref={p.innerRef}
-                            {...p.draggableProps}
-                            {...p.dragHandleProps}
-                            onClick={() => {
-                              setDrawerMode("edit");
-                              setCurrentItem(item);
-                              setDrawerOpen(true);
-                            }}
-                            className="border bg-white rounded-lg shadow mb-3 cursor-pointer transition duration-300 shadow-custom-dark"
-                          >
-                            <ChecklistCard item={item} />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                      {/* Checklist List */}
+                      {list.map((item, index) => (
+                        <Draggable
+                          draggableId={item.id}
+                          index={index}
+                          key={item.id}
+                        >
+                          {(p) => (
+                            <div
+                              ref={p.innerRef}
+                              {...p.draggableProps}
+                              {...p.dragHandleProps}
+                              onClick={() => {
+                                setDrawerMode("edit");
+                                setCurrentItem(item);
+                                setDrawerOpen(true);
+                              }}
+                              className="border bg-white rounded-lg shadow mb-3 cursor-pointer transition duration-300 shadow-custom-dark"
+                            >
+                              <ChecklistCard item={item} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
 
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </div>
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </div>
+            ) : (
+              <div className="h-[240px] flex flex-col items-center justify-center gap-2 p-6">
+                <LuLayoutList className="text-4xl text-gray-300" />
+                <p className="text-gray-400 text-sm">체크리스트가 없습니다</p>
+              </div>
+            )}
           </DragDropContext>
         </div>
       )}

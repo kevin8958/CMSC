@@ -7,6 +7,7 @@ import Typography from "@/foundation/Typography";
 import Badge from "@/components/Badge";
 import Button from "@/components/Button";
 import dayjs from "dayjs";
+import { useAlert } from "@/components/AlertProvider";
 import { useNoticeStore } from "@/stores/useNoticeStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { LuCalendarX } from "react-icons/lu";
@@ -40,6 +41,7 @@ function MonthSchedule() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<any | null>(null);
   const [sortMode, setSortMode] = useState<"date" | "priority">("date");
+  const { showAlert } = useAlert();
 
   // fetch notices
   useEffect(() => {
@@ -83,7 +85,7 @@ function MonthSchedule() {
       <FlexWrapper
         gap={0}
         direction="col"
-        classes="sm:flex-row !h-fit border border-primary-100 rounded-xl col-span-12 sm:col-span-6"
+        classes="sm:flex-row !h-fit border border-primary-100 rounded-xl "
       >
         <div className="shrink-0">
           <InlineDatePicker
@@ -109,7 +111,7 @@ function MonthSchedule() {
             <FlexWrapper gap={2} items="center">
               <Button
                 variant="outline"
-                size="md"
+                size="sm"
                 classes="!text-gray-500 !border-gray-400"
                 onClick={() =>
                   setSortMode((prev) => (prev === "date" ? "priority" : "date"))
@@ -120,14 +122,14 @@ function MonthSchedule() {
               <Button
                 variant="contain"
                 color="green"
-                size="md"
+                size="sm"
                 classes="gap-1 !px-2"
                 onClick={() => {
                   setEditTarget(null);
                   setDrawerOpen(true);
                 }}
               >
-                <LuPlus className="text-lg" />
+                <LuPlus className="text-base" />
               </Button>
             </FlexWrapper>
           </FlexWrapper>
@@ -209,11 +211,13 @@ function MonthSchedule() {
         onSubmit={async (params) => {
           if (editTarget) {
             await update(editTarget.id, params);
+            showAlert("수정되었습니다.", { type: "success" });
           } else {
             await create({
               company_id: currentCompanyId!,
               ...params,
             });
+            showAlert("추가되었습니다.", { type: "success" });
           }
           setDrawerOpen(false);
         }}
@@ -222,6 +226,7 @@ function MonthSchedule() {
             ? async () => {
                 await remove(editTarget.id);
                 setDrawerOpen(false);
+                showAlert("삭제되었습니다.", { type: "danger" });
               }
             : undefined
         }
