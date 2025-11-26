@@ -75,7 +75,7 @@ export default function InlineDatePicker({
               noticeByDate[key]?.some?.((n) => hoveredNotices.includes(n.id)));
 
           return classNames(
-            "inline-block size-8 text-center rounded-lg text-sm leading-8 cursor-pointer box-border transition-all duration-300",
+            "inline-block h-8 min-w-8 w-[calc(100%/7)] text-center rounded-lg text-sm leading-8 cursor-pointer box-border transition-all duration-300",
             "transition-colors",
             isSelected && "!bg-green-600 text-white font-semibold",
             !isSelected && isHovered && "bg-gray-200",

@@ -83,7 +83,7 @@ function MonthSchedule() {
       <FlexWrapper
         gap={0}
         direction="col"
-        classes="sm:flex-row !h-fit border border-primary-100 rounded-xl col-span-6"
+        classes="sm:flex-row !h-fit border border-primary-100 rounded-xl col-span-12 sm:col-span-6"
       >
         <div className="shrink-0">
           <InlineDatePicker
@@ -98,12 +98,7 @@ function MonthSchedule() {
         </div>
         {/* Notices */}
         <div className="flex-1">
-          <FlexWrapper
-            justify="between"
-            items="center"
-            direction="col"
-            classes="sm:flex-row sm:items-end p-4 pb-0"
-          >
+          <FlexWrapper justify="between" items="center" classes="p-4 pb-0">
             <FlexWrapper gap={2} items="center">
               <Typography variant="H4">중요일정</Typography>
               <Badge color="green" size="md">
