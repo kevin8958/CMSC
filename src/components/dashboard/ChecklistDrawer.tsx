@@ -58,6 +58,7 @@ export default function ChecklistDrawer({
       setDescription("");
       setDueDate(new Date());
     }
+    setErrors({ title: "" });
   }, [item]);
 
   const handleSubmit = async () => {
@@ -78,7 +79,7 @@ export default function ChecklistDrawer({
       open={open}
       title={
         <Typography variant="H4">
-          {mode === "create" ? "확인 항목 추가" : "확인 항목 수정"}
+          {mode === "create" ? "체크리스트 추가" : "체크리스트 수정"}
         </Typography>
       }
       showFooter
@@ -89,7 +90,7 @@ export default function ChecklistDrawer({
       onDelete={onDelete}
       onConfirm={handleSubmit}
     >
-      <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6 px-4">
+      <FlexWrapper direction="col" gap={6} classes="pt-4 pb-6 px-4">
         {/* 제목 */}
         <FlexWrapper items="center" gap={2}>
           <div className="shrink-0 !w-[60px]">
@@ -122,11 +123,16 @@ export default function ChecklistDrawer({
         </FlexWrapper>
 
         {/* 설명 */}
-        <Textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="설명을 입력하세요"
-        />
+        <FlexWrapper items="start" gap={2}>
+          <div className="shrink-0 !w-[60px] pt-2">
+            <Label text="설명" />
+          </div>
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="설명을 입력하세요"
+          />
+        </FlexWrapper>
       </FlexWrapper>
       {mode === "edit" && item?.id && (
         <ChecklistComments checklistId={item.id} />

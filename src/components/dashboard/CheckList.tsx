@@ -165,7 +165,7 @@ export default function CheckList() {
           drawerMode === "edit"
             ? async () => {
                 await remove(currentItem!.id);
-                showAlert("삭제되었습니다.", { type: "success" });
+                showAlert("삭제되었습니다.", { type: "danger" });
                 setDrawerOpen(false);
               }
             : undefined

@@ -71,7 +71,11 @@ export default function ChecklistComments({
 
       {/* 로딩 스피너 */}
       {loading ? (
-        <FlexWrapper classes="h-[240px]" justify="center" items="center">
+        <FlexWrapper
+          classes="h-[calc(100dvh-50px-287px-50px-30px-16px-60px)]"
+          justify="center"
+          items="center"
+        >
           <motion.div
             className="size-4 rounded-full border-[3px] border-primary-900 border-t-transparent"
             animate={{ rotate: 360 }}
@@ -82,14 +86,14 @@ export default function ChecklistComments({
         <div>
           {/* 댓글 없음 */}
           {list.length === 0 && (
-            <div className="h-[200px] flex flex-col items-center justify-center gap-2 p-6">
+            <div className="h-[calc(100dvh-50px-287px-50px-30px-16px-60px)] flex flex-col items-center justify-center gap-2 p-6">
               <TbMoodEmpty className="text-4xl text-gray-300" />
               <p className="text-gray-400 text-sm">댓글이 없습니다</p>
             </div>
           )}
 
           {/* 댓글 리스트 */}
-          <div className="max-h-[220px] overflow-y-auto scroll-thin py-2">
+          <div className="h-[calc(100dvh-50px-287px-50px-30px-16px-60px)] overflow-y-auto scroll-thin py-2">
             {list.map((c) => {
               const mine = c.created_by === userId;
               return (
