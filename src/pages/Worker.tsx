@@ -96,6 +96,7 @@ function Worker() {
             size="md"
             classes="gap-1 !px-3 shrink-0"
             onClick={() => {
+              setCurrentWorker(null);
               setDrawerMode("create");
               setOpenDrawer(true);
             }}

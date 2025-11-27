@@ -8,10 +8,12 @@ import {
   type Worker,
   type CreateWorkerParams,
   type UpdateWorkerParams,
+  fetchAllWorkers,
 } from "@/actions/workerActions";
 
 interface WorkerStore {
   workers: Worker[];
+  allList: Worker[];
   loading: boolean;
 
   total: number;
@@ -25,10 +27,12 @@ interface WorkerStore {
   create: (data: CreateWorkerParams) => Promise<Worker | null>;
   update: (id: string, data: UpdateWorkerParams) => Promise<Worker | null>;
   remove: (id: string) => Promise<boolean>;
+  fetchAll: (companyId: string) => Promise<void>;
 }
 
 export const useWorkerStore = create<WorkerStore>((set, get) => ({
   workers: [],
+  allList: [],
   loading: false,
 
   total: 0,
@@ -123,5 +127,9 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
       console.error("❌ deleteWorker error:", err);
       return false;
     }
+  },
+  fetchAll: async (companyId: string) => {
+    const data = await fetchAllWorkers(companyId);
+    set({ allList: data });
   },
 }));

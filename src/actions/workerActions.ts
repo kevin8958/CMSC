@@ -128,3 +128,14 @@ export async function deleteWorker(id: string): Promise<boolean> {
   if (error) throw error;
   return true;
 }
+
+export async function fetchAllWorkers(companyId: string) {
+  const { data, error } = await supabase
+    .from("workers")
+    .select("*")
+    .eq("company_id", companyId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}

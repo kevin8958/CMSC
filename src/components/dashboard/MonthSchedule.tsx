@@ -82,11 +82,7 @@ function MonthSchedule() {
 
   return (
     <>
-      <FlexWrapper
-        gap={0}
-        direction="col"
-        classes="sm:flex-row !h-fit border border-primary-100 rounded-xl "
-      >
+      <FlexWrapper gap={0} direction="col" classes="sm:flex-row !h-fit">
         <div className="shrink-0">
           <InlineDatePicker
             currentMonth={currentMonth}

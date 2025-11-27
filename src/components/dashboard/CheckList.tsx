@@ -63,7 +63,7 @@ export default function CheckList() {
       {loading ? (
         <CheckListSkeleton />
       ) : (
-        <div className="rounded-md h-[288px] flex flex-col w-full border rounded-xl">
+        <div className="h-[288px] flex flex-col w-full">
           <FlexWrapper justify="between" items="center" classes="p-4 pb-0">
             <FlexWrapper gap={2} items="center">
               <Typography variant="H4">확인해주세요</Typography>
