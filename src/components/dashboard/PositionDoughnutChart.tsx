@@ -8,14 +8,8 @@ import { LuChartPie } from "react-icons/lu";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface Worker {
-  id: string;
-  name: string;
-  position: string | null;
-}
-
 interface PositionDoughnutChartProps {
-  workers: Worker[];
+  workers: Worker.Worker[];
   onClickPosition?: (position: string) => void;
 }
 const COLORS = [

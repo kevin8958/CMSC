@@ -19,6 +19,7 @@ import { STATUS_CONFIG } from "@/constants/TaskConfigs_fixed";
 import TaskStatusBadge from "@/components/task/TaskStatusBadge";
 import dayjs from "dayjs";
 import TaskBoardSkeleton from "./TaskBoardSkeleton";
+import { useWorkerStore } from "@/stores/useWorkerStore";
 
 const statusKeys = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
 
@@ -89,7 +90,6 @@ export default function TaskBoard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
   const [currentTask, setCurrentTask] = useState<Task.Task | null>(null);
-  const [members, setMembers] = useState<any[]>([]);
   const {
     tasks,
     fetching,
@@ -99,19 +99,17 @@ export default function TaskBoard() {
     updateTask,
     updateOrder,
     deleteTask,
-    fetchAllMembers,
   } = useTaskStore();
   const { currentCompanyId } = useCompanyStore();
   const { showAlert } = useAlert();
   const { openDialog } = useDialog();
 
+  const { allList, fetchAll } = useWorkerStore();
+
   useEffect(() => {
     if (currentCompanyId) {
       fetchTasks(currentCompanyId);
-      (async () => {
-        const list = await fetchAllMembers(currentCompanyId);
-        setMembers(list);
-      })();
+      fetchAll(currentCompanyId);
     }
   }, [currentCompanyId]);
 
@@ -161,7 +159,7 @@ export default function TaskBoard() {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="bg-gray-50 rounded-md p-2 min-h-[calc(100dvh-36px-76px-24px-16px)] flex flex-col w-full min-w-[248px]"
+                    className="bg-white border rounded-md p-2 min-h-[calc(100dvh-36px-76px-24px-16px)] flex flex-col w-full min-w-[248px]"
                   >
                     <FlexWrapper
                       justify="between"
@@ -214,9 +212,9 @@ export default function TaskBoard() {
                                 setCurrentTask(task);
                                 setDrawerOpen(true);
                               }}
-                              className="bg-white rounded-lg shadow mb-3 cursor-pointer hover:shadow-custom-light transition duration-300 shadow-custom-dark"
+                              className="bg-white rounded-lg border mb-3 cursor-pointer hover:shadow-custom-light transition duration-300 shadow-custom-dark"
                             >
-                              <TaskCard task={task} members={members} />
+                              <TaskCard task={task} members={allList} />
                             </div>
                           )}
                         </Draggable>
@@ -233,7 +231,7 @@ export default function TaskBoard() {
         open={drawerOpen}
         mode={drawerMode}
         task={currentTask}
-        members={members}
+        workers={allList}
         onClose={() => setDrawerOpen(false)}
         onSubmit={async (data) => {
           if (!currentCompanyId) return;

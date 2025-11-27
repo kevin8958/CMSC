@@ -29,7 +29,7 @@ export default function TaskDrawer({
   open,
   mode,
   task,
-  members,
+  workers,
   onClose,
   onSubmit,
   onDelete,
@@ -162,17 +162,15 @@ export default function TaskDrawer({
             hideDownIcon
             buttonSize="sm"
             buttonVariant="outline"
-            items={members.map((m) => ({
+            items={workers.map((m) => ({
               type: "item",
-              id: m.user_id,
-              label: m.nickname,
+              id: m.id,
+              label: m.name,
             }))}
             dialogWidth={160}
             onChange={(val) => setAssignee(val as string)}
             buttonItem={
-              assignee
-                ? members.find((m) => m.user_id === assignee)?.nickname
-                : "선택"
+              assignee ? workers.find((m) => m.id === assignee)?.name : "선택"
             }
             buttonClasses="!font-normal text-primary-900 !w-[120px] !h-fit !border-primary-300 hover:!bg-primary-50 !text-sm !py-1"
           />

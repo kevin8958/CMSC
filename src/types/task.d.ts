@@ -28,7 +28,7 @@ namespace Task {
     open: boolean;
     mode: "create" | "edit";
     task?: Task | null;
-    members: any[];
+    workers: Worker.Worker[];
     onClose: () => void;
     onSubmit: (data: Partial<Task>) => Promise<void>;
     onDelete?: () => Promise<void>;

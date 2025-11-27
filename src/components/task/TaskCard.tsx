@@ -7,9 +7,10 @@ import {
   LuMessageCircleMore,
 } from "react-icons/lu";
 import dayjs from "dayjs";
+
 interface TaskCardProps {
   task: Task.Task;
-  members: Array<{ user_id: string; nickname: string }>;
+  members: Worker.Worker[];
 }
 
 const PRIORITY_CONFIG = {
@@ -71,7 +72,7 @@ export default function TaskCard({ task, members }: TaskCardProps) {
         <FlexWrapper gap={1} items="center">
           <LuSquareUserRound className="text-base" />
           <span className="text-sm">
-            {members.find((m) => m.user_id === task.assignee)?.nickname || "-"}
+            {members.find((m) => m.id === task.assignee)?.name || "-"}
           </span>
         </FlexWrapper>
         <FlexWrapper gap={1} items="center">

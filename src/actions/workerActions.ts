@@ -1,19 +1,5 @@
 // actions/workerActions.ts
 import { supabase } from "@/lib/supabase";
-import dayjs from "dayjs";
-
-export interface Worker {
-  id: string;
-  company_id: string;
-  name: string;
-  email: string | null;
-  position: string | null;
-  duty: string | null;
-  joined_at: string | null;
-  total_leave: number;
-  used_leave: number;
-  created_at: string;
-}
 
 // Create 파라미터
 export interface CreateWorkerParams {
@@ -54,7 +40,7 @@ export async function fetchWorkers(
   companyId: string,
   page: number = 1,
   pageSize: number = 10
-): Promise<{ list: Worker[]; total: number }> {
+): Promise<{ list: Worker.Worker[]; total: number }> {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
@@ -77,7 +63,7 @@ export async function fetchWorkers(
 // ----------------------------------------------------------
 export async function createWorker(
   params: CreateWorkerParams
-): Promise<Worker> {
+): Promise<Worker.Worker> {
   const { data, error } = await supabase
     .from("workers")
     .insert([
@@ -105,7 +91,7 @@ export async function createWorker(
 export async function updateWorker(
   id: string,
   data: UpdateWorkerParams
-): Promise<Worker> {
+): Promise<Worker.Worker> {
   const { data: updated, error } = await supabase
     .from("workers")
     .update({

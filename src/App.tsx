@@ -60,7 +60,7 @@ function AppLayout() {
             "pt-[76px] px-4 flex-1 h-screen flex flex-col overflow-scroll",
             {
               "bg-[linear-gradient(to_bottom,#F3FCF9_0%,#F3FCF9_90%,white_100%)]":
-                pathname === "/dashboard",
+                ["/dashboard", "/communication"].includes(pathname),
             }
           )}
         >

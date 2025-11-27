@@ -6,15 +6,14 @@ import Label from "@/components/Label";
 import TextInput from "@/components/TextInput";
 import CustomDatePicker from "@/components/DatePicker";
 import dayjs from "dayjs";
-import { type Worker } from "@/actions/workerActions";
 
 interface WorkerDrawerProps {
   open: boolean;
   mode: "create" | "edit";
-  worker: Worker | null;
+  worker: Worker.Worker | null;
   onClose: () => void;
-  onSubmit: (data: Partial<Worker>) => Promise<void>;
-  onEdit: (data: Partial<Worker>) => Promise<void>;
+  onSubmit: (data: Partial<Worker.Worker>) => Promise<void>;
+  onEdit: (data: Partial<Worker.Worker>) => Promise<void>;
   onDelete?: () => Promise<void>;
 }
 
