@@ -18,17 +18,16 @@ interface PositionDoughnutChartProps {
   workers: Worker[];
   onClickPosition?: (position: string) => void;
 }
-
 const COLORS = [
-  "#3BAC87",
-  "#F59E0B",
-  "#EF4444",
-  "#8B5CF6",
-  "#0EA5E9",
-  "#14B8A6",
-  "#2563EB",
-  "#CBD5E0", // 미지정 default color
+  "#6EC8B2", // Soft Green
+  "#8BBEE8", // Soft Blue
+  "#BDA6E8", // Soft Purple
+  "#F2C28C", // Soft Orange
+  "#E8A6B8", // Soft Pink
+  "#A7B4C2", // Soft Gray-Blue
+  "#9ED1C7", // Soft Mint
 ];
+const GRAY = "#E5E7EB";
 
 export default function PositionDoughnutChart({
   workers,
@@ -51,7 +50,7 @@ export default function PositionDoughnutChart({
     return Object.entries(map).map(([position, count], index) => ({
       position,
       count,
-      color: COLORS[index % COLORS.length],
+      color: position === "미지정" ? GRAY : COLORS[index % COLORS.length],
     }));
   }, [workers]);
 
