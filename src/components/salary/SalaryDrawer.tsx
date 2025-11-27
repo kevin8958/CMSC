@@ -12,18 +12,6 @@ import { STATUS_CONFIG } from "@/constants/SalaryConfigs_fixed";
 import Tooltip from "@/components/Tooltip";
 import { calcSalary } from "@/utils/salaryCalc";
 
-interface SalaryDrawerProps {
-  open: boolean;
-  month: Date | null;
-  mode: "create" | "edit";
-  salary?: any;
-  members: { user_id: string; nickname: string }[];
-  onClose: () => void;
-  onConfirm: (data: Omit<Salary.Insert, "company_id">) => Promise<void>;
-  onEdit: (data: Omit<Salary.Update, "company_id">) => Promise<void>;
-  onDelete?: () => Promise<void>;
-}
-
 type StatusKey = keyof typeof STATUS_CONFIG;
 const statusKeys = Object.keys(STATUS_CONFIG) as StatusKey[];
 
@@ -42,14 +30,14 @@ export default function SalaryDrawer({
   month,
   mode,
   salary,
-  members,
+  workers,
   onClose,
   onConfirm,
   onEdit,
   onDelete,
-}: SalaryDrawerProps) {
+}: Salary.SalaryDrawerProps) {
   const [form, setForm] = useState({
-    member: "",
+    worker: "",
     pay_month: dayjs().format("YYYY-MM"),
     status: "pending" as Salary.SalaryStatus,
     emp_type: "정규직" as Salary.EmpType,
@@ -75,7 +63,7 @@ export default function SalaryDrawer({
   useEffect(() => {
     if (salary) {
       setForm({
-        member: salary.user_id || "",
+        worker: salary.worker_id || "",
         pay_month: dayjs(salary.pay_month).format("YYYY-MM"),
         status: salary.status || "pending",
         emp_type: salary.emp_type || "정규직",
@@ -97,7 +85,7 @@ export default function SalaryDrawer({
       });
     } else {
       setForm({
-        member: "",
+        worker: "",
         pay_month: dayjs().format("YYYY-MM"),
         status: "pending",
         emp_type: "정규직",
@@ -148,8 +136,8 @@ export default function SalaryDrawer({
     total_amount - tax_total - insurance_total - Number(form.deduction_other);
 
   const handleSubmit = async () => {
-    if (!form.member) {
-      setErrors({ member: "직원을 선택해주세요." });
+    if (!form.worker) {
+      setErrors({ worker: "직원을 선택해주세요." });
       return;
     }
     const computed = calcSalary({
@@ -170,9 +158,8 @@ export default function SalaryDrawer({
 
     if (mode === "create") {
       await onConfirm({
-        user_id: form.member,
-        user_name:
-          members.find((m) => m.user_id === form.member)?.nickname || "",
+        worker_id: form.worker,
+        user_name: workers.find((m) => m.id === form.worker)?.name || "",
         pay_month: dayjs(form.pay_month).format("YYYY-MM"),
         status: form.status,
         emp_type: form.emp_type,
@@ -202,9 +189,8 @@ export default function SalaryDrawer({
     } else {
       await onEdit({
         id: salary.id,
-        user_id: form.member,
-        user_name:
-          members.find((m) => m.user_id === form.member)?.nickname || "",
+        worker_id: form.worker,
+        user_name: workers.find((m) => m.id === form.worker)?.name || "",
         pay_month: dayjs(form.pay_month).format("YYYY-MM"),
         status: form.status,
         emp_type: form.emp_type,
@@ -293,16 +279,16 @@ export default function SalaryDrawer({
                 hideDownIcon
                 buttonSize="sm"
                 buttonVariant="outline"
-                items={members.map((m) => ({
+                items={workers.map((m) => ({
                   type: "item",
-                  id: m.user_id,
-                  label: m.nickname,
+                  id: m.id,
+                  label: m.name,
                 }))}
                 dialogWidth={160}
-                onChange={(val) => handleChange("member", val)}
+                onChange={(val) => handleChange("worker", val)}
                 buttonItem={
-                  form.member
-                    ? members.find((m) => m.user_id === form.member)?.nickname
+                  form.worker
+                    ? workers.find((m) => m.id === form.worker)?.name
                     : "선택"
                 }
                 buttonClasses="!font-normal text-primary-900 !w-[160px] !h-fit !border-primary-300 hover:!bg-primary-50 !text-sm !py-1"

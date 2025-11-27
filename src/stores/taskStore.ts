@@ -21,7 +21,6 @@ type TaskStore = {
     companyId: string,
     updates: Array<Pick<Task.Task, "id" | "status" | "sort_index">>
   ) => Promise<void>;
-  fetchAllMembers: (currentCompanyId: string) => Promise<any[]>;
   fetchComments: (taskId: string) => Promise<void>;
   addComment: (taskId: string, content: string) => Promise<void>;
   deleteComment: (commentId: string, taskId: string) => Promise<void>;
@@ -144,29 +143,6 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
         .catch(() => ({ error: "Server error" }));
       console.error("update-order failed:", error);
     }
-  },
-  fetchAllMembers: async (currentCompanyId: string) => {
-    const res = await fetch(
-      `/api/tasks/company-member-list?companyId=${currentCompanyId}`
-    );
-    const { data } = await res.json();
-
-    const members = data.map((m: any) => ({
-      user_id: m.user_id,
-      nickname: m.profiles?.nickname ?? "-",
-      email: m.profiles?.email ?? "-",
-      joined_at: m.joined_at,
-      created_at: m.created_at,
-      role: m.role,
-    }));
-
-    members.sort((a: any, b: any) => {
-      if (a.role === "admin" && b.role !== "admin") return -1;
-      if (a.role !== "admin" && b.role === "admin") return 1;
-      return 0;
-    });
-
-    return members;
   },
   fetchComments: async (taskId: string) => {
     const res = await fetch(`/api/tasks/comments/list?task_id=${taskId}`);

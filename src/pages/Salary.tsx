@@ -9,32 +9,33 @@ import SalaryTable from "@/components/salary/SalaryTable";
 import Badge from "@/components/Badge";
 import { useSalaryStore } from "@/stores/useSalaryStore";
 import SalaryDrawer from "@/components/salary/SalaryDrawer";
-import { useTaskStore } from "@/stores/taskStore";
+import { useWorkerStore } from "@/stores/useWorkerStore";
+import { useAlert } from "@/components/AlertProvider";
 
 function Salary() {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
     dayjs().toDate()
   );
-  const [members, setMembers] = useState<any[]>([]);
   const { currentCompanyId } = useCompanyStore();
   const { total, fetchSalaries, addSalary, updateSalary, deleteSalary } =
     useSalaryStore();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     fetchSalaries(1, 10, selectedMonth);
   }, [currentCompanyId]);
-  const { fetchAllMembers } = useTaskStore();
 
   // Drawer 상태
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
   const [currentSalary, setCurrentSalary] = useState<any>(null);
 
+  const { allList, fetchAll } = useWorkerStore();
+
   useEffect(() => {
     if (currentCompanyId) {
+      fetchAll(currentCompanyId);
       (async () => {
-        const memberList = await fetchAllMembers(currentCompanyId);
-        setMembers(memberList);
         await fetchSalaries(1, 10, selectedMonth);
       })();
     }
@@ -86,21 +87,24 @@ function Salary() {
         month={selectedMonth}
         mode={drawerMode}
         salary={currentSalary}
-        members={members}
+        workers={allList}
         onClose={() => setDrawerOpen(false)}
         onConfirm={async (data) => {
           if (!currentCompanyId) return;
           await addSalary({ company_id: currentCompanyId, ...data });
+          showAlert("급여내역이 추가되었습니다.", { type: "success" });
           setDrawerOpen(false);
         }}
         onEdit={async (data) => {
           if (!currentCompanyId) return;
           await updateSalary(currentSalary!.id, data);
+          showAlert("급여내역이 수정되었습니다.", { type: "success" });
           setDrawerOpen(false);
         }}
         onDelete={async () => {
           if (!currentSalary) return;
           await deleteSalary(currentSalary.id);
+          showAlert("급여내역이 삭제되었습니다.", { type: "danger" });
           setDrawerOpen(false);
         }}
       />

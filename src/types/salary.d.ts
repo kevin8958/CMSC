@@ -11,7 +11,7 @@ namespace Salary {
   interface Row {
     id: string;
     company_id: string;
-    user_id: string | null;
+    worker_id: string | null;
     user_name: string | null; // ✅ 추가
 
     pay_month: string; // YYYY-MM 형식
@@ -54,7 +54,7 @@ namespace Salary {
   // ────────────────────────────────
   interface Insert {
     company_id: string;
-    user_id: string | null;
+    worker_id: string | null;
     user_name?: string | null; // ✅ 추가
 
     pay_month: string;
@@ -97,33 +97,15 @@ namespace Salary {
     id: string;
   }
 
-  // ────────────────────────────────
-  // Frontend 전용 (UI Form 데이터)
-  // ────────────────────────────────
-  interface FormData {
-    member: string; // user_id
-    pay_month: string;
-    status: SalaryStatus;
-    emp_type: EmpType;
-
-    work_days: string;
-    base_work_days: string;
-    absent_days: string;
-
-    base_salary: string;
-    non_taxable: string;
-    bonus: string;
-    allowance: string;
-
-    income_tax: string;
-    local_tax: string;
-
-    pension_fee: string;
-    health_fee: string;
-    employment_fee: string;
-    longterm_care_fee: string;
-
-    deduction_other: string;
-    note: string;
+  interface SalaryDrawerProps {
+    open: boolean;
+    month: Date | null;
+    mode: "create" | "edit";
+    salary?: any;
+    workers: Worker.Worker[];
+    onClose: () => void;
+    onConfirm: (data: Omit<Salary.Insert, "company_id">) => Promise<void>;
+    onEdit: (data: Omit<Salary.Update, "company_id">) => Promise<void>;
+    onDelete?: () => Promise<void>;
   }
 }
