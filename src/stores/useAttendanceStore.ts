@@ -1,10 +1,8 @@
 import { create } from "zustand";
-import { useCompanyStore } from "./useCompanyStore";
-import dayjs from "dayjs";
 
 interface NewAttendanceInput {
   company_id: string;
-  member_id: string;
+  worker_id: string;
   start_date: string;
   end_date: string;
   days: number;
@@ -37,47 +35,28 @@ interface YearlyAttendance {
 }
 
 interface AttendanceState {
-  members: any[];
-  memberLoading: boolean; // 🔹 멤버 목록 로딩
   recordLoading: boolean; // 🔹 연차내역 로딩
   selectedMember: any | null;
   records: YearlyAttendance[];
   monthlyRecords: MonthlyRecord[];
   monthlyLoading: boolean;
 
-  fetchMembers: (companyId: string) => Promise<void>;
   selectMember: (member: any) => void;
   fetchMemberRecords: (memberId: string) => Promise<void>;
   clearRecords: () => void;
   fetchMonthlyRecords: (companyId: string, month: string) => Promise<void>;
 
-  createRecord: (data: NewAttendanceInput) => Promise<boolean>;
+  createRecord: (data: NewAttendanceInput) => Promise<void>;
   updateRecord: (data: any) => Promise<void>;
   deleteRecord: (id: string) => Promise<void>;
 }
 
-export const useAttendanceStore = create<AttendanceState>((set, get) => ({
+export const useAttendanceStore = create<AttendanceState>((set) => ({
   members: [],
   memberLoading: false,
   recordLoading: false,
   selectedMember: null,
   records: [],
-
-  // ✅ 회사별 멤버 목록 불러오기
-  fetchMembers: async (companyId) => {
-    set({ memberLoading: true });
-    try {
-      const res = await fetch(
-        `/api/attendance/members?company_id=${companyId}`
-      );
-      const { data } = await res.json();
-      set({ members: data || [] });
-    } catch (err) {
-      console.error("❌ fetchMembers error:", err);
-    } finally {
-      set({ memberLoading: false });
-    }
-  },
 
   // ✅ 특정 멤버 선택
   selectMember: (member) => set({ selectedMember: member }),
@@ -125,20 +104,9 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const result = await res.json();
-      if (res.ok) {
-        // ✅ 등록 성공 후 월간 목록 리프레시
-        const { currentCompanyId } = useCompanyStore.getState();
-        const month = dayjs(data.start_date).format("YYYY-MM");
-        await get().fetchMonthlyRecords(currentCompanyId!, month);
-        return true;
-      } else {
-        console.error("❌ createRecord failed:", result.error);
-        return false;
-      }
+      if (!res.ok) throw new Error("Create failed");
     } catch (err) {
       console.error("❌ createRecord error:", err);
-      return false;
     }
   },
   updateRecord: async (updated) => {

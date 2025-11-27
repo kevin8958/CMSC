@@ -8,17 +8,24 @@ import TextInput from "@/components/TextInput";
 import Textarea from "@/components/TextArea";
 import dayjs from "dayjs";
 import { useAttendanceStore } from "@/stores/useAttendanceStore";
+import { useWorkerStore } from "@/stores/useWorkerStore";
+import { useCompanyStore } from "@/stores/useCompanyStore";
 
 interface AttendanceDetailDrawerProps {
   record: any | null;
+  selectedMonth: Date | null;
   onClose: () => void;
 }
 
 export default function AttendanceDetailDrawer({
   record,
+  selectedMonth,
   onClose,
 }: AttendanceDetailDrawerProps) {
-  const { updateRecord, deleteRecord } = useAttendanceStore();
+  const { updateRecord, deleteRecord, fetchMonthlyRecords } =
+    useAttendanceStore();
+  const { fetchAll } = useWorkerStore();
+  const { currentCompanyId } = useCompanyStore();
   const [form, setForm] = useState(record);
   const [isOpen, setIsOpen] = useState(false);
   const [rangeValue, setRangeValue] = useState<[Date | null, Date | null]>([
@@ -53,12 +60,23 @@ export default function AttendanceDetailDrawer({
       reason: form.reason,
       note: form.note,
     });
+    if (currentCompanyId) {
+      const month = dayjs(selectedMonth).format("YYYY-MM");
+      fetchAll(currentCompanyId);
+      fetchMonthlyRecords(currentCompanyId, month);
+    }
+
     handleClose();
   };
 
   const handleDelete = async () => {
     if (confirm("정말 삭제하시겠습니까?")) {
       await deleteRecord(form.id);
+      if (currentCompanyId) {
+        const month = dayjs(selectedMonth).format("YYYY-MM");
+        fetchAll(currentCompanyId);
+        fetchMonthlyRecords(currentCompanyId, month);
+      }
       handleClose();
     }
   };
@@ -103,8 +121,12 @@ export default function AttendanceDetailDrawer({
               setRangeValue(value as [Date | null, Date | null]);
             }}
           />
-          <Typography variant="B2" classes="text-gray-600 font-semibold">
-            총 {dayjs(form.end_date).diff(dayjs(form.start_date), "day") + 1}일
+          <Typography variant="B2" classes="!text-gray-600 !font-bold">
+            총{" "}
+            {!!rangeValue[1] && !!rangeValue[0]
+              ? dayjs(rangeValue[1]).diff(dayjs(rangeValue[0]), "day") + 1
+              : "??"}
+            일
           </Typography>
         </FlexWrapper>
 

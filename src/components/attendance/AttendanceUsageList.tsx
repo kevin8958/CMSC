@@ -11,10 +11,13 @@ import { LuPlus } from "react-icons/lu";
 import AttendanceAddDrawer from "./AttendanceAddDrawer";
 import AttendanceDetailDrawer from "./AttendanceDetailDrawer";
 import Avatar from "@/components/Avatar";
+import { TbMoodEmpty } from "react-icons/tb";
 
 export default function AttendanceUsageList({
+  workers,
   selectedMonth,
 }: {
+  workers: Worker.Worker[];
   selectedMonth: Date | null;
 }) {
   const { currentCompanyId } = useCompanyStore();
@@ -31,12 +34,12 @@ export default function AttendanceUsageList({
   }, [selectedMonth, currentCompanyId]);
 
   return (
-    <div>
+    <FlexWrapper justify="between" direction="col" gap={2} classes="size-full">
       <FlexWrapper
         justify="between"
         items="center"
         direction="col"
-        classes="sm:flex-row sm:items-end px-4"
+        classes="sm:flex-row sm:items-end p-4 pb-0"
       >
         <FlexWrapper gap={2} items="center">
           <Typography variant="H4">연차 사용 내역</Typography>
@@ -56,7 +59,7 @@ export default function AttendanceUsageList({
         </Button>
       </FlexWrapper>
       {monthlyLoading ? (
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex-1 flex flex-col justify-start gap-2 p-4">
           {Array.from({ length: 5 }).map((_, i) => (
             <motion.div
               key={i}
@@ -67,17 +70,16 @@ export default function AttendanceUsageList({
           ))}
         </div>
       ) : monthlyRecords.length === 0 ? (
-        <div className="p-4">
-          <Typography variant="B2" classes="!text-gray-400 mt-2">
-            등록된 연차 내역이 없습니다.
-          </Typography>
+        <div className="flex-1 flex flex-col items-center justify-center gap-2 p-4">
+          <TbMoodEmpty className="text-4xl text-gray-300" />
+          <p className="text-gray-400 text-sm">등록된 연차 내역이 없습니다.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 overflow-y-auto scroll-thin h-[calc(100vh-260px)] p-4">
+        <div className="flex flex-col gap-2 overflow-y-auto scroll-thin flex-1 p-4">
           {monthlyRecords.map((item) => (
             <div
               key={item.id}
-              className="border rounded-md p-3 hover:bg-gray-50 transition cursor-pointer"
+              className="border rounded-xl p-3 hover:bg-gray-50 transition cursor-pointer"
               onClick={() => setSelectedRecord(item)}
             >
               <FlexWrapper justify="between" items="center">
@@ -87,9 +89,6 @@ export default function AttendanceUsageList({
                     <FlexWrapper gap={1} items="center">
                       <Typography variant="B2" classes="font-semibold">
                         {item.user_name}
-                      </Typography>
-                      <Typography variant="C1" classes="!text-gray-500">
-                        사원
                       </Typography>
                     </FlexWrapper>
                     <Typography variant="B2" classes="!text-gray-500">
@@ -116,13 +115,16 @@ export default function AttendanceUsageList({
         </div>
       )}
       <AttendanceAddDrawer
+        workers={workers}
+        selectedMonth={selectedMonth}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
       />
       <AttendanceDetailDrawer
         record={selectedRecord}
+        selectedMonth={selectedMonth}
         onClose={() => setSelectedRecord(null)}
       />
-    </div>
+    </FlexWrapper>
   );
 }

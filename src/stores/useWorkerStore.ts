@@ -12,6 +12,7 @@ interface WorkerStore {
   workers: Worker.Worker[];
   allList: Worker.Worker[];
   loading: boolean;
+  allListLoading: boolean;
 
   total: number;
   page: number;
@@ -34,6 +35,7 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   workers: [],
   allList: [],
   loading: false,
+  allListLoading: false,
 
   total: 0,
   page: 1,
@@ -129,7 +131,15 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
     }
   },
   fetchAll: async (companyId: string) => {
-    const data = await fetchAllWorkers(companyId);
-    set({ allList: data });
+    set({ allListLoading: true });
+
+    try {
+      const data = await fetchAllWorkers(companyId);
+      set({ allList: data });
+    } catch (err) {
+      console.error("❌ fetchAllWorkers error:", err);
+    } finally {
+      set({ allListLoading: false });
+    }
   },
 }));

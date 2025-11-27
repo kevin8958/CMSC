@@ -14,11 +14,11 @@ import { motion } from "framer-motion";
 
 export default function AttendanceDrawer({
   open,
-  member,
+  worker,
   onClose,
 }: {
   open: boolean;
-  member: any | null;
+  worker: Worker.Worker;
   onClose: () => void;
 }) {
   const { records, recordLoading, fetchMemberRecords, clearRecords } =
@@ -27,16 +27,16 @@ export default function AttendanceDrawer({
   const currentYear = dayjs().year();
 
   useEffect(() => {
-    if (open && member?.id) fetchMemberRecords(member.id);
+    if (open && worker?.id) fetchMemberRecords(worker.id);
     else clearRecords();
-  }, [open, member]);
+  }, [open, worker]);
 
-  if (!member) return null;
+  if (!worker) return null;
 
   return (
     <Drawer
       open={open}
-      title={`${member.name}님의 연차 정보`}
+      title={`${worker.name}님의 연차 정보`}
       showFooter={false}
       onClose={onClose}
     >
@@ -59,19 +59,19 @@ export default function AttendanceDrawer({
           <div className="grid grid-cols-12 p-4 gap-4  w-full">
             <FlexWrapper items="center" gap={2} classes="col-span-6">
               <Label text="이름" />
-              <Typography variant="B2">{member.name}</Typography>
+              <Typography variant="B2">{worker.name}</Typography>
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-6">
               <Label text="입사일" />
-              <Typography variant="B2">{member.hire_date || "-"}</Typography>
+              <Typography variant="B2">{worker.joined_at || "-"}</Typography>
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-6">
               <Label text="직급" />
-              <Typography variant="B2">{member.position || "-"}</Typography>
+              <Typography variant="B2">{worker.position || "-"}</Typography>
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-6">
               <Label text="직책" />
-              <Typography variant="B2">{member.job_title || "-"}</Typography>
+              <Typography variant="B2">{worker.duty || "-"}</Typography>
             </FlexWrapper>
           </div>
         </FlexWrapper>
@@ -96,21 +96,21 @@ export default function AttendanceDrawer({
                 size="sm"
                 classes="!w-[80px] !justify-center"
               >
-                총 연차 {member.total_days}
+                총 연차 {worker.total_leave}
               </Badge>
               <Badge
                 color="danger"
                 size="sm"
                 classes="!w-[80px] !justify-center"
               >
-                사용 연차 {member.used_days}
+                사용 연차 {worker.used_leave}
               </Badge>
               <Badge
                 color="green"
                 size="sm"
                 classes="!w-[80px] !justify-center"
               >
-                잔여 연차 {member.total_days - member.used_days}
+                잔여 연차 {worker.total_leave - worker.used_leave}
               </Badge>
             </FlexWrapper>
           </FlexWrapper>

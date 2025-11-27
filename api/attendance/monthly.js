@@ -23,13 +23,8 @@ export default async function handler(req, res) {
       end_date,
       days,
       reason,
-      member_id,
-      company_members (
-        id,
-        profiles (
-          nickname
-        )
-      )
+      worker_id,
+      worker:workers(*)
     `
     )
     .eq("company_id", company_id)
@@ -41,7 +36,7 @@ export default async function handler(req, res) {
 
   const result = data.map((r) => ({
     id: r.id,
-    user_name: r.company_members?.profiles?.nickname || "-",
+    user_name: r.worker?.name || "-",
     start_date: r.start_date,
     end_date: r.end_date,
     days: r.days,

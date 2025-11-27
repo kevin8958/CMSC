@@ -82,7 +82,7 @@ const SNB = () => {
               },
               {
                 id: "worker",
-                label: "근로자관리",
+                label: "멤버관리",
                 href: "/worker",
                 icon: <AiOutlineTeam />,
               },

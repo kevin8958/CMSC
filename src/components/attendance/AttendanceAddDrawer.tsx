@@ -11,20 +11,26 @@ import dayjs from "dayjs";
 import { useAttendanceStore } from "@/stores/useAttendanceStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import Badge from "../Badge";
+import { useWorkerStore } from "@/stores/useWorkerStore";
 
 interface AttendanceAddDrawerProps {
+  workers: Worker.Worker[];
+  selectedMonth: Date | null;
   open: boolean;
   onClose: () => void;
 }
 
 export default function AttendanceAddDrawer({
+  workers,
+  selectedMonth,
   open,
   onClose,
 }: AttendanceAddDrawerProps) {
-  const { createRecord, members } = useAttendanceStore();
+  const { createRecord, fetchMonthlyRecords } = useAttendanceStore();
+  const { fetchAll } = useWorkerStore();
   const { currentCompanyId } = useCompanyStore();
   const [form, setForm] = useState({
-    member: "",
+    worker: "",
     start_date: new Date(),
     end_date: new Date(),
     reason: "",
@@ -49,7 +55,7 @@ export default function AttendanceAddDrawer({
   useEffect(() => {
     if (open) {
       setForm({
-        member: "",
+        worker: "",
         start_date: new Date(),
         end_date: new Date(),
         reason: "",
@@ -61,10 +67,10 @@ export default function AttendanceAddDrawer({
   }, [open]);
 
   const handleChange = (key: string, value: any) => {
-    if (key === "member" && value) {
+    if (key === "worker" && value) {
       setErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors.member;
+        delete newErrors.worker;
         return newErrors;
       });
     }
@@ -72,8 +78,8 @@ export default function AttendanceAddDrawer({
   };
 
   const handleSubmit = async () => {
-    if (!form.member) {
-      setErrors({ member: "대상자를 선택해주세요." });
+    if (!form.worker) {
+      setErrors({ worker: "멤버를 선택해주세요." });
       return;
     }
     if (!currentCompanyId) {
@@ -81,9 +87,9 @@ export default function AttendanceAddDrawer({
       return;
     }
 
-    const success = await createRecord({
+    await createRecord({
       company_id: currentCompanyId,
-      member_id: form.member,
+      worker_id: form.worker,
       start_date: dayjs(rangeValue[0]).format("YYYY-MM-DD"),
       end_date: dayjs(rangeValue[1]).format("YYYY-MM-DD"),
       days: dayjs(form.end_date).diff(dayjs(form.start_date), "day") + 1,
@@ -91,10 +97,13 @@ export default function AttendanceAddDrawer({
       note: form.note,
     });
 
-    if (success) onClose();
+    const month = dayjs(selectedMonth).format("YYYY-MM");
+    fetchAll(currentCompanyId);
+    fetchMonthlyRecords(currentCompanyId, month);
+    onClose();
   };
 
-  const selectedMember = members.find((m) => m.id === form.member);
+  const selectedWorker = workers.find((m) => m.id === form.worker);
 
   return (
     <Drawer
@@ -116,45 +125,38 @@ export default function AttendanceAddDrawer({
             hideDownIcon
             buttonSize="sm"
             buttonVariant="outline"
-            items={members.map((m) => ({
+            items={workers.map((m) => ({
               type: "item",
               id: m.id,
               label: m.name,
             }))}
             dialogWidth={200}
-            onChange={(val) => handleChange("member", val)}
+            onChange={(val) => handleChange("worker", val)}
             buttonItem={
-              form.member
-                ? members.find((m) => m.id === form.member)?.name
+              form.worker
+                ? workers.find((m) => m.id === form.worker)?.name
                 : "선택"
             }
             buttonClasses="!font-normal text-primary-900 !w-[200px] !h-fit !border-primary-300 hover:!bg-primary-50 !text-sm !py-1"
           />
-          {selectedMember && (
-            <FlexWrapper gap={1} items="center">
-              <Badge
-                color="primary"
-                size="sm"
-                classes="!w-[80px] !justify-center"
-              >
-                총 연차 {selectedMember.total_days}
-              </Badge>
-              <Badge
-                color="danger"
-                size="sm"
-                classes="!w-[80px] !justify-center"
-              >
-                사용 연차 {selectedMember.used_days}
-              </Badge>
-              <Badge
-                color="green"
-                size="sm"
-                classes="!w-[80px] !justify-center"
-              >
-                잔여 연차 {selectedMember.total_days - selectedMember.used_days}
-              </Badge>
-            </FlexWrapper>
-          )}
+          <FlexWrapper gap={1} items="center">
+            <Badge
+              color="primary"
+              size="sm"
+              classes="!w-[80px] !justify-center"
+            >
+              총 연차 {selectedWorker ? selectedWorker.total_leave : "??"}
+            </Badge>
+            <Badge color="danger" size="sm" classes="!w-[80px] !justify-center">
+              사용 연차 {selectedWorker ? selectedWorker.used_leave : "??"}
+            </Badge>
+            <Badge color="green" size="sm" classes="!w-[80px] !justify-center">
+              잔여 연차{" "}
+              {selectedWorker
+                ? selectedWorker.total_leave - selectedWorker.used_leave
+                : "??"}
+            </Badge>
+          </FlexWrapper>
         </FlexWrapper>
 
         <FlexWrapper items="center" gap={2}>
@@ -175,7 +177,11 @@ export default function AttendanceAddDrawer({
             }}
           />
           <Typography variant="B2" classes="!text-gray-600 !font-bold">
-            총 {dayjs(form.end_date).diff(dayjs(form.start_date), "day") + 1}일
+            총{" "}
+            {!!rangeValue[1] && !!rangeValue[0]
+              ? dayjs(rangeValue[1]).diff(dayjs(rangeValue[0]), "day") + 1
+              : "??"}
+            일
           </Typography>
         </FlexWrapper>
         <FlexWrapper items="center" gap={2} classes="col-span-12">

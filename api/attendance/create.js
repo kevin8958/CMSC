@@ -4,10 +4,10 @@ export default async function handler(req, res) {
   if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
 
-  const { company_id, member_id, start_date, end_date, days, reason, note } =
+  const { company_id, worker_id, start_date, end_date, days, reason, note } =
     req.body;
 
-  if (!company_id || !member_id || !start_date || !end_date)
+  if (!company_id || !worker_id || !start_date || !end_date)
     return res.status(400).json({ error: "Missing required fields" });
 
   const { data, error } = await supabaseAdmin
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     .insert([
       {
         company_id,
-        member_id,
+        worker_id,
         start_date,
         end_date,
         days,
