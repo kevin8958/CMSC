@@ -80,6 +80,12 @@ const SNB = () => {
                 href: "/attendance",
                 icon: <LuCalendarCheck2 />,
               },
+              {
+                id: "worker",
+                label: "근로자관리",
+                href: "/worker",
+                icon: <AiOutlineTeam />,
+              },
             ],
           },
           {
@@ -132,9 +138,9 @@ const SNB = () => {
                     <a
                       href={item.href}
                       className={classNames(
-                        "flex items-center gap-3 w-full text-primary-800 hover:bg-primary-100/70 rounded-lg py-3 px-4 text-sm transition-all duration-100 ease-in-out",
+                        "flex items-center gap-3 w-full text-primary-800 hover:bg-green-100/70 rounded-lg py-3 px-4 text-sm transition-all duration-100 ease-in-out",
                         {
-                          "!text-primary-900 bg-primary-100 font-bold":
+                          "!text-primary-900 bg-green-100 font-bold":
                             pathname.includes(item.id),
                         }
                       )}

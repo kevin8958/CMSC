@@ -5,9 +5,9 @@ import {
   Outlet,
   useLocation,
 } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import Home from "@/pages/Home";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Navigate } from "react-router-dom";
 import { AlertProvider } from "@/components/AlertProvider";
@@ -24,12 +24,13 @@ import FlexWrapper from "@/layout/FlexWrapper";
 import { DialogProvider } from "@/hooks/useDialog";
 import { useEffect } from "react";
 import { useAuthStore } from "@/stores/authStore";
-import SignupInvite from "./pages/SignupInvite";
-import Inquiry from "./pages/Inquiry";
-import Salary from "./pages/Salary";
-import Attendance from "./pages/Attendance";
-import Expense from "./pages/Expense";
-import Sales from "./pages/Sales";
+import SignupInvite from "@/pages/SignupInvite";
+import Inquiry from "@/pages/Inquiry";
+import Salary from "@/pages/Salary";
+import Attendance from "@/pages/Attendance";
+import Expense from "@/pages/Expense";
+import Sales from "@/pages/Sales";
+import Worker from "@/pages/Worker";
 import classNames from "classnames";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -96,6 +97,7 @@ function App() {
                 <Route path="/sales" element={<Sales />} />
                 <Route path="/salary" element={<Salary />} />
                 <Route path="/attendance" element={<Attendance />} />
+                <Route path="/worker" element={<Worker />} />
                 <Route path="/document" element={<Document />} />
                 <Route path="/company" element={<Company />} />
                 <Route path="/company/:companyId" element={<CompanyDetail />} />
