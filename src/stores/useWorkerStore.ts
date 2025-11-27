@@ -5,15 +5,12 @@ import {
   createWorker,
   updateWorker,
   deleteWorker,
-  type Worker,
-  type CreateWorkerParams,
-  type UpdateWorkerParams,
   fetchAllWorkers,
 } from "@/actions/workerActions";
 
 interface WorkerStore {
-  workers: Worker[];
-  allList: Worker[];
+  workers: Worker.Worker[];
+  allList: Worker.Worker[];
   loading: boolean;
 
   total: number;
@@ -24,8 +21,11 @@ interface WorkerStore {
   setPageSize: (size: number) => void;
 
   fetch: (companyId: string, page?: number, size?: number) => Promise<void>;
-  create: (data: CreateWorkerParams) => Promise<Worker | null>;
-  update: (id: string, data: UpdateWorkerParams) => Promise<Worker | null>;
+  create: (data: Worker.CreateWorkerParams) => Promise<Worker.Worker | null>;
+  update: (
+    id: string,
+    data: Worker.UpdateWorkerParams
+  ) => Promise<Worker.Worker | null>;
   remove: (id: string) => Promise<boolean>;
   fetchAll: (companyId: string) => Promise<void>;
 }
@@ -74,7 +74,7 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   // ----------------------------------------------------------
   // Create
   // ----------------------------------------------------------
-  create: async (data: CreateWorkerParams) => {
+  create: async (data: Worker.CreateWorkerParams) => {
     try {
       const created = await createWorker(data);
 
@@ -93,7 +93,7 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   // ----------------------------------------------------------
   // Update
   // ----------------------------------------------------------
-  update: async (id: string, data: UpdateWorkerParams) => {
+  update: async (id: string, data: Worker.UpdateWorkerParams) => {
     try {
       const updated = await updateWorker(id, data);
 

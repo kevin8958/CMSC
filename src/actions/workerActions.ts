@@ -1,38 +1,6 @@
 // actions/workerActions.ts
 import { supabase } from "@/lib/supabase";
 
-// Create 파라미터
-export interface CreateWorkerParams {
-  company_id: string;
-  name: string;
-  email?: string | null;
-  position?: string | null;
-  duty?: string | null;
-  joined_at?: string | null;
-  total_leave?: number;
-  used_leave?: number;
-}
-
-// Update 파라미터
-export interface UpdateWorkerParams {
-  name?: string;
-  email?: string | null;
-  position?: string | null;
-  duty?: string | null;
-  joined_at?: string | null;
-  total_leave?: number;
-  used_leave?: number;
-}
-
-export type WorkerFormData = {
-  name: string;
-  email: string | null;
-  position: string | null;
-  duty: string | null;
-  joined_at: string | null;
-  total_leave: number;
-  used_leave: number;
-};
 // ----------------------------------------------------------
 // 1) Fetch Workers with pagination
 // ----------------------------------------------------------
@@ -62,7 +30,7 @@ export async function fetchWorkers(
 // 2) Create Worker
 // ----------------------------------------------------------
 export async function createWorker(
-  params: CreateWorkerParams
+  params: Worker.CreateWorkerParams
 ): Promise<Worker.Worker> {
   const { data, error } = await supabase
     .from("workers")
@@ -90,7 +58,7 @@ export async function createWorker(
 // ----------------------------------------------------------
 export async function updateWorker(
   id: string,
-  data: UpdateWorkerParams
+  data: Worker.UpdateWorkerParams
 ): Promise<Worker.Worker> {
   const { data: updated, error } = await supabase
     .from("workers")
