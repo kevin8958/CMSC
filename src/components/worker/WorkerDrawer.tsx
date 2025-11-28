@@ -94,7 +94,7 @@ export default function WorkerDrawer({
       open={open}
       title={
         <Typography variant="H4">
-          {mode === "create" ? "근로자 추가하기" : "근로자 수정하기"}
+          {mode === "create" ? "멤버 추가하기" : "멤버 수정하기"}
         </Typography>
       }
       showFooter

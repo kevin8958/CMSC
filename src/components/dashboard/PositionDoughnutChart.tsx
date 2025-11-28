@@ -106,7 +106,7 @@ export default function PositionDoughnutChart({
     <div className="h-[288px] flex flex-col w-full p-4">
       {/* Header */}
       <FlexWrapper gap={2} items="center">
-        <Typography variant="H4">근로자</Typography>
+        <Typography variant="H4">멤버</Typography>
         <Badge color="green" size="md">
           {workers.length}
         </Badge>
@@ -155,7 +155,7 @@ export default function PositionDoughnutChart({
       ) : (
         <div className="h-[240px] flex flex-col items-center justify-center gap-2 p-6">
           <LuChartPie className="text-4xl text-gray-300" />
-          <p className="text-gray-400 text-sm">등록된 근로자가 없습니다</p>
+          <p className="text-gray-400 text-sm">등록된 멤버가 없습니다</p>
         </div>
       )}
     </div>
