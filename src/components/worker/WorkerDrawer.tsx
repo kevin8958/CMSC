@@ -192,18 +192,21 @@ export default function WorkerDrawer({
           </FlexWrapper>
 
           {/* 사용 연차 */}
-          <FlexWrapper items="center" gap={2}>
-            <div className="shrink-0 w-[70px]">
-              <Label text="사용 연차" />
-            </div>
-            <TextInput
-              type="number"
-              inputProps={{ value: usedLeave ?? "" }}
-              onChange={(e) => setUsedLeave(Number(e.target.value))}
-              classes="!h-[42px]"
-              placeholder="예: 3"
-            />
-          </FlexWrapper>
+          {mode === "edit" && (
+            <FlexWrapper items="center" gap={2}>
+              <div className="shrink-0 w-[70px]">
+                <Label text="사용 연차" />
+              </div>
+              <TextInput
+                type="number"
+                inputProps={{ value: usedLeave ?? "" }}
+                disabled
+                onChange={(e) => setUsedLeave(Number(e.target.value))}
+                classes="!h-[42px]"
+                placeholder="예: 3"
+              />
+            </FlexWrapper>
+          )}
         </FlexWrapper>
       </FlexWrapper>
     </Drawer>

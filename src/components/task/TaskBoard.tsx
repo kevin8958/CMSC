@@ -20,6 +20,7 @@ import TaskStatusBadge from "@/components/task/TaskStatusBadge";
 import dayjs from "dayjs";
 import TaskBoardSkeleton from "./TaskBoardSkeleton";
 import { useWorkerStore } from "@/stores/useWorkerStore";
+import { TbMoodEmpty } from "react-icons/tb";
 
 const statusKeys = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
 
@@ -194,31 +195,40 @@ export default function TaskBoard() {
                       </Button>
                     </FlexWrapper>
 
-                    {tasks
-                      .filter((t) => t.status === status)
-                      .map((task, index) => (
-                        <Draggable
-                          draggableId={task.id}
-                          index={index}
-                          key={task.id}
-                        >
-                          {(p) => (
-                            <div
-                              ref={p.innerRef}
-                              {...p.draggableProps}
-                              {...p.dragHandleProps}
-                              onClick={() => {
-                                setDrawerMode("edit");
-                                setCurrentTask(task);
-                                setDrawerOpen(true);
-                              }}
-                              className="bg-white rounded-lg border mb-3 cursor-pointer hover:shadow-custom-light transition duration-300 shadow-custom-dark"
-                            >
-                              <TaskCard task={task} members={allList} />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                    {tasks.length === 0 ? (
+                      <div className="h-full flex flex-col items-center justify-center gap-2 p-4">
+                        <TbMoodEmpty className="text-4xl text-gray-300" />
+                        <p className="text-gray-400 text-sm">
+                          등록된 티켓이 없습니다
+                        </p>
+                      </div>
+                    ) : (
+                      tasks
+                        .filter((t) => t.status === status)
+                        .map((task, index) => (
+                          <Draggable
+                            draggableId={task.id}
+                            index={index}
+                            key={task.id}
+                          >
+                            {(p) => (
+                              <div
+                                ref={p.innerRef}
+                                {...p.draggableProps}
+                                {...p.dragHandleProps}
+                                onClick={() => {
+                                  setDrawerMode("edit");
+                                  setCurrentTask(task);
+                                  setDrawerOpen(true);
+                                }}
+                                className="bg-white rounded-lg border mb-3 cursor-pointer hover:shadow-custom-light transition duration-300 shadow-custom-dark"
+                              >
+                                <TaskCard task={task} members={allList} />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))
+                    )}
                     {provided.placeholder}
                   </div>
                 )}
