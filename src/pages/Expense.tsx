@@ -117,82 +117,75 @@ function Expense() {
         </FlexWrapper>
       </FlexWrapper>
 
+      <FlexWrapper justify="between" items="end" classes="w-full" gap={0}>
+        <FlexWrapper items="center" gap={2}>
+          <FlexWrapper
+            direction="col"
+            items="start"
+            gap={1}
+            classes="min-w-[180px]"
+          >
+            <Label text="총합" />
+            <Typography variant="H4" classes="md:text-[24px]">
+              {(
+                (summary.fixed || 0) +
+                (summary.variable || 0) +
+                (summary.other || 0)
+              ).toLocaleString()}
+              원
+            </Typography>
+          </FlexWrapper>
+          {data.map((item) => (
+            <ExpenseGaugeItem
+              key={item.id}
+              id={item.id as any}
+              label={item.name}
+              value={item.value}
+              color={item.color}
+              active={currentTab === item.id}
+              hovered={hoveredId === item.id}
+              onClick={(id) => handleChangeTab(id)}
+              onHover={(id) => handleItemHover(id)}
+            />
+          ))}
+        </FlexWrapper>
+        <Button
+          variant="contain"
+          color="green"
+          size="md"
+          classes="gap-1 !px-3 shrink-0"
+          onClick={() => {
+            setDrawerMode("create");
+            setOpenDrawer(true);
+          }}
+        >
+          <LuPlus className="text-lg" />
+          소비내역 추가
+        </Button>
+      </FlexWrapper>
       <FlexWrapper
         direction="col"
-        items="start"
-        classes="size-full relative"
-        gap={4}
+        items="center"
+        classes="h-screen mt-4 rounded-xl border overflow-hidden bg-white mb-4"
+        gap={2}
       >
-        <FlexWrapper justify="between" items="end" classes="w-full" gap={0}>
-          <FlexWrapper items="center" gap={2}>
-            <FlexWrapper
-              direction="col"
-              items="start"
-              gap={1}
-              classes="min-w-[180px]"
-            >
-              <Label text="총합" />
-              <Typography variant="H4" classes="md:text-[24px]">
-                {(
-                  (summary.fixed || 0) +
-                  (summary.variable || 0) +
-                  (summary.other || 0)
-                ).toLocaleString()}
-                원
-              </Typography>
-            </FlexWrapper>
-            {data.map((item) => (
-              <ExpenseGaugeItem
-                key={item.id}
-                id={item.id as any}
-                label={item.name}
-                value={item.value}
-                color={item.color}
-                active={currentTab === item.id}
-                hovered={hoveredId === item.id}
-                onClick={(id) => handleChangeTab(id)}
-                onHover={(id) => handleItemHover(id)}
-              />
-            ))}
-          </FlexWrapper>
-          <Button
-            variant="contain"
-            color="green"
-            size="md"
-            classes="gap-1 !px-3 shrink-0"
-            onClick={() => {
-              setDrawerMode("create");
-              setOpenDrawer(true);
-            }}
-          >
-            <LuPlus className="text-lg" />
-            소비내역 추가
-          </Button>
-        </FlexWrapper>
-        <FlexWrapper
-          direction="col"
-          items="center"
-          classes="relative w-full"
-          gap={2}
-        >
-          <ExpenseGaugeTable
-            data={tableData}
-            onRowClick={(data: any) => {
-              setCurrentExpense(data);
-              setOpenDrawer(true);
-              setDrawerMode("edit");
-            }}
-            onPageChange={async (nextPage: number) => {
-              if (!selectedMonth || !currentCompanyId) return;
-              await loadExpenses(
-                currentCompanyId!,
-                currentTab,
-                selectedMonth,
-                nextPage
-              );
-            }}
-          />
-        </FlexWrapper>
+        <ExpenseGaugeTable
+          data={tableData}
+          onRowClick={(data: any) => {
+            setCurrentExpense(data);
+            setOpenDrawer(true);
+            setDrawerMode("edit");
+          }}
+          onPageChange={async (nextPage: number) => {
+            if (!selectedMonth || !currentCompanyId) return;
+            await loadExpenses(
+              currentCompanyId!,
+              currentTab,
+              selectedMonth,
+              nextPage
+            );
+          }}
+        />
       </FlexWrapper>
       <ExpenseDrawer
         mode={drawerMode}

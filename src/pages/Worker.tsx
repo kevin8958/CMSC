@@ -108,14 +108,14 @@ function Worker() {
       </FlexWrapper>
       {loading ? (
         <FlexWrapper
-          classes="h-[calc(100%-36px-16px)] mt-4"
+          classes="h-screen mt-4 rounded-xl border overflow-hidden bg-white mb-4"
           justify="center"
           items="start"
         >
-          <TableSkeleton rows={8} columns={6} />
+          <TableSkeleton rows={8} columns={5} />
         </FlexWrapper>
       ) : (
-        <FlexWrapper classes="h-[calc(100%-36px-16px)] mt-4">
+        <FlexWrapper classes="h-screen mt-4 rounded-xl border overflow-hidden bg-white mb-4">
           <Table
             data={workers}
             columns={columns}

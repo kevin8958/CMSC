@@ -25,7 +25,7 @@ export default function PreTaxProfitSection(props: {
   } = props;
 
   return (
-    <div className="w-full flex flex-col gap-2 p-4 border rounded-lg">
+    <div className="w-full flex flex-col gap-2 p-4 border rounded-xl bg-white">
       <FlexWrapper items="center" justify="between" classes="h-[36px]">
         <Typography variant="B1" classes="font-semibold text-primary-700">
           영업이익

@@ -107,7 +107,7 @@ function Sales() {
           )}
         </div>
       </FlexWrapper>
-      <FlexWrapper direction="col" gap={6} classes="w-[400px] flex-1 pt-4">
+      <FlexWrapper direction="col" gap={2} classes="w-[400px] h-[100dvh]">
         <RevenueSection
           editMode={editMode}
           revenue={revenue}

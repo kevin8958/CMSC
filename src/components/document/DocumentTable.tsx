@@ -133,7 +133,7 @@ export default function DocumentTable() {
   ];
 
   return (
-    <FlexWrapper classes="h-screen mt-4">
+    <FlexWrapper classes="h-screen mt-4 rounded-xl border overflow-hidden bg-white mb-4">
       <Table
         data={documents || []}
         columns={columns}

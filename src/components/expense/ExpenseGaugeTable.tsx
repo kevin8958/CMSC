@@ -1,7 +1,4 @@
-// components/Expense/ExpenseGaugeTable.tsx
-
 import Typography from "@/foundation/Typography";
-import FlexWrapper from "@/layout/FlexWrapper";
 import Table from "@/components/Table";
 import type { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
@@ -68,23 +65,19 @@ export default function ExpenseGaugeTable({
   return (
     <>
       {loading ? (
-        <FlexWrapper classes="w-full h-[400px]" justify="center" items="start">
-          <TableSkeleton rows={4} columns={4} />
-        </FlexWrapper>
+        <TableSkeleton rows={4} columns={4} />
       ) : (
-        <FlexWrapper classes="w-full h-[400px]">
-          <Table
-            data={data}
-            columns={columns}
-            hideSize
-            onRowClick={(row) => {
-              onRowClick?.(row);
-            }}
-            onPageChange={(nextPage) => {
-              onPageChange(nextPage);
-            }}
-          />
-        </FlexWrapper>
+        <Table
+          data={data}
+          columns={columns}
+          hideSize
+          onRowClick={(row) => {
+            onRowClick?.(row);
+          }}
+          onPageChange={(nextPage) => {
+            onPageChange(nextPage);
+          }}
+        />
       )}
     </>
   );

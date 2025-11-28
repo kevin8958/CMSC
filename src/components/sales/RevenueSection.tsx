@@ -22,7 +22,7 @@ export default function RevenueSection(props: {
   } = props;
 
   return (
-    <div className="w-full flex flex-col gap-2 p-4 border rounded-lg">
+    <div className="w-full flex flex-col gap-2 p-4 border rounded-xl bg-white">
       {/* 매출 */}
       <FlexWrapper items="center" justify="between" classes="h-[36px]">
         <Typography variant="B1" classes="font-semibold">

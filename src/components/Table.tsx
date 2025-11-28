@@ -85,7 +85,7 @@ const TableComponent = (props: Common.TableProps) => {
   return (
     <div
       className={classNames(
-        "relative flex size-full flex-col items-start justify-between gap-2 pb-4",
+        "relative flex size-full flex-col items-start justify-between gap-2 pb-2",
         classes
       )}
     >
