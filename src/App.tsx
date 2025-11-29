@@ -29,7 +29,7 @@ import Inquiry from "@/pages/Inquiry";
 import Salary from "@/pages/Salary";
 import Attendance from "@/pages/Attendance";
 import Expense from "@/pages/Expense";
-import Sales from "@/pages/Sales";
+import Income from "@/pages/Income";
 import Worker from "@/pages/Worker";
 import classNames from "classnames";
 
@@ -94,7 +94,7 @@ function App() {
                 <Route path="/communication" element={<Communication />} />
                 <Route path="/employee" element={<Employee />} />
                 <Route path="/expense" element={<Expense />} />
-                <Route path="/sales" element={<Sales />} />
+                <Route path="/income" element={<Income />} />
                 <Route path="/salary" element={<Salary />} />
                 <Route path="/attendance" element={<Attendance />} />
                 <Route path="/worker" element={<Worker />} />

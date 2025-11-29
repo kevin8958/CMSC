@@ -59,8 +59,8 @@ const TextInput = (props: Common.TextInputProps) => {
         <input className="hidden" aria-hidden="true" />
 
         {/* Label + Tooltip */}
-        <FlexWrapper gap={1} items="center" classes="relative mb-1">
-          {label && (
+        {label && (
+          <FlexWrapper gap={1} items="center" classes="relative mb-1">
             <label
               htmlFor={id}
               className={classNames("text-primary-800 !text-sm font-normal", {
@@ -70,33 +70,33 @@ const TextInput = (props: Common.TextInputProps) => {
             >
               {label}
             </label>
-          )}
-          {tooltip && (
-            <div
-              className="relative"
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-            >
-              <LuCircleHelp
-                className="text-primary-400 cursor-pointer hover:text-primary-600"
-                size={16}
-              />
-              <AnimatePresence>
-                {showTooltip && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute left-6 top-[-5px] z-50 w-max max-w-[220px] rounded-md bg-gray-800 px-3 py-2 text-xs text-white shadow-lg"
-                  >
-                    {tooltip}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
-        </FlexWrapper>
+            {tooltip && (
+              <div
+                className="relative"
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+              >
+                <LuCircleHelp
+                  className="text-primary-400 cursor-pointer hover:text-primary-600"
+                  size={16}
+                />
+                <AnimatePresence>
+                  {showTooltip && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute left-6 top-[-5px] z-50 w-max max-w-[220px] rounded-md bg-gray-800 px-3 py-2 text-xs text-white shadow-lg"
+                    >
+                      {tooltip}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+          </FlexWrapper>
+        )}
 
         {/* Input */}
         <div className="relative w-full">

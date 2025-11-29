@@ -1,92 +1,49 @@
-import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
-import FinanceInputTable from "@/components/income/FinanceInputTable";
-import FinanceWaterfallChart from "@/components/income/FinanceWaterfallChart";
-import CustomDatePicker from "@/components/DatePicker";
-import { useState } from "react";
+import Typography from "@/foundation/Typography";
+import RevenueSection from "@/components/income/RevenueSection";
+import OperatingProfitSection from "@/components/income/OperatingProfitSection";
+import PreTaxProfitSection from "@/components/income/PreTaxProfitSection";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import CustomDatePicker from "@/components/DatePicker";
+import { useIncomeStore } from "@/stores/useIncomeStore";
+import { useCompanyStore } from "@/stores/useCompanyStore";
 
 function Income() {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
     dayjs().toDate()
   );
-  const sampleData = [
-    {
-      id: "sales",
-      title: "매출",
-      value: "120000000", // 1억 2천만
-    },
-    {
-      id: "cogs",
-      title: "매출원가",
-      value: "70000000", // 7천만
-    },
-    {
-      id: "grossProfit",
-      title: "매출총이익",
-      value: "50000000", // 5천만
-    },
-    {
-      id: "sga",
-      title: "판매관리비",
-      value: "20000000",
-      children: [
-        {
-          id: "fees",
-          title: "기타지급수수료",
-          value: "5000000",
-        },
-      ],
-    },
-    {
-      id: "operatingProfit",
-      title: "영업이익",
-      value: "30000000",
-    },
-    {
-      id: "nonOperatingIncome",
-      title: "영업외수익",
-      value: "4000000",
-    },
-    {
-      id: "nonOperatingExpense",
-      title: "영업외비용",
-      value: "2000000",
-    },
-    {
-      id: "preTaxProfit",
-      title: "세전이익",
-      value: "32000000",
-    },
-  ];
+  const { currentCompanyId } = useCompanyStore();
+  const { fetchStatement } = useIncomeStore();
+
+  useEffect(() => {
+    if (!currentCompanyId || !selectedMonth) return;
+    const yearMonth = dayjs(selectedMonth).format("YYYY-MM");
+    fetchStatement(currentCompanyId, yearMonth);
+  }, [currentCompanyId, selectedMonth]);
 
   return (
     <>
-      <FlexWrapper gap={4} items="start" justify="between" classes="w-full">
-        <Typography variant="H3" classes="shrink-0">
-          손익계산서
-        </Typography>
-        <CustomDatePicker
-          variant="outline"
-          size="md"
-          type="month"
-          isMonthPicker
-          dateFormat="YYYY.MM.dd"
-          value={selectedMonth}
-          onChange={(date) => setSelectedMonth(date)}
-        />
+      <FlexWrapper items="start" justify="between" classes="w-full flex-wrap">
+        <FlexWrapper direction="col" items="start" gap={0}>
+          <Typography variant="H3">손익계산서</Typography>
+        </FlexWrapper>
+        <FlexWrapper justify="center" gap={0} classes="w-full md:w-fit">
+          <CustomDatePicker
+            variant="outline"
+            size="md"
+            type="month"
+            isMonthPicker
+            dateFormat="YYYY.MM"
+            value={selectedMonth}
+            onChange={(date) => setSelectedMonth(date)}
+          />
+        </FlexWrapper>
       </FlexWrapper>
-      <FlexWrapper
-        gap={1}
-        direction="col-reverse"
-        classes="md:flex-row flex-1 pb-4 pt-4"
-      >
-        <div className="flex-1">
-          <FinanceInputTable />
-        </div>
-        <div className="flex-2">
-          <FinanceWaterfallChart data={sampleData} />
-        </div>
+      <FlexWrapper gap={2} classes="w-full h-[100dvh] mt-2 mb-4">
+        <RevenueSection />
+        <OperatingProfitSection />
+        <PreTaxProfitSection />
       </FlexWrapper>
     </>
   );

@@ -4,10 +4,15 @@ import classNames from "classnames";
 
 interface TooltipProps {
   text: string;
+  size?: "sm" | "md" | "lg";
   position?: "top" | "bottom" | "left" | "right" | "top-right";
 }
 
-export default function Tooltip({ text, position = "top" }: TooltipProps) {
+export default function Tooltip({
+  text,
+  position = "top",
+  size = "sm",
+}: TooltipProps) {
   const [show, setShow] = useState(false);
 
   return (
@@ -16,13 +21,22 @@ export default function Tooltip({ text, position = "top" }: TooltipProps) {
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
-      <LuCircleHelp className="text-gray-400 hover:text-gray-600 cursor-pointer text-sm" />
+      <LuCircleHelp
+        className={classNames(
+          "text-gray-400 hover:text-gray-600 cursor-pointer",
+          {
+            "text-sm": size === "sm",
+            "text-lg": size === "md",
+            "text-xl": size === "lg",
+          }
+        )}
+      />
 
       {/* 말풍선 */}
       {show && (
         <div
           className={classNames(
-            "absolute z-50 whitespace-nowrap rounded-md bg-gray-800 px-3 py-1 text-xs text-white shadow-md transition-opacity duration-150",
+            "border-2 border-black absolute z-50 whitespace-nowrap rounded-md bg-gray-800 px-3 py-1 text-xs text-white transition-opacity duration-150",
             {
               "bottom-full left-1/2 -translate-x-1/2 mb-2": position === "top",
               "top-full left-1/2 -translate-x-1/2 mt-2": position === "bottom",
