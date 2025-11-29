@@ -8,6 +8,7 @@ export default {
   theme: {
     screens: {
       xs: "480px",
+      xl: "1300px",
     },
     fontSize: {
       xs: "0.75rem",
