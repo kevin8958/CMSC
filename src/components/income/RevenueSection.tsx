@@ -32,11 +32,6 @@ export default function RevenueSection() {
 
   const totalCogsAmount = cogs.reduce((s, x) => s + x.amount, 0);
   const grossProfit = Number(tempRevenue) - totalCogsAmount;
-
-  // const deleteCogsItem = (id: string) => {
-  //   setCogsItems((prev) => prev.filter((x) => x.id !== id));
-  // };
-
   return (
     <>
       {/* 메인 카드 */}
@@ -44,7 +39,7 @@ export default function RevenueSection() {
         direction="col"
         justify="between"
         gap={0}
-        classes="size-full border rounded-xl bg-white"
+        classes="size-full border rounded-xl bg-white sm:min-w-[370px]"
       >
         <FlexWrapper direction="col" gap={2} classes="p-4 h-full">
           {/* 매출 */}
@@ -64,7 +59,7 @@ export default function RevenueSection() {
             <FlexWrapper items="center" gap={2}>
               {editMode ? (
                 <TextInput
-                  classes="!w-[180px] text-right !h-[36px]"
+                  classes="flex-1 text-right !h-[36px]"
                   inputProps={{ value: tempRevenue }}
                   placeholder="0"
                   size="md"
@@ -74,7 +69,7 @@ export default function RevenueSection() {
               ) : (
                 <Typography
                   variant="H3"
-                  classes="!w-[180px] font-semibold text-primary-700 text-right"
+                  classes="flex-1 font-semibold text-primary-700 text-right"
                 >
                   {tempRevenue ? Number(tempRevenue).toLocaleString() : "0"}
                 </Typography>
@@ -156,7 +151,7 @@ export default function RevenueSection() {
                 justify="start"
                 direction="col"
                 gap={0}
-                classes="flex-1 max-h-[calc(100dvh-76px-44px-24px-32px-42px-32px-44px-68px-36px)]  overflow-y-auto scroll-thin px-4"
+                classes="flex-1 min-h-[200px] max-h-[calc(100dvh-76px-44px-24px-32px-42px-32px-44px-68px-36px)]  overflow-y-auto scroll-thin px-4"
               >
                 {cogs.map((item) => (
                   <FlexWrapper

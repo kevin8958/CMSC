@@ -40,7 +40,11 @@ function Income() {
           />
         </FlexWrapper>
       </FlexWrapper>
-      <FlexWrapper gap={2} classes="w-full h-[100dvh] mt-2 mb-4">
+      <FlexWrapper
+        direction="col"
+        gap={2}
+        classes="w-full h-[100dvh] mt-2 mb-4 md:flex-row"
+      >
         <RevenueSection />
         <OperatingProfitSection />
         <PreTaxProfitSection />

@@ -28,7 +28,7 @@ export default function OperatingProfitSection() {
         direction="col"
         justify="between"
         gap={0}
-        classes="size-full border rounded-xl bg-white"
+        classes="size-full border rounded-xl bg-white sm:min-w-[370px]"
       >
         <FlexWrapper direction="col" gap={2} classes="p-4 h-full">
           <FlexWrapper
@@ -47,7 +47,7 @@ export default function OperatingProfitSection() {
             <FlexWrapper items="center" gap={2}>
               <Typography
                 variant="H4"
-                classes="!w-[180px] font-semibold text-primary-700 text-right"
+                classes="flex-1 font-semibold text-primary-700 text-right"
               >
                 {grossProfit.toLocaleString()}
               </Typography>
@@ -111,7 +111,7 @@ export default function OperatingProfitSection() {
                 justify="start"
                 direction="col"
                 gap={0}
-                classes="flex-1 max-h-[calc(100dvh-76px-44px-24px-32px-42px-32px-44px-68px-24px)] overflow-y-auto scroll-thin px-4"
+                classes="flex-1 min-h-[200px] max-h-[calc(100dvh-76px-44px-24px-32px-42px-32px-44px-68px-24px)] overflow-y-auto scroll-thin px-4"
               >
                 {sga.map((item) => (
                   <FlexWrapper

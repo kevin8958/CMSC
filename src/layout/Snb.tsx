@@ -98,9 +98,9 @@ const SNB = () => {
                 icon: <LuGitPullRequestDraft />,
               },
               {
-                id: "sales",
+                id: "income",
                 label: "손익계산서",
-                href: "/sales",
+                href: "/income",
                 icon: <LuArrowUpDown />,
               },
             ],
