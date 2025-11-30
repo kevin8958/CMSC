@@ -8,9 +8,11 @@ import { AccordionTrigger } from "@/components/AccordionTrigger";
 import { AccordionContent } from "@/components/AccordionContent";
 import Accordion from "@/components/Accordion";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAttendanceStore } from "@/stores/useAttendanceStore";
 import { motion } from "framer-motion";
+import { TbMoodEmpty } from "react-icons/tb";
+import { groupAttendanceByYear } from "@/utils/groupAttendanceByYear";
 
 export default function AttendanceDrawer({
   open,
@@ -21,14 +23,17 @@ export default function AttendanceDrawer({
   worker: Worker.Worker;
   onClose: () => void;
 }) {
-  const { records, recordLoading, fetchMemberRecords, clearRecords } =
-    useAttendanceStore();
+  const { recordLoading, allRecords, fetchAll } = useAttendanceStore();
 
-  const currentYear = dayjs().year();
+  const groupedRecords = useMemo(
+    () => groupAttendanceByYear(allRecords),
+    [allRecords]
+  );
 
   useEffect(() => {
-    if (open && worker?.id) fetchMemberRecords(worker.id);
-    else clearRecords();
+    if (open && worker?.id) {
+      fetchAll(worker.id);
+    }
   }, [open, worker]);
 
   if (!worker) return null;
@@ -131,27 +136,15 @@ export default function AttendanceDrawer({
                 />
               ))}
             </div>
-          ) : records.length === 0 ? (
-            // 데이터 없을 때 → 올해 아코디언만
-            <Accordion>
-              <AccordionItem
-                key={currentYear}
-                classes="!border-none !rounded-none"
-              >
-                <AccordionTrigger id={currentYear.toString()}>
-                  {currentYear}년
-                </AccordionTrigger>
-                <AccordionContent id={currentYear.toString()}>
-                  <div className="p-4 text-gray-400 text-sm">
-                    등록된 연차 내역이 없습니다.
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+          ) : groupedRecords.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-2 p-6">
+              <TbMoodEmpty className="text-4xl text-gray-300" />
+              <p className="text-gray-400">데이터가 없습니다</p>
+            </div>
           ) : (
             // 데이터 있을 때
             <Accordion>
-              {records.map((year) => (
+              {groupedRecords.map((year) => (
                 <AccordionItem key={year.year}>
                   <AccordionTrigger id={year.year.toString()}>
                     {year.year}년 - 총 {year.used}일

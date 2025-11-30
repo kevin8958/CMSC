@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { useAttendanceStore } from "@/stores/useAttendanceStore";
 import { useWorkerStore } from "@/stores/useWorkerStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import { useDialog } from "@/hooks/useDialog";
 
 interface AttendanceDetailDrawerProps {
   record: any | null;
@@ -25,6 +26,7 @@ export default function AttendanceDetailDrawer({
   const { updateRecord, deleteRecord, fetchMonthlyRecords } =
     useAttendanceStore();
   const { fetchAll } = useWorkerStore();
+  const { openDialog } = useDialog();
   const { currentCompanyId } = useCompanyStore();
   const [form, setForm] = useState(record);
   const [isOpen, setIsOpen] = useState(false);
@@ -70,15 +72,23 @@ export default function AttendanceDetailDrawer({
   };
 
   const handleDelete = async () => {
-    if (confirm("정말 삭제하시겠습니까?")) {
-      await deleteRecord(form.id);
-      if (currentCompanyId) {
-        const month = dayjs(selectedMonth).format("YYYY-MM");
-        fetchAll(currentCompanyId);
-        fetchMonthlyRecords(currentCompanyId, month);
-      }
-      handleClose();
-    }
+    await openDialog({
+      title: "삭제하시겠습니까?",
+      message: `연차내역을 제거합니다.`,
+      confirmText: "삭제",
+      cancelText: "취소",
+      state: "danger",
+      onConfirm: async () => {
+        await deleteRecord(form.id);
+        if (currentCompanyId) {
+          const month = dayjs(selectedMonth).format("YYYY-MM");
+          fetchAll(currentCompanyId);
+          fetchMonthlyRecords(currentCompanyId, month);
+        }
+        handleClose();
+        return true;
+      },
+    });
   };
 
   return (

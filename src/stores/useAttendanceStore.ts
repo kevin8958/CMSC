@@ -1,132 +1,95 @@
+import {
+  createAttendanceRecord,
+  deleteAttendanceRecord,
+  fetchAllAttendance,
+  fetchMonthlyAttendance,
+  updateAttendanceRecord,
+} from "@/actions/attendanceActions";
 import { create } from "zustand";
+import { useCompanyStore } from "./useCompanyStore";
+import dayjs from "dayjs";
 
-interface NewAttendanceInput {
-  company_id: string;
-  worker_id: string;
-  start_date: string;
-  end_date: string;
-  days: number;
-  reason?: string;
-  note?: string;
-}
+export const useAttendanceStore = create<Attendance.AttendanceState>(
+  (set, get) => ({
+    members: [],
+    memberLoading: false,
+    recordLoading: false,
+    selectedMember: null,
 
-interface MonthlyRecord {
-  id: string;
-  user_name: string;
-  start_date: string;
-  end_date: string;
-  days: number;
-  reason: string;
-}
+    // ✅ 특정 멤버 선택
+    selectMember: (member) => set({ selectedMember: member }),
 
-interface AttendanceRecord {
-  id: string;
-  start_date: string;
-  end_date: string;
-  days: number;
-  reason: string | null;
-  note: string | null;
-}
+    monthlyRecords: [],
+    monthlyLoading: false,
 
-interface YearlyAttendance {
-  year: number;
-  used: number;
-  records: AttendanceRecord[];
-}
+    fetchMonthlyRecords: async (companyId, month) => {
+      set({ monthlyLoading: true });
+      try {
+        const data = await fetchMonthlyAttendance(companyId, month);
+        set({ monthlyRecords: data });
+      } finally {
+        set({ monthlyLoading: false });
+      }
+    },
+    createRecord: async (data) => {
+      try {
+        await createAttendanceRecord(data);
 
-interface AttendanceState {
-  recordLoading: boolean; // 🔹 연차내역 로딩
-  selectedMember: any | null;
-  records: YearlyAttendance[];
-  monthlyRecords: MonthlyRecord[];
-  monthlyLoading: boolean;
+        // ✅ 등록 후 현재 선택 월 목록 리프레시
+        const { currentCompanyId } = useCompanyStore.getState();
+        const month = dayjs(data.start_date).format("YYYY-MM");
 
-  selectMember: (member: any) => void;
-  fetchMemberRecords: (memberId: string) => Promise<void>;
-  clearRecords: () => void;
-  fetchMonthlyRecords: (companyId: string, month: string) => Promise<void>;
+        await get().fetchMonthlyRecords(currentCompanyId!, month);
+      } catch (err) {
+        console.error("❌ createRecord error:", err);
+        throw err;
+      }
+    },
+    updateRecord: async (data) => {
+      try {
+        await updateAttendanceRecord(data);
+        // ✅ 수정 후 현재 선택 월 목록 리프레시
+        const { currentCompanyId } = useCompanyStore.getState();
+        const month = dayjs(data.start_date).format("YYYY-MM");
 
-  createRecord: (data: NewAttendanceInput) => Promise<void>;
-  updateRecord: (data: any) => Promise<void>;
-  deleteRecord: (id: string) => Promise<void>;
-}
+        await get().fetchMonthlyRecords(currentCompanyId!, month);
+      } catch (err) {
+        console.error("❌ updateRecord error:", err);
+      }
+    },
+    deleteRecord: async (id) => {
+      try {
+        await deleteAttendanceRecord(id);
+      } catch (err) {
+        console.error("❌ deleteRecord error:", err);
+      }
+    },
+    allRecords: [],
+    viewRecords: [],
+    selectedYear: new Date().getFullYear(),
 
-export const useAttendanceStore = create<AttendanceState>((set) => ({
-  members: [],
-  memberLoading: false,
-  recordLoading: false,
-  selectedMember: null,
-  records: [],
+    fetchAll: async (workerId) => {
+      const data = await fetchAllAttendance(workerId);
 
-  // ✅ 특정 멤버 선택
-  selectMember: (member) => set({ selectedMember: member }),
+      const year = get().selectedYear;
 
-  // ✅ 특정 멤버의 연차 내역 불러오기
-  fetchMemberRecords: async (memberId) => {
-    set({ recordLoading: true });
-    try {
-      const res = await fetch(`/api/attendance/list?member_id=${memberId}`);
-      const { data } = await res.json();
-      set({ records: data || [] });
-    } catch (err) {
-      console.error("❌ fetchMemberRecords error:", err);
-      set({ records: [] });
-    } finally {
-      set({ recordLoading: false });
-    }
-  },
-
-  // ✅ Drawer 닫을 때 초기화
-  clearRecords: () => set({ records: [] }),
-
-  monthlyRecords: [],
-  monthlyLoading: false,
-
-  fetchMonthlyRecords: async (companyId, month) => {
-    set({ monthlyLoading: true });
-    try {
-      const res = await fetch(
-        `/api/attendance/monthly?company_id=${companyId}&month=${month}`
-      );
-      const { data } = await res.json();
-      set({ monthlyRecords: data || [] });
-    } catch (err) {
-      console.error("❌ fetchMonthlyRecords error:", err);
-      set({ monthlyRecords: [] });
-    } finally {
-      set({ monthlyLoading: false });
-    }
-  },
-  createRecord: async (data) => {
-    try {
-      const res = await fetch(`/api/attendance/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      set({
+        allRecords: data,
+        viewRecords: data.filter(
+          (r) => new Date(r.start_date).getFullYear() === year
+        ),
       });
-      if (!res.ok) throw new Error("Create failed");
-    } catch (err) {
-      console.error("❌ createRecord error:", err);
-    }
-  },
-  updateRecord: async (updated) => {
-    try {
-      const res = await fetch(`/api/attendance/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updated),
-      });
-      if (!res.ok) throw new Error("Update failed");
-    } catch (err) {
-      console.error("❌ updateRecord error:", err);
-    }
-  },
+    },
 
-  deleteRecord: async (id) => {
-    try {
-      await fetch(`/api/attendance/delete?id=${id}`, { method: "DELETE" });
-    } catch (err) {
-      console.error("❌ deleteRecord error:", err);
-    }
-  },
-}));
+    setYear: (year) => {
+      const all = get().allRecords;
+
+      set({
+        selectedYear: year,
+        viewRecords: all.filter(
+          (r) => new Date(r.start_date).getFullYear() === year
+        ),
+      });
+    },
+  })
+);
