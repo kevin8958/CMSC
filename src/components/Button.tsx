@@ -89,7 +89,7 @@ const Button = forwardRef(
           variant === "clear" && getClearColorClasses(color),
           variant === "outline" && getOutlineClasses(color),
           variant === "contain" && getContainClasses(color),
-          disabled && "!cursor-not-allowed opacity-30",
+          disabled && "!cursor-not-allowed opacity-60",
           prompted && "animate-flash-fast cursor-pointer",
           shape === "circle" && "aspect-square !rounded-full p-0"
         )}

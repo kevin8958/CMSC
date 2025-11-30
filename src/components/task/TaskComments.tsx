@@ -90,7 +90,11 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
 
       {/* 목록 */}
       {loading ? (
-        <FlexWrapper classes="h-[240px]" justify="center" items="center">
+        <FlexWrapper
+          classes="h-[calc(100dvh-50px-358px-50px-30px-16px-60px)]"
+          justify="center"
+          items="center"
+        >
           <motion.div
             className="size-4 rounded-full border-[3px] border-primary-900 border-t-transparent"
             animate={{ rotate: 360 }}
@@ -104,7 +108,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
       ) : (
         <div>
           {comments.length === 0 && (
-            <div className="h-[240px] flex flex-col items-center justify-center gap-2 p-6">
+            <div className="h-[calc(100dvh-50px-358px-50px-30px-16px-60px)] flex flex-col items-center justify-center gap-2 p-6">
               <TbMoodEmpty className="text-4xl text-gray-300" />
               <p className="text-gray-400 text-sm">댓글이 없습니다</p>
             </div>
@@ -114,7 +118,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
             <FlexWrapper
               key={c.id}
               direction="col"
-              classes="py-3 h-[240px] overflow-y-auto scroll-thin"
+              classes="py-3 h-[calc(100dvh-50px-358px-50px-30px-16px-60px)] overflow-y-auto scroll-thin"
               gap={1}
             >
               <FlexWrapper

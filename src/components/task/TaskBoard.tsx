@@ -245,6 +245,7 @@ export default function TaskBoard() {
       )}
       <TaskDrawer
         open={drawerOpen}
+        disabled={role !== "admin"}
         mode={drawerMode}
         task={currentTask}
         workers={allList}

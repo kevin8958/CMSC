@@ -27,6 +27,7 @@ const statusItems = [
 
 export default function TaskDrawer({
   open,
+  disabled,
   mode,
   task,
   workers,
@@ -88,17 +89,22 @@ export default function TaskDrawer({
             onChange={async (val) => {
               setStatus(val as StatusKey);
             }}
+            disabled={disabled}
             dialogWidth={90}
             itemClasses="!px-1"
             buttonItem={<TaskStatusBadge status={status} />}
             buttonClasses="!font-normal text-primary-900 !h-fit !border-primary-300 hover:!bg-primary-50 !p-0"
           />
           <Typography variant="H4">
-            {mode === "create" ? "업무 추가하기" : "업무 수정하기"}
+            {mode === "create"
+              ? "업무 추가"
+              : disabled
+                ? "업무 조회"
+                : "업무 수정"}
           </Typography>
         </FlexWrapper>
       }
-      showFooter
+      showFooter={!disabled}
       confirmText={mode === "create" ? "추가하기" : "수정하기"}
       deleteText="삭제"
       onClose={onClose}
@@ -115,6 +121,7 @@ export default function TaskDrawer({
           <TextInput
             classes="!text-sm !h-[42px] max-h-[42px]"
             inputProps={{ value: title }}
+            disabled={disabled}
             onChange={(e) => setTitle(e.target.value)}
             max={100}
             error={!!errors.title}
@@ -132,6 +139,7 @@ export default function TaskDrawer({
             hideDownIcon
             itemClasses="!px-1"
             buttonVariant="clear"
+            disabled={disabled}
             items={Object.keys(PRIORITY_CONFIG).map((priority) => ({
               type: "item" as const,
               id: priority,
@@ -162,6 +170,7 @@ export default function TaskDrawer({
             hideDownIcon
             buttonSize="sm"
             buttonVariant="outline"
+            disabled={disabled}
             items={workers.map((m) => ({
               type: "item",
               id: m.id,
@@ -186,6 +195,7 @@ export default function TaskDrawer({
             type="single"
             variant="outline"
             size="sm"
+            disabled={disabled}
             dateFormat="YYYY.MM.dd"
             value={dueDate}
             onChange={(date) => setDueDate(date)}
@@ -195,6 +205,7 @@ export default function TaskDrawer({
         {/* 설명 */}
         <Textarea
           value={description}
+          disabled={disabled}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="업무 설명을 입력하세요"
         />

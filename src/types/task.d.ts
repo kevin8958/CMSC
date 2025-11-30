@@ -26,6 +26,7 @@ namespace Task {
 
   interface TaskDrawerProps {
     open: boolean;
+    disabled: boolean;
     mode: "create" | "edit";
     task?: Task | null;
     workers: Worker.Worker[];
