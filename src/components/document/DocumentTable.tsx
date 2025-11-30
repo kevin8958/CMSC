@@ -4,40 +4,56 @@ import Table from "@/components/Table";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useEffect } from "react";
 import { useCompanyStore } from "@/stores/useCompanyStore";
-import { useDocumentStore } from "@/stores/useDocumentStore";
 import Button from "@/components/Button";
-import Dropdown from "@/components/Dropdown";
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import { LuDownload, LuTrash2 } from "react-icons/lu";
+
+import { useCompanyFilesStore } from "@/stores/useCompanyFilesStore";
+import { downloadCompanyFile } from "@/actions/companyFileActions";
 
 export default function DocumentTable() {
   const { currentCompanyId } = useCompanyStore();
-  const { documents, total, fetchDocuments, deleteDocument, downloadDocument } =
-    useDocumentStore();
 
+  const { files, fetch, delete: deleteFile } = useCompanyFilesStore();
+
+  /* 최초 로드 */
   useEffect(() => {
-    fetchDocuments(1, 20);
+    if (!currentCompanyId) return;
+    fetch(currentCompanyId);
   }, [currentCompanyId]);
 
-  // ==========================
-  // 📌 이벤트 핸들러
-  // ==========================
+  // 다운로드 처리
+  const handleDownload = async (item: CompanyFile.DocumentRow) => {
+    try {
+      const url = await downloadCompanyFile(item.file_path);
 
-  const handleDownload = (doc: any) => {
-    console.log("⬇ Download:", doc);
-    downloadDocument(doc.id);
+      // ✅ 반드시 window.fetch 사용
+      const res = await window.fetch(url);
+      const blob = await res.blob();
+
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = item.file_name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("다운로드 실패", err);
+      alert("파일 다운로드에 실패했습니다.");
+    }
   };
 
-  const handleDelete = (doc: any) => {
-    console.log("🗑 Delete:", doc);
-    deleteDocument(doc.id);
+  // 삭제 처리
+  const handleDelete = async (item: CompanyFile.DocumentRow) => {
+    if (!confirm("정말 삭제할까요?")) return;
+    await deleteFile(item);
   };
 
-  // ==========================
-  // 📌 컬럼 정의
-  // ==========================
-
-  const columns: ColumnDef<any>[] = [
+  /* 테이블 컬럼 */
+  const columns: ColumnDef<CompanyFile.DocumentRow>[] = [
     {
       accessorKey: "file_name",
       header: "파일명",
@@ -57,13 +73,6 @@ export default function DocumentTable() {
       ),
     },
     {
-      accessorKey: "owner_name",
-      header: "소유자",
-      cell: ({ row }) => (
-        <Typography variant="B2">{row.original.owner_name}</Typography>
-      ),
-    },
-    {
       accessorKey: "created_at",
       header: "추가된 날짜",
       cell: ({ row }) => (
@@ -77,9 +86,9 @@ export default function DocumentTable() {
       header: "다운로드",
       cell: ({ row }) => (
         <Button
-          variant="outline"
+          variant="clear"
           size="sm"
-          classes="!px-2 !py-1"
+          classes="!px-2 !py-1 !text-gray-900"
           onClick={(e) => {
             e.stopPropagation();
             handleDownload(row.original);
@@ -90,56 +99,32 @@ export default function DocumentTable() {
       ),
     },
     {
-      accessorKey: "etc",
-      header: "",
-      size: 24,
-      minSize: 24,
-      maxSize: 24,
-      cell: ({ row }) => {
-        const dropdownItems = [
-          {
-            type: "item",
-            id: "download",
-            icon: <LuDownload className="text-base text-primary" />,
-            label: <p className="text-primary">다운로드</p>,
-          },
-          {
-            type: "item",
-            id: "delete",
-            icon: <LuTrash2 className="text-base text-danger" />,
-            label: <p className="text-danger">삭제</p>,
-          },
-        ] as Common.DropdownItem[];
-
-        return (
-          <Dropdown
-            buttonVariant="clear"
-            dialogPosition="right"
-            hideDownIcon
-            items={dropdownItems}
-            onChange={(val) => {
-              if (val === "download") handleDownload(row.original);
-              if (val === "delete") handleDelete(row.original);
-            }}
-            dialogWidth={160}
-            buttonItem={
-              <HiOutlineDotsVertical className="text-xl text-gray-900" />
-            }
-            buttonClasses="!font-normal text-primary-900 !h-8 !border-primary-100"
-          />
-        );
-      },
+      accessorKey: "delete_btn",
+      header: "삭제",
+      cell: ({ row }) => (
+        <Button
+          variant="clear"
+          size="sm"
+          classes="!px-2 !py-1 !text-gray-900"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete(row.original);
+          }}
+        >
+          <LuTrash2 className="text-lg text-danger" />
+        </Button>
+      ),
     },
   ];
 
   return (
     <FlexWrapper classes="h-screen mt-4 rounded-xl border overflow-hidden bg-white mb-4">
       <Table
-        data={documents || []}
+        data={files || []}
         columns={columns}
         hideSize
-        totalCount={total}
-        onPageChange={(page, size) => fetchDocuments(page, size)}
+        totalCount={files.length}
+        showPagination={false}
       />
     </FlexWrapper>
   );

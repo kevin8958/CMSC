@@ -77,34 +77,27 @@ function Worker() {
 
   return (
     <>
-      <FlexWrapper gap={2} items="end">
-        <Typography variant="H3">멤버 관리</Typography>
-        <Badge color="green" size="md">
-          {total}
-        </Badge>
-      </FlexWrapper>
-      <FlexWrapper
-        direction="col"
-        items="start"
-        classes="w-full relative"
-        gap={4}
-      >
-        <FlexWrapper justify="end" items="end" classes="w-full" gap={0}>
-          <Button
-            variant="contain"
-            color="green"
-            size="md"
-            classes="gap-1 !px-3 shrink-0"
-            onClick={() => {
-              setCurrentWorker(null);
-              setDrawerMode("create");
-              setOpenDrawer(true);
-            }}
-          >
-            <LuPlus className="text-lg" />
-            추가하기
-          </Button>
+      <FlexWrapper justify="between" items="center" classes="w-full">
+        <FlexWrapper gap={2} items="end">
+          <Typography variant="H3">멤버 관리</Typography>
+          <Badge color="green" size="md">
+            {total}
+          </Badge>
         </FlexWrapper>
+        <Button
+          variant="contain"
+          color="green"
+          size="md"
+          classes="gap-1 !px-3 shrink-0"
+          onClick={() => {
+            setCurrentWorker(null);
+            setDrawerMode("create");
+            setOpenDrawer(true);
+          }}
+        >
+          <LuPlus className="text-lg" />
+          추가하기
+        </Button>
       </FlexWrapper>
       {loading ? (
         <FlexWrapper
@@ -130,34 +123,6 @@ function Worker() {
           />
         </FlexWrapper>
       )}
-      <WorkerDrawer
-        open={openDrawer}
-        mode={drawerMode}
-        worker={currentWorker}
-        onClose={() => setOpenDrawer(false)}
-        onSubmit={async (data) => {
-          if (!currentCompanyId) return;
-          await create({
-            company_id: currentCompanyId,
-            name: data.name!,
-            ...data,
-          });
-          showAlert("멤버가 추가되었습니다.", { type: "success" });
-          setOpenDrawer(false);
-        }}
-        onEdit={async (data) => {
-          if (!currentCompanyId) return;
-          await update(currentWorker!.id, data);
-          showAlert("멤버가 수정되었습니다.", { type: "success" });
-          setOpenDrawer(false);
-        }}
-        onDelete={async () => {
-          if (!currentWorker) return;
-          await remove(currentWorker.id);
-          showAlert("멤버가 삭제되었습니다.", { type: "danger" });
-          setOpenDrawer(false);
-        }}
-      />
     </>
   );
 }
