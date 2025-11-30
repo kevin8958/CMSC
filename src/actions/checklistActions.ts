@@ -15,9 +15,7 @@ export interface ChecklistComment {
   content: string;
   created_by: string;
   created_at: string;
-  profiles: {
-    nickname: string | null;
-  } | null;
+  nickname: string | null;
 }
 export async function fetchChecklist(companyId: string) {
   const { data, error } = await supabase
@@ -99,18 +97,9 @@ export async function updateChecklistOrder(
   return fetchChecklist(companyId);
 }
 export async function fetchChecklistComments(checklistId: string) {
-  const { data, error } = await supabase
-    .from("checklist_comments")
-    .select(
-      `
-      *,
-      profiles:profiles!checklist_comments_created_by_fkey (
-        nickname
-      )
-      `
-    )
-    .eq("checklist_id", checklistId)
-    .order("created_at", { ascending: true });
+  const { data, error } = await supabase.rpc("get_checklist_comments", {
+    cid: checklistId,
+  });
 
   if (error) throw error;
   return data || [];

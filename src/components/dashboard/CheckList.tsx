@@ -28,6 +28,7 @@ export default function CheckList() {
   const [currentItem, setCurrentItem] = useState<any | null>(null);
 
   const { currentCompanyId } = useCompanyStore();
+  const { role } = useAuthStore();
   const { list, loading, fetch, create, update, remove, reorder } =
     useChecklistStore();
   const { user } = useAuthStore();
@@ -72,28 +73,30 @@ export default function CheckList() {
               </Badge>
             </FlexWrapper>
 
-            <Button
-              variant="contain"
-              color="green"
-              size="sm"
-              classes="gap-1 !px-2"
-              onClick={() => {
-                setDrawerMode("create");
-                setCurrentItem({
-                  id: "",
-                  company_id: currentCompanyId,
-                  title: "",
-                  description: "",
-                  sort_index: list.length,
-                  due_date: dayjs().format("YYYY-MM-DD"),
-                  created_at: "",
-                  updated_at: "",
-                });
-                setDrawerOpen(true);
-              }}
-            >
-              <LuPlus className="text-base" />
-            </Button>
+            {role === "admin" && (
+              <Button
+                variant="contain"
+                color="green"
+                size="sm"
+                classes="gap-1 !px-2"
+                onClick={() => {
+                  setDrawerMode("create");
+                  setCurrentItem({
+                    id: "",
+                    company_id: currentCompanyId,
+                    title: "",
+                    description: "",
+                    sort_index: list.length,
+                    due_date: dayjs().format("YYYY-MM-DD"),
+                    created_at: "",
+                    updated_at: "",
+                  });
+                  setDrawerOpen(true);
+                }}
+              >
+                <LuPlus className="text-base" />
+              </Button>
+            )}
           </FlexWrapper>
           <DragDropContext onDragEnd={onDragEnd}>
             {list.length > 0 ? (
@@ -112,6 +115,7 @@ export default function CheckList() {
                         <Draggable
                           draggableId={item.id}
                           index={index}
+                          isDragDisabled={role !== "admin"}
                           key={item.id}
                         >
                           {(p) => (
@@ -152,6 +156,7 @@ export default function CheckList() {
         open={drawerOpen}
         mode={drawerMode}
         item={currentItem}
+        disabled={role !== "admin"}
         onClose={() => setDrawerOpen(false)}
         onSubmit={async (data) => {
           if (!currentCompanyId) return;

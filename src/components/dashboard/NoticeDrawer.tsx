@@ -17,6 +17,7 @@ interface NoticeDrawerProps {
   open: boolean;
   mode: "create" | "edit";
   notice?: Notice | null;
+  disabled?: boolean;
   onClose: () => void;
   onSubmit: (params: {
     title: string;
@@ -32,6 +33,7 @@ export default function NoticeDrawer({
   open,
   mode,
   notice,
+  disabled,
   onClose,
   onSubmit,
   onDelete,
@@ -87,10 +89,14 @@ export default function NoticeDrawer({
       open={open}
       title={
         <Typography variant="H4">
-          {mode === "create" ? "중요일정 추가" : "중요일정 수정"}
+          {mode === "create"
+            ? "중요일정 추가"
+            : disabled
+              ? "중요일정 조회"
+              : "중요일정 수정"}
         </Typography>
       }
-      showFooter
+      showFooter={!disabled}
       confirmText={mode === "create" ? "추가하기" : "수정하기"}
       deleteText={mode === "edit" ? "삭제" : undefined}
       onClose={onClose}
@@ -109,6 +115,7 @@ export default function NoticeDrawer({
             inputProps={{ value: title }}
             onChange={(e) => setTitle(e.target.value)}
             max={100}
+            disabled={disabled}
             error={!!errors.title}
             errorMsg={errors.title}
             placeholder="공지 제목을 입력하세요"
@@ -123,6 +130,7 @@ export default function NoticeDrawer({
           </div>
           <Dropdown
             hideDownIcon
+            disabled={disabled}
             itemClasses="!px-1"
             buttonVariant="clear"
             items={Object.keys(PRIORITY_CONFIG).map((priority) => ({
@@ -156,6 +164,7 @@ export default function NoticeDrawer({
             classes="w-[200px]"
             type="range"
             size="sm"
+            disabled={disabled}
             value={null}
             isRange
             dateFormat="YYYY.MM.dd"
@@ -178,6 +187,7 @@ export default function NoticeDrawer({
           </div>
           <Textarea
             value={content}
+            disabled={disabled}
             onChange={(e) => setContent(e.target.value)}
             placeholder="중요일정 설명을 입력하세요"
           />

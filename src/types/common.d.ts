@@ -182,6 +182,7 @@ namespace Common {
     cancelText?: string;
     deleteText?: string;
     disableConfirm?: boolean;
+    hideFooter?: boolean;
     onConfirm?: () => void;
     onCancel?: () => void;
     onDelete?: () => void;
@@ -225,6 +226,7 @@ namespace Common {
     buttonClasses?: string;
     itemClasses?: string;
     hideDownIcon?: boolean;
+    disabled?: boolean;
   }
 
   type ProgressSize = "sm" | "md" | "lg";

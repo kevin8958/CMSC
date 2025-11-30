@@ -21,6 +21,7 @@ const Dropdown = (props: Common.DropdownProps) => {
     buttonClasses,
     itemClasses,
     hideDownIcon = false,
+    disabled = false,
   } = props;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -161,6 +162,7 @@ const Dropdown = (props: Common.DropdownProps) => {
         size={buttonSize}
         ref={buttonRef}
         classes={buttonClasses}
+        disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
       >
         <FlexWrapper justify="between" items="center" gap={1} classes="w-full">

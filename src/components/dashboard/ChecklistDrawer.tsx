@@ -24,6 +24,7 @@ interface ChecklistDrawerProps {
   open: boolean;
   mode: "create" | "edit";
   item: ChecklistItem | null;
+  disabled?: boolean;
   onClose: () => void;
   onSubmit: (data: {
     title: string;
@@ -37,6 +38,7 @@ export default function ChecklistDrawer({
   open,
   mode,
   item,
+  disabled = false,
   onClose,
   onSubmit,
   onDelete,
@@ -82,7 +84,7 @@ export default function ChecklistDrawer({
           {mode === "create" ? "체크리스트 추가" : "체크리스트 수정"}
         </Typography>
       }
-      showFooter
+      showFooter={!disabled}
       confirmText={mode === "create" ? "추가하기" : "수정하기"}
       deleteText="삭제"
       onClose={onClose}
@@ -99,6 +101,7 @@ export default function ChecklistDrawer({
           <TextInput
             classes="!text-sm !h-[42px]"
             inputProps={{ value: title }}
+            disabled={disabled}
             onChange={(e) => setTitle(e.target.value)}
             error={!!errors.title}
             errorMsg={errors.title}
@@ -117,6 +120,7 @@ export default function ChecklistDrawer({
             variant="outline"
             size="sm"
             dateFormat="YYYY.MM.dd"
+            disabled={disabled}
             value={dueDate}
             onChange={(date) => setDueDate(date)}
           />
@@ -129,6 +133,7 @@ export default function ChecklistDrawer({
           </div>
           <Textarea
             value={description}
+            disabled={disabled}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="설명을 입력하세요"
           />

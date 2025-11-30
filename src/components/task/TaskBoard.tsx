@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 import TaskBoardSkeleton from "./TaskBoardSkeleton";
 import { useWorkerStore } from "@/stores/useWorkerStore";
 import { TbMoodEmpty } from "react-icons/tb";
+import { useAuthStore } from "@/stores/authStore";
 
 const statusKeys = Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[];
 
@@ -104,6 +105,7 @@ export default function TaskBoard() {
   const { currentCompanyId } = useCompanyStore();
   const { showAlert } = useAlert();
   const { openDialog } = useDialog();
+  const { role } = useAuthStore();
 
   const { allList, fetchAll } = useWorkerStore();
 
@@ -133,20 +135,22 @@ export default function TaskBoard() {
     <>
       <FlexWrapper classes="mb-6" items="center" justify="between">
         <Typography variant="H3">업무소통</Typography>
-        <Button
-          variant="contain"
-          color="green"
-          size="md"
-          classes="gap-1 !px-3"
-          onClick={() => {
-            setDrawerMode("create");
-            setCurrentTask(null);
-            setDrawerOpen(true);
-          }}
-        >
-          <LuPlus className="text-lg" />
-          추가하기
-        </Button>
+        {role === "admin" && (
+          <Button
+            variant="contain"
+            color="green"
+            size="md"
+            classes="gap-1 !px-3"
+            onClick={() => {
+              setDrawerMode("create");
+              setCurrentTask(null);
+              setDrawerOpen(true);
+            }}
+          >
+            <LuPlus className="text-lg" />
+            추가하기
+          </Button>
+        )}
       </FlexWrapper>
 
       {fetching ? (
@@ -168,31 +172,33 @@ export default function TaskBoard() {
                       classes="mb-2"
                     >
                       <TaskStatusBadge status={status} />
-                      <Button
-                        variant="clear"
-                        size="sm"
-                        classes="!text-gray-500"
-                        onClick={() => {
-                          setDrawerMode("create");
-                          setCurrentTask({
-                            id: "",
-                            company_id: currentCompanyId || "",
-                            title: "",
-                            status,
-                            priority: "medium",
-                            description: "",
-                            assignee: "",
-                            sort_index: 0,
-                            due_date: dayjs().format("YYYY-MM-DD"),
-                            task_comments: [],
-                            created_at: dayjs().toString(),
-                            updated_at: dayjs().toString(),
-                          });
-                          setDrawerOpen(true);
-                        }}
-                      >
-                        <LuPlus className="text-lg" />
-                      </Button>
+                      {role === "admin" && (
+                        <Button
+                          variant="clear"
+                          size="sm"
+                          classes="!text-gray-500"
+                          onClick={() => {
+                            setDrawerMode("create");
+                            setCurrentTask({
+                              id: "",
+                              company_id: currentCompanyId || "",
+                              title: "",
+                              status,
+                              priority: "medium",
+                              description: "",
+                              assignee: "",
+                              sort_index: 0,
+                              due_date: dayjs().format("YYYY-MM-DD"),
+                              task_comments: [],
+                              created_at: dayjs().toString(),
+                              updated_at: dayjs().toString(),
+                            });
+                            setDrawerOpen(true);
+                          }}
+                        >
+                          <LuPlus className="text-lg" />
+                        </Button>
+                      )}
                     </FlexWrapper>
 
                     {tasks.length === 0 ? (

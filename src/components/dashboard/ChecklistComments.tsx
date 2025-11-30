@@ -85,58 +85,52 @@ export default function ChecklistComments({
       ) : (
         <div>
           {/* 댓글 없음 */}
-          {list.length === 0 && (
+          {list.length === 0 ? (
             <div className="h-[calc(100dvh-50px-287px-50px-30px-16px-60px)] flex flex-col items-center justify-center gap-2 p-6">
               <TbMoodEmpty className="text-4xl text-gray-300" />
               <p className="text-gray-400 text-sm">댓글이 없습니다</p>
             </div>
-          )}
-
-          {/* 댓글 리스트 */}
-          <div className="h-[calc(100dvh-50px-287px-50px-30px-16px-60px)] overflow-y-auto scroll-thin py-2">
-            {list.map((c) => {
-              const mine = c.created_by === userId;
-              return (
-                <FlexWrapper
-                  key={c.id}
-                  gap={1}
-                  items="start"
-                  direction={mine ? "row-reverse" : "row"}
-                  classes="mb-3"
-                >
-                  {/* 작성자 */}
-                  <FlexWrapper gap={1} items="center" direction="col">
-                    <Avatar
-                      size="sm"
-                      type="text"
-                      name={c.profiles?.nickname || "-"}
-                    />
-                    <Typography
-                      variant="C1"
-                      classes="!font-normal text-gray-600 w-[60px] truncate text-center"
-                    >
-                      {c.profiles?.nickname || "익명"}
-                    </Typography>
-                  </FlexWrapper>
-
-                  {/* 내용 박스 */}
+          ) : (
+            <div className="h-[calc(100dvh-50px-287px-50px-30px-16px-60px)] overflow-y-auto scroll-thin py-2">
+              {list.map((c) => {
+                const mine = c.created_by === userId;
+                return (
                   <FlexWrapper
-                    direction="col"
+                    key={c.id}
                     gap={1}
-                    items={mine ? "end" : "start"}
-                    classes="max-w-[calc(100%-100px)] bg-white rounded-lg border p-2"
+                    items="start"
+                    direction={mine ? "row-reverse" : "row"}
+                    classes="mb-3"
                   >
-                    <Typography
-                      variant="B2"
-                      classes="text-gray-700 whitespace-pre-wrap"
-                    >
-                      {c.content}
-                    </Typography>
-                    <Typography variant="C1" classes="!text-gray-400">
-                      {dayjs(c.created_at).format("YYYY.MM.DD HH:mm")}
-                    </Typography>
+                    {/* 작성자 */}
+                    <FlexWrapper gap={1} items="center" direction="col">
+                      <Avatar size="sm" type="text" name={c.nickname || "-"} />
+                      <Typography
+                        variant="C1"
+                        classes="!font-normal text-gray-600 w-[60px] truncate text-center"
+                      >
+                        {c.nickname || "익명"}
+                      </Typography>
+                    </FlexWrapper>
 
-                    {/* {mine && (
+                    {/* 내용 박스 */}
+                    <FlexWrapper
+                      direction="col"
+                      gap={1}
+                      items={mine ? "end" : "start"}
+                      classes="max-w-[calc(100%-100px)] bg-white rounded-lg border p-2"
+                    >
+                      <Typography
+                        variant="B2"
+                        classes="text-gray-700 whitespace-pre-wrap"
+                      >
+                        {c.content}
+                      </Typography>
+                      <Typography variant="C1" classes="!text-gray-400">
+                        {dayjs(c.created_at).format("YYYY.MM.DD HH:mm")}
+                      </Typography>
+
+                      {/* {mine && (
                       <Button
                         variant="clear"
                         size="sm"
@@ -146,11 +140,12 @@ export default function ChecklistComments({
                         삭제
                       </Button>
                     )} */}
+                    </FlexWrapper>
                   </FlexWrapper>
-                </FlexWrapper>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* 댓글 입력창 */}
           <FlexWrapper gap={2} items="center" classes="mt-2">

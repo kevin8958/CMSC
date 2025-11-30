@@ -11,6 +11,7 @@ import { useAlert } from "@/components/AlertProvider";
 import { useNoticeStore } from "@/stores/useNoticeStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { LuCalendarX } from "react-icons/lu";
+import { useAuthStore } from "@/stores/authStore";
 
 const priorityColor = {
   high: "bg-red-500",
@@ -24,14 +25,9 @@ const priorityOrder = {
   low: 3,
 };
 
-// const priorityText = {
-//   high: "높음",
-//   medium: "중간",
-//   low: "낮음",
-// };
-
 function MonthSchedule() {
   const { currentCompanyId } = useCompanyStore();
+  const { role } = useAuthStore();
   const { list, fetch, create, update, remove } = useNoticeStore();
 
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
@@ -115,18 +111,20 @@ function MonthSchedule() {
               >
                 {sortMode === "date" ? "날짜순" : "중요도순"}
               </Button>
-              <Button
-                variant="contain"
-                color="green"
-                size="sm"
-                classes="gap-1 !px-2"
-                onClick={() => {
-                  setEditTarget(null);
-                  setDrawerOpen(true);
-                }}
-              >
-                <LuPlus className="text-base" />
-              </Button>
+              {role === "admin" && (
+                <Button
+                  variant="contain"
+                  color="green"
+                  size="sm"
+                  classes="gap-1 !px-2"
+                  onClick={() => {
+                    setEditTarget(null);
+                    setDrawerOpen(true);
+                  }}
+                >
+                  <LuPlus className="text-base" />
+                </Button>
+              )}
             </FlexWrapper>
           </FlexWrapper>
 
@@ -203,6 +201,7 @@ function MonthSchedule() {
         open={drawerOpen}
         mode={editTarget ? "edit" : "create"}
         notice={editTarget}
+        disabled={role !== "admin"}
         onClose={() => setDrawerOpen(false)}
         onSubmit={async (params) => {
           if (editTarget) {

@@ -123,6 +123,34 @@ function Worker() {
           />
         </FlexWrapper>
       )}
+      <WorkerDrawer
+        open={openDrawer}
+        mode={drawerMode}
+        worker={currentWorker}
+        onClose={() => setOpenDrawer(false)}
+        onSubmit={async (data) => {
+          if (!currentCompanyId) return;
+          await create({
+            company_id: currentCompanyId,
+            name: data.name!,
+            ...data,
+          });
+          showAlert("멤버가 추가되었습니다.", { type: "success" });
+          setOpenDrawer(false);
+        }}
+        onEdit={async (data) => {
+          if (!currentCompanyId) return;
+          await update(currentWorker!.id, data);
+          showAlert("멤버가 수정되었습니다.", { type: "success" });
+          setOpenDrawer(false);
+        }}
+        onDelete={async () => {
+          if (!currentWorker) return;
+          await remove(currentWorker.id);
+          showAlert("멤버가 삭제되었습니다.", { type: "danger" });
+          setOpenDrawer(false);
+        }}
+      />
     </>
   );
 }
