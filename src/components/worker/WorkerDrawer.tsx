@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 
 interface WorkerDrawerProps {
   open: boolean;
+  disabled?: boolean;
   mode: "create" | "edit";
   worker: Worker.Worker | null;
   onClose: () => void;
@@ -19,6 +20,7 @@ interface WorkerDrawerProps {
 
 export default function WorkerDrawer({
   open,
+  disabled,
   mode,
   worker,
   onClose,
@@ -94,10 +96,14 @@ export default function WorkerDrawer({
       open={open}
       title={
         <Typography variant="H4">
-          {mode === "create" ? "멤버 추가하기" : "멤버 수정하기"}
+          {mode === "create"
+            ? "멤버 추가"
+            : disabled
+              ? "멤버 조회"
+              : "멤버 수정"}
         </Typography>
       }
-      showFooter
+      showFooter={!disabled}
       confirmText={mode === "create" ? "추가하기" : "수정하기"}
       deleteText="삭제"
       onClose={onClose}
@@ -114,6 +120,7 @@ export default function WorkerDrawer({
           <TextInput
             inputProps={{ value: name }}
             onChange={(e) => setName(e.target.value)}
+            disabled={disabled}
             classes="!h-[42px]"
             placeholder="이름 입력"
             error={!!errors.name}
@@ -129,6 +136,7 @@ export default function WorkerDrawer({
           <TextInput
             inputProps={{ value: email ?? "" }}
             onChange={(e) => setEmail(e.target.value || null)}
+            disabled={disabled}
             classes="!h-[42px]"
             placeholder="email@example.com"
           />
@@ -142,6 +150,7 @@ export default function WorkerDrawer({
           <TextInput
             inputProps={{ value: position ?? "" }}
             onChange={(e) => setPosition(e.target.value || null)}
+            disabled={disabled}
             classes="!h-[42px]"
             placeholder="예: 대리, 과장"
           />
@@ -155,6 +164,7 @@ export default function WorkerDrawer({
           <TextInput
             inputProps={{ value: duty ?? "" }}
             onChange={(e) => setDuty(e.target.value || null)}
+            disabled={disabled}
             classes="!h-[42px]"
             placeholder="예: 개발팀, 운영팀"
           />
@@ -170,6 +180,7 @@ export default function WorkerDrawer({
             size="sm"
             variant="outline"
             classes="w-[140px]"
+            disabled={disabled}
             value={joinedAt}
             onChange={(d) => setJoinedAt(d)}
             dateFormat="YYYY.MM.dd"
@@ -186,6 +197,7 @@ export default function WorkerDrawer({
               type="number"
               inputProps={{ value: totalLeave ?? "" }}
               onChange={(e) => setTotalLeave(Number(e.target.value))}
+              disabled={disabled}
               classes="!h-[42px]"
               placeholder="예: 15"
             />

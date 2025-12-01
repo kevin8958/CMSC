@@ -11,12 +11,14 @@ import Button from "@/components/Button";
 import { useWorkerStore } from "@/stores/useWorkerStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import WorkerDrawer from "@/components/worker/WorkerDrawer";
+import { useAuthStore } from "@/stores/authStore";
 
 function Worker() {
   const { currentCompanyId } = useCompanyStore();
   const { showAlert } = useAlert();
   const { workers, loading, total, setPage, fetch, create, update, remove } =
     useWorkerStore();
+  const { role } = useAuthStore();
 
   const [currentWorker, setCurrentWorker] = useState<any>(null);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -84,20 +86,22 @@ function Worker() {
             {total}
           </Badge>
         </FlexWrapper>
-        <Button
-          variant="contain"
-          color="green"
-          size="md"
-          classes="gap-1 !px-3 shrink-0"
-          onClick={() => {
-            setCurrentWorker(null);
-            setDrawerMode("create");
-            setOpenDrawer(true);
-          }}
-        >
-          <LuPlus className="text-lg" />
-          추가하기
-        </Button>
+        {role === "admin" && (
+          <Button
+            variant="contain"
+            color="green"
+            size="md"
+            classes="gap-1 !px-3 shrink-0"
+            onClick={() => {
+              setCurrentWorker(null);
+              setDrawerMode("create");
+              setOpenDrawer(true);
+            }}
+          >
+            <LuPlus className="text-lg" />
+            추가하기
+          </Button>
+        )}
       </FlexWrapper>
       {loading ? (
         <FlexWrapper
@@ -125,6 +129,7 @@ function Worker() {
       )}
       <WorkerDrawer
         open={openDrawer}
+        disabled={role !== "admin"}
         mode={drawerMode}
         worker={currentWorker}
         onClose={() => setOpenDrawer(false)}
