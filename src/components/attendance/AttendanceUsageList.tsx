@@ -12,6 +12,7 @@ import AttendanceAddDrawer from "./AttendanceAddDrawer";
 import AttendanceDetailDrawer from "./AttendanceDetailDrawer";
 import Avatar from "@/components/Avatar";
 import { TbMoodEmpty } from "react-icons/tb";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function AttendanceUsageList({
   workers,
@@ -25,6 +26,7 @@ export default function AttendanceUsageList({
     useAttendanceStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
+  const { role } = useAuthStore();
 
   useEffect(() => {
     if (currentCompanyId && selectedMonth) {
@@ -47,16 +49,18 @@ export default function AttendanceUsageList({
             {monthlyRecords?.length || 0}
           </Badge>
         </FlexWrapper>
-        <Button
-          variant="contain"
-          color="green"
-          size="md"
-          classes="gap-1 !px-3"
-          onClick={() => setDrawerOpen(true)}
-        >
-          <LuPlus className="text-lg" />
-          연차내역 추가
-        </Button>
+        {role === "admin" && (
+          <Button
+            variant="contain"
+            color="green"
+            size="md"
+            classes="gap-1 !px-3"
+            onClick={() => setDrawerOpen(true)}
+          >
+            <LuPlus className="text-lg" />
+            연차내역 추가
+          </Button>
+        )}
       </FlexWrapper>
       {monthlyLoading ? (
         <div className="flex-1 flex flex-col justify-start gap-2 p-4">
@@ -127,6 +131,7 @@ export default function AttendanceUsageList({
         onClose={() => setDrawerOpen(false)}
       />
       <AttendanceDetailDrawer
+        disable={role !== "admin"}
         record={selectedRecord}
         selectedMonth={selectedMonth}
         onClose={() => setSelectedRecord(null)}

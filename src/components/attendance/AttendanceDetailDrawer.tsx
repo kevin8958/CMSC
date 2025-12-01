@@ -13,12 +13,14 @@ import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useDialog } from "@/hooks/useDialog";
 
 interface AttendanceDetailDrawerProps {
+  disable: boolean;
   record: any | null;
   selectedMonth: Date | null;
   onClose: () => void;
 }
 
 export default function AttendanceDetailDrawer({
+  disable,
   record,
   selectedMonth,
   onClose,
@@ -95,7 +97,7 @@ export default function AttendanceDetailDrawer({
     <Drawer
       open={isOpen}
       title="연차 내역 상세"
-      showFooter
+      showFooter={!disable}
       confirmText="수정하기"
       deleteText="삭제"
       cancelText="닫기"
@@ -124,6 +126,7 @@ export default function AttendanceDetailDrawer({
             type="range"
             value={null}
             isRange
+            disabled={disable}
             dateFormat="YYYY.MM.dd"
             startDate={rangeValue[0] || undefined}
             endDate={rangeValue[1] || undefined}
@@ -149,6 +152,7 @@ export default function AttendanceDetailDrawer({
             inputProps={{
               value: form.reason,
             }}
+            disabled={disable}
             placeholder="예: 병가 / 여행 / 개인용무"
             onChange={(e) => handleChange("reason", e.target.value)}
           />
@@ -158,6 +162,7 @@ export default function AttendanceDetailDrawer({
           <Label text="비고" />
           <Textarea
             value={form.note || ""}
+            disabled={disable}
             onChange={(e) => handleChange("note", e.target.value)}
             placeholder="메모를 입력하세요"
           />

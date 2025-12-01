@@ -137,7 +137,7 @@ export default function AttendanceDrawer({
               ))}
             </div>
           ) : groupedRecords.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 p-6">
+            <div className="w-full flex flex-col items-center justify-center gap-2 p-6">
               <TbMoodEmpty className="text-4xl text-gray-300" />
               <p className="text-gray-400">데이터가 없습니다</p>
             </div>
