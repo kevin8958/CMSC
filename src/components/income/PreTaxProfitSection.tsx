@@ -8,6 +8,7 @@ import { useAlert } from "@/components/AlertProvider";
 import Tooltip from "../Tooltip";
 import AddNonOpIncomeDialogBody from "./AddNonOpIncomeDialogBody";
 import AddNonOpExpenseDialogBody from "./AddNonOpExpenseDialogBody";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function PreTaxProfitSection() {
   const { nonOpIncome, nonOpExpense, deleteNonOp } = useIncomeStore();
@@ -16,6 +17,7 @@ export default function PreTaxProfitSection() {
 
   // 매출총이익 = RevenueSection에서 계산됨 → store.statement에 저장되어있음
   const { statement } = useIncomeStore();
+  const { role } = useAuthStore();
   const grossProfit = statement?.gross_profit ?? 0;
   const operatingProfit = statement?.operating_profit ?? 0;
 
@@ -90,21 +92,23 @@ export default function PreTaxProfitSection() {
                   <Typography variant="H4" classes="font-semibold text-right">
                     총 {totalNonOpIncome.toLocaleString()}원
                   </Typography>
-                  <Button
-                    variant="contain"
-                    color="green"
-                    size="sm"
-                    classes="gap-1 !px-2"
-                    onClick={async () => {
-                      await openDialog({
-                        title: "영업외수익 추가",
-                        hideBottom: true,
-                        body: <AddNonOpIncomeDialogBody />,
-                      });
-                    }}
-                  >
-                    <LuPlus className="text-base" />
-                  </Button>
+                  {role === "admin" && (
+                    <Button
+                      variant="contain"
+                      color="green"
+                      size="sm"
+                      classes="gap-1 !px-2"
+                      onClick={async () => {
+                        await openDialog({
+                          title: "영업외수익 추가",
+                          hideBottom: true,
+                          body: <AddNonOpIncomeDialogBody />,
+                        });
+                      }}
+                    >
+                      <LuPlus className="text-base" />
+                    </Button>
+                  )}
                 </FlexWrapper>
               </FlexWrapper>
 
@@ -134,23 +138,26 @@ export default function PreTaxProfitSection() {
                         <Typography variant="B1" classes="font-semibold">
                           {item.amount.toLocaleString()}원
                         </Typography>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          color="danger"
-                          onClick={() => {
-                            deleteNonOp(item.id);
-                            showAlert(
-                              `영업외수익 항목(${item.name})이 삭제되었습니다.`,
-                              {
-                                type: "danger",
-                                durationMs: 3000,
-                              }
-                            );
-                          }}
-                        >
-                          <LuTrash2 className="text-sm" />
-                        </Button>
+
+                        {role === "admin" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            color="danger"
+                            onClick={() => {
+                              deleteNonOp(item.id);
+                              showAlert(
+                                `영업외수익 항목(${item.name})이 삭제되었습니다.`,
+                                {
+                                  type: "danger",
+                                  durationMs: 3000,
+                                }
+                              );
+                            }}
+                          >
+                            <LuTrash2 className="text-sm" />
+                          </Button>
+                        )}
                       </FlexWrapper>
                     </FlexWrapper>
                   ))}
@@ -184,21 +191,24 @@ export default function PreTaxProfitSection() {
                   >
                     총 {totalNonOpExpense.toLocaleString()}원
                   </Typography>
-                  <Button
-                    variant="contain"
-                    color="green"
-                    size="sm"
-                    classes="gap-1 !px-2"
-                    onClick={async () => {
-                      await openDialog({
-                        title: "영업외비용 추가",
-                        hideBottom: true,
-                        body: <AddNonOpExpenseDialogBody />,
-                      });
-                    }}
-                  >
-                    <LuPlus className="text-base" />
-                  </Button>
+
+                  {role === "admin" && (
+                    <Button
+                      variant="contain"
+                      color="green"
+                      size="sm"
+                      classes="gap-1 !px-2"
+                      onClick={async () => {
+                        await openDialog({
+                          title: "영업외비용 추가",
+                          hideBottom: true,
+                          body: <AddNonOpExpenseDialogBody />,
+                        });
+                      }}
+                    >
+                      <LuPlus className="text-base" />
+                    </Button>
+                  )}
                 </FlexWrapper>
               </FlexWrapper>
 
@@ -228,23 +238,26 @@ export default function PreTaxProfitSection() {
                         <Typography variant="B1" classes="font-semibold">
                           {item.amount.toLocaleString()}원
                         </Typography>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          color="danger"
-                          onClick={() => {
-                            deleteNonOp(item.id);
-                            showAlert(
-                              `영업외비용 항목(${item.name})이 삭제되었습니다.`,
-                              {
-                                type: "danger",
-                                durationMs: 3000,
-                              }
-                            );
-                          }}
-                        >
-                          <LuTrash2 className="text-sm" />
-                        </Button>
+
+                        {role === "admin" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            color="danger"
+                            onClick={() => {
+                              deleteNonOp(item.id);
+                              showAlert(
+                                `영업외비용 항목(${item.name})이 삭제되었습니다.`,
+                                {
+                                  type: "danger",
+                                  durationMs: 3000,
+                                }
+                              );
+                            }}
+                          >
+                            <LuTrash2 className="text-sm" />
+                          </Button>
+                        )}
                       </FlexWrapper>
                     </FlexWrapper>
                   ))}
@@ -262,7 +275,10 @@ export default function PreTaxProfitSection() {
           <FlexWrapper direction="col" items="end" gap={2}>
             <Typography variant="B1" classes="font-semibold text-primary-700">
               세전이익률{" "}
-              {((preTaxProfit / Number(grossProfit)) * 100).toFixed(1)}%
+              {Number(grossProfit) !== 0
+                ? ((preTaxProfit / Number(grossProfit)) * 100).toFixed(1)
+                : "??"}
+              %
             </Typography>
 
             <FlexWrapper items="center" gap={2}>

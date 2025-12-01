@@ -29,7 +29,7 @@ function Expense() {
   );
   const { summary, loadExpenses, addExpense, loadSummary, deleteExpense } =
     useExpenseStore();
-  const { user } = useAuthStore();
+  const { user, role } = useAuthStore();
   const { currentCompanyId } = useCompanyStore();
   const { showAlert } = useAlert();
   const chartRef = useRef<any>(null);
@@ -149,19 +149,21 @@ function Expense() {
             />
           ))}
         </FlexWrapper>
-        <Button
-          variant="contain"
-          color="green"
-          size="md"
-          classes="gap-1 !px-3 shrink-0"
-          onClick={() => {
-            setDrawerMode("create");
-            setOpenDrawer(true);
-          }}
-        >
-          <LuPlus className="text-lg" />
-          소비내역 추가
-        </Button>
+        {role === "admin" && (
+          <Button
+            variant="contain"
+            color="green"
+            size="md"
+            classes="gap-1 !px-3 shrink-0"
+            onClick={() => {
+              setDrawerMode("create");
+              setOpenDrawer(true);
+            }}
+          >
+            <LuPlus className="text-lg" />
+            소비내역 추가
+          </Button>
+        )}
       </FlexWrapper>
       <FlexWrapper
         direction="col"
@@ -191,6 +193,7 @@ function Expense() {
         mode={drawerMode}
         data={drawerMode === "edit" ? currentExpense : null}
         open={openDrawer}
+        disabled={role !== "admin"}
         category={currentTab}
         onClose={() => setOpenDrawer(false)}
         onSubmit={async (form) => {

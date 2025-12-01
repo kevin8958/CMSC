@@ -7,11 +7,13 @@ import { useIncomeStore } from "@/stores/useIncomeStore";
 import { useAlert } from "@/components/AlertProvider";
 import Tooltip from "../Tooltip";
 import AddSgaDialogBody from "./AddSgaDialogBody";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function OperatingProfitSection() {
   const { sga, deleteSga } = useIncomeStore();
   const { openDialog } = useDialog();
   const { showAlert } = useAlert();
+  const { role } = useAuthStore();
 
   const totalSga = sga.reduce((s, x) => s + x.amount, 0);
 
@@ -82,21 +84,23 @@ export default function OperatingProfitSection() {
                 >
                   총 {totalSga.toLocaleString()}원
                 </Typography>
-                <Button
-                  variant="contain"
-                  color="green"
-                  size="sm"
-                  classes="gap-1 !px-2"
-                  onClick={async () => {
-                    await openDialog({
-                      title: "판매관리비 추가",
-                      hideBottom: true,
-                      body: <AddSgaDialogBody />,
-                    });
-                  }}
-                >
-                  <LuPlus className="text-base" />
-                </Button>
+                {role === "admin" && (
+                  <Button
+                    variant="contain"
+                    color="green"
+                    size="sm"
+                    classes="gap-1 !px-2"
+                    onClick={async () => {
+                      await openDialog({
+                        title: "판매관리비 추가",
+                        hideBottom: true,
+                        body: <AddSgaDialogBody />,
+                      });
+                    }}
+                  >
+                    <LuPlus className="text-base" />
+                  </Button>
+                )}
               </FlexWrapper>
             </FlexWrapper>
 
@@ -126,23 +130,25 @@ export default function OperatingProfitSection() {
                       <Typography variant="B1" classes="font-semibold">
                         {item.amount.toLocaleString()}원
                       </Typography>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        color="danger"
-                        onClick={() => {
-                          deleteSga(item.id);
-                          showAlert(
-                            `판매관리비 항목(${item.name})이 삭제되었습니다.`,
-                            {
-                              type: "danger",
-                              durationMs: 3000,
-                            }
-                          );
-                        }}
-                      >
-                        <LuTrash2 className="text-sm" />
-                      </Button>
+                      {role === "admin" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          color="danger"
+                          onClick={() => {
+                            deleteSga(item.id);
+                            showAlert(
+                              `판매관리비 항목(${item.name})이 삭제되었습니다.`,
+                              {
+                                type: "danger",
+                                durationMs: 3000,
+                              }
+                            );
+                          }}
+                        >
+                          <LuTrash2 className="text-sm" />
+                        </Button>
+                      )}
                     </FlexWrapper>
                   </FlexWrapper>
                 ))}
@@ -159,7 +165,10 @@ export default function OperatingProfitSection() {
           <FlexWrapper direction="col" items="end" gap={2}>
             <Typography variant="B1" classes="font-semibold text-primary-700">
               영업이익률{" "}
-              {((operatingProfit / Number(grossProfit)) * 100).toFixed(1)}%
+              {Number(grossProfit) !== 0
+                ? ((operatingProfit / Number(grossProfit)) * 100).toFixed(1)
+                : "??"}
+              %
             </Typography>
 
             <FlexWrapper items="center" gap={2}>

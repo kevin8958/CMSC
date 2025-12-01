@@ -12,6 +12,7 @@ import { useAlert } from "@/components/AlertProvider";
 
 interface ExpenseDrawerProps {
   open: boolean;
+  disabled: boolean;
   mode: "create" | "edit";
   data?: any;
   category: "fixed" | "variable" | "other"; // 현재 선택된 탭
@@ -28,6 +29,7 @@ interface ExpenseDrawerProps {
 
 export default function ExpenseDrawer({
   open,
+  disabled,
   mode,
   data,
   category,
@@ -90,11 +92,15 @@ export default function ExpenseDrawer({
       title={
         <FlexWrapper direction="row" items="center" gap={2}>
           <Typography variant="H4">
-            {mode === "create" ? "소비내역 추가" : "소비내역 수정"}
+            {mode === "create"
+              ? "소비내역 추가"
+              : disabled
+                ? "소비내역 조회"
+                : "소비내역 수정"}
           </Typography>
         </FlexWrapper>
       }
-      showFooter
+      showFooter={!disabled}
       confirmText={mode === "create" ? "추가하기" : "수정하기"}
       deleteText={mode === "edit" ? "삭제" : undefined}
       cancelText="취소"
@@ -122,6 +128,7 @@ export default function ExpenseDrawer({
                 />
               ),
             }))}
+            disabled={disabled}
             onChange={(val) => setCurrentCategory(val as CategoryKey)}
             buttonItem={
               <ExpenseCategoryBadge
@@ -140,6 +147,7 @@ export default function ExpenseDrawer({
           <CustomDatePicker
             classes="w-[120px]"
             type="single"
+            disabled={disabled}
             variant="outline"
             size="sm"
             dateFormat="YYYY.MM.dd"
@@ -156,6 +164,7 @@ export default function ExpenseDrawer({
           <TextInput
             classes="!text-sm !h-[42px]"
             inputProps={{ value: method }}
+            disabled={disabled}
             placeholder="예: 카드, 계좌이체, 현금"
             onChange={(e) => setMethod(e.target.value)}
           />
@@ -169,6 +178,7 @@ export default function ExpenseDrawer({
           <TextInput
             classes="!text-sm !h-[42px]"
             inputProps={{ value: place }}
+            disabled={disabled}
             placeholder="예: 스타벅스"
             onChange={(e) => setPlace(e.target.value)}
           />
@@ -182,6 +192,7 @@ export default function ExpenseDrawer({
           <TextInput
             classes="!text-sm !h-[42px]"
             inputProps={{ value: amount }}
+            disabled={disabled}
             placeholder="예: 15000"
             onChange={(e) => {
               // 숫자만 입력

@@ -16,6 +16,7 @@ import AddCogsDialogBody from "./AddCogsDialogBody";
 import { useDialog } from "@/hooks/useDialog";
 import { useIncomeStore } from "@/stores/useIncomeStore";
 import { useAlert } from "../AlertProvider";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function RevenueSection() {
   const [editMode, setEditMode] = useState(false);
@@ -29,6 +30,7 @@ export default function RevenueSection() {
 
   const { showAlert } = useAlert();
   const { openDialog } = useDialog();
+  const { role } = useAuthStore();
 
   const totalCogsAmount = cogs.reduce((s, x) => s + x.amount, 0);
   const grossProfit = Number(tempRevenue) - totalCogsAmount;
@@ -77,23 +79,25 @@ export default function RevenueSection() {
               <Typography variant="H3" classes="font-semibold text-primary-700">
                 원
               </Typography>
-              <Button
-                variant="contain"
-                size="md"
-                color="green"
-                onClick={async () => {
-                  if (editMode) {
-                    await setRevenue(Number(tempRevenue) || 0);
-                    showAlert(`매출이 저장되었습니다.`, {
-                      type: "success",
-                      durationMs: 3000,
-                    });
-                  }
-                  setEditMode(!editMode);
-                }}
-              >
-                {editMode ? <LuSave /> : <LuPencil />}
-              </Button>
+              {role === "admin" && (
+                <Button
+                  variant="contain"
+                  size="md"
+                  color="green"
+                  onClick={async () => {
+                    if (editMode) {
+                      await setRevenue(Number(tempRevenue) || 0);
+                      showAlert(`매출이 저장되었습니다.`, {
+                        type: "success",
+                        durationMs: 3000,
+                      });
+                    }
+                    setEditMode(!editMode);
+                  }}
+                >
+                  {editMode ? <LuSave /> : <LuPencil />}
+                </Button>
+              )}
             </FlexWrapper>
           </FlexWrapper>
           <FlexWrapper
@@ -122,21 +126,23 @@ export default function RevenueSection() {
                 >
                   총 {totalCogsAmount.toLocaleString()}원
                 </Typography>
-                <Button
-                  variant="contain"
-                  color="green"
-                  size="sm"
-                  classes="gap-1 !px-2"
-                  onClick={async () => {
-                    await openDialog({
-                      title: "매출원가 추가",
-                      hideBottom: true,
-                      body: <AddCogsDialogBody />,
-                    });
-                  }}
-                >
-                  <LuPlus className="text-base" />
-                </Button>
+                {role === "admin" && (
+                  <Button
+                    variant="contain"
+                    color="green"
+                    size="sm"
+                    classes="gap-1 !px-2"
+                    onClick={async () => {
+                      await openDialog({
+                        title: "매출원가 추가",
+                        hideBottom: true,
+                        body: <AddCogsDialogBody />,
+                      });
+                    }}
+                  >
+                    <LuPlus className="text-base" />
+                  </Button>
+                )}
               </FlexWrapper>
             </FlexWrapper>
 
@@ -166,23 +172,25 @@ export default function RevenueSection() {
                       <Typography variant="B1" classes="font-semibold">
                         {item.amount.toLocaleString()}원
                       </Typography>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        color="danger"
-                        onClick={() => {
-                          deleteCogs(item.id);
-                          showAlert(
-                            `매출원가 항목(${item.name})이 삭제되었습니다.`,
-                            {
-                              type: "danger",
-                              durationMs: 3000,
-                            }
-                          );
-                        }}
-                      >
-                        <LuTrash2 className="text-sm" />
-                      </Button>
+                      {role === "admin" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          color="danger"
+                          onClick={() => {
+                            deleteCogs(item.id);
+                            showAlert(
+                              `매출원가 항목(${item.name})이 삭제되었습니다.`,
+                              {
+                                type: "danger",
+                                durationMs: 3000,
+                              }
+                            );
+                          }}
+                        >
+                          <LuTrash2 className="text-sm" />
+                        </Button>
+                      )}
                     </FlexWrapper>
                   </FlexWrapper>
                 ))}
@@ -199,7 +207,10 @@ export default function RevenueSection() {
           <FlexWrapper direction="col" items="end" gap={2}>
             <Typography variant="B1" classes="font-semibold text-primary-700">
               매출총이익률{" "}
-              {((grossProfit / Number(tempRevenue)) * 100).toFixed(1)}%
+              {Number(tempRevenue) !== 0
+                ? ((grossProfit / Number(tempRevenue)) * 100).toFixed(1)
+                : "??"}
+              %
             </Typography>
 
             <FlexWrapper items="center" gap={2}>
