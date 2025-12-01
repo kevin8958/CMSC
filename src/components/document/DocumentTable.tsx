@@ -9,11 +9,13 @@ import { LuDownload, LuTrash2 } from "react-icons/lu";
 
 import { useCompanyFilesStore } from "@/stores/useCompanyFilesStore";
 import { downloadCompanyFile } from "@/actions/companyFileActions";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function DocumentTable() {
   const { currentCompanyId } = useCompanyStore();
 
   const { files, fetch, delete: deleteFile } = useCompanyFilesStore();
+  const { role } = useAuthStore();
 
   /* 최초 로드 */
   useEffect(() => {
@@ -117,11 +119,18 @@ export default function DocumentTable() {
     },
   ];
 
+  const filteredColumns =
+    role === "admin"
+      ? columns
+      : columns.filter(
+          (col: any) => col.accessorKey !== "delete_btn" // 일반 사용자는 삭제 버튼 숨김
+        );
+
   return (
     <FlexWrapper classes="h-screen mt-4 rounded-xl border overflow-hidden bg-white mb-4">
       <Table
         data={files || []}
-        columns={columns}
+        columns={filteredColumns}
         hideSize
         totalCount={files.length}
         showPagination={false}

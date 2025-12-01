@@ -7,10 +7,12 @@ import { LuPlus } from "react-icons/lu";
 import { useDialog } from "@/hooks/useDialog";
 import AddDocumentDialogBody from "@/components/document/AddDocumentDialogBody";
 import { useCompanyFilesStore } from "@/stores/useCompanyFilesStore";
+import { useAuthStore } from "@/stores/authStore";
 
 function Document() {
   const { openDialog, close } = useDialog();
   const { files } = useCompanyFilesStore();
+  const { role } = useAuthStore();
 
   return (
     <>
@@ -21,22 +23,24 @@ function Document() {
             {files.length}
           </Badge>
         </FlexWrapper>
-        <Button
-          variant="contain"
-          color="green"
-          size="md"
-          classes="gap-1 !px-3 shrink-0"
-          onClick={async () => {
-            await openDialog({
-              title: "자료 업로드",
-              hideBottom: true,
-              body: <AddDocumentDialogBody onClose={close} />,
-            });
-          }}
-        >
-          <LuPlus className="text-lg" />
-          추가하기
-        </Button>
+        {role === "admin" && (
+          <Button
+            variant="contain"
+            color="green"
+            size="md"
+            classes="gap-1 !px-3 shrink-0"
+            onClick={async () => {
+              await openDialog({
+                title: "자료 업로드",
+                hideBottom: true,
+                body: <AddDocumentDialogBody onClose={close} />,
+              });
+            }}
+          >
+            <LuPlus className="text-lg" />
+            추가하기
+          </Button>
+        )}
       </FlexWrapper>
       <DocumentTable />
     </>
