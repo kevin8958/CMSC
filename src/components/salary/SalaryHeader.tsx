@@ -4,6 +4,7 @@ import Label from "@/components/Label";
 import Button from "@/components/Button";
 import { LuPlus } from "react-icons/lu";
 import { useSalaryStore } from "@/stores/useSalaryStore";
+import { useAuthStore } from "@/stores/authStore";
 
 interface SalaryHeaderProps {
   onAddClick: () => void; // ✅ Drawer 여는 함수 추가
@@ -11,6 +12,7 @@ interface SalaryHeaderProps {
 
 function SalaryHeader({ onAddClick }: SalaryHeaderProps) {
   const { total, totalAmountSum = 0, netAmountSum = 0 } = useSalaryStore();
+  const { role } = useAuthStore();
 
   return (
     <FlexWrapper
@@ -40,16 +42,18 @@ function SalaryHeader({ onAddClick }: SalaryHeaderProps) {
         </FlexWrapper>
       </FlexWrapper>
 
-      <Button
-        variant="contain"
-        color="green"
-        size="md"
-        classes="gap-1 !px-3"
-        onClick={onAddClick}
-      >
-        <LuPlus className="text-lg" />
-        급여 추가
-      </Button>
+      {role === "admin" && (
+        <Button
+          variant="contain"
+          color="green"
+          size="md"
+          classes="gap-1 !px-3"
+          onClick={onAddClick}
+        >
+          <LuPlus className="text-lg" />
+          급여 추가
+        </Button>
+      )}
     </FlexWrapper>
   );
 }

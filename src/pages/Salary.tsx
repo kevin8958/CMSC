@@ -11,6 +11,7 @@ import { useSalaryStore } from "@/stores/useSalaryStore";
 import SalaryDrawer from "@/components/salary/SalaryDrawer";
 import { useWorkerStore } from "@/stores/useWorkerStore";
 import { useAlert } from "@/components/AlertProvider";
+import { useAuthStore } from "@/stores/authStore";
 
 function Salary() {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
@@ -31,6 +32,7 @@ function Salary() {
   const [currentSalary, setCurrentSalary] = useState<any>(null);
 
   const { allList, fetchAll } = useWorkerStore();
+  const { role } = useAuthStore();
 
   useEffect(() => {
     if (currentCompanyId) {
@@ -84,6 +86,7 @@ function Salary() {
       {/* ✅ Drawer 연결 */}
       <SalaryDrawer
         open={drawerOpen}
+        disable={role !== "admin"}
         month={selectedMonth}
         mode={drawerMode}
         salary={currentSalary}

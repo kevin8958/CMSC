@@ -215,6 +215,7 @@ export default function TaskBoard() {
                           <Draggable
                             draggableId={task.id}
                             index={index}
+                            isDragDisabled={role !== "admin"}
                             key={task.id}
                           >
                             {(p) => (

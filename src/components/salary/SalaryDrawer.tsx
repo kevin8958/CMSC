@@ -27,6 +27,7 @@ const EMP_TYPES: Salary.EmpType[] = ["정규직", "계약직", "프리랜서"];
 
 export default function SalaryDrawer({
   open,
+  disable,
   month,
   mode,
   salary,
@@ -231,17 +232,22 @@ export default function SalaryDrawer({
             items={statusItems}
             onChange={(val) => handleChange("status", val)}
             dialogWidth={100}
+            disabled={disable}
             itemClasses="!px-1"
             buttonItem={<SalaryStatusBadge status={form.status} />}
             buttonClasses="!font-normal text-primary-900 !h-fit !border-primary-300 hover:!bg-primary-50 !p-0"
           />
           <Typography variant="H4">{dayjs(month).format("YYYY.MM")}</Typography>
           <Typography variant="H4">
-            {mode === "create" ? "급여내역 추가하기" : "급여내역 수정하기"}
+            {mode === "create"
+              ? "급여내역 추가"
+              : disable
+                ? "급여내역 조회"
+                : "급여내역 수정"}
           </Typography>
         </FlexWrapper>
       }
-      showFooter
+      showFooter={!disable}
       confirmText={mode === "create" ? "추가하기" : "수정하기"}
       deleteText="삭제"
       cancelText="취소"
@@ -284,6 +290,7 @@ export default function SalaryDrawer({
                   id: m.id,
                   label: m.name,
                 }))}
+                disabled={disable}
                 dialogWidth={160}
                 onChange={(val) => handleChange("worker", val)}
                 buttonItem={
@@ -311,6 +318,7 @@ export default function SalaryDrawer({
                   id: type,
                   label: type,
                 }))}
+                disabled={disable}
                 dialogWidth={160}
                 onChange={(val) => handleChange("emp_type", val)}
                 buttonItem={form.emp_type}
@@ -360,6 +368,7 @@ export default function SalaryDrawer({
                   value: form.base_work_days,
                 }}
                 type="number"
+                disabled={disable}
                 placeholder="0"
                 suffix="일"
                 onChange={(e) => handleChange("base_work_days", e.target.value)}
@@ -379,6 +388,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.absent_days,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="일"
@@ -417,6 +427,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.base_salary,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="원"
@@ -438,6 +449,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.non_taxable,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="원"
@@ -469,6 +481,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.bonus,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="원"
@@ -489,6 +502,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.allowance,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="원"
@@ -543,6 +557,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.income_tax,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="원"
@@ -567,6 +582,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.local_tax,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="원"
@@ -622,6 +638,7 @@ export default function SalaryDrawer({
                   inputProps={{
                     value: form.pension_fee,
                   }}
+                  disabled={disable}
                   type="number"
                   placeholder="0"
                   suffix="원"
@@ -650,6 +667,7 @@ export default function SalaryDrawer({
                   inputProps={{
                     value: form.health_fee,
                   }}
+                  disabled={disable}
                   type="number"
                   placeholder="0"
                   suffix="원"
@@ -678,6 +696,7 @@ export default function SalaryDrawer({
                   inputProps={{
                     value: form.employment_fee,
                   }}
+                  disabled={disable}
                   type="number"
                   placeholder="0"
                   suffix="원"
@@ -708,6 +727,7 @@ export default function SalaryDrawer({
                   inputProps={{
                     value: form.longterm_care_fee,
                   }}
+                  disabled={disable}
                   type="number"
                   placeholder="0"
                   suffix="원"
@@ -765,6 +785,7 @@ export default function SalaryDrawer({
                 inputProps={{
                   value: form.deduction_other,
                 }}
+                disabled={disable}
                 type="number"
                 placeholder="0"
                 suffix="원"
@@ -797,6 +818,7 @@ export default function SalaryDrawer({
           <Label text="비고 / 메모" />
           <Textarea
             value={form.note}
+            disabled={disable}
             onChange={(e) => handleChange("note", e.target.value)}
             placeholder="급여에 대한 추가 메모를 입력하세요"
           />

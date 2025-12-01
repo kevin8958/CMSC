@@ -99,6 +99,7 @@ namespace Salary {
 
   interface SalaryDrawerProps {
     open: boolean;
+    disable: boolean;
     month: Date | null;
     mode: "create" | "edit";
     salary?: any;
