@@ -92,7 +92,7 @@ export default function AttendanceAddDrawer({
       worker_id: form.worker,
       start_date: dayjs(rangeValue[0]).format("YYYY-MM-DD"),
       end_date: dayjs(rangeValue[1]).format("YYYY-MM-DD"),
-      days: dayjs(form.end_date).diff(dayjs(form.start_date), "day") + 1,
+      days: dayjs(rangeValue[1]).diff(dayjs(rangeValue[0]), "day") + 1,
       reason: form.reason,
       note: form.note,
     });
