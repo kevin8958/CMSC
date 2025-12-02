@@ -203,7 +203,7 @@ function Expense() {
             await addExpense({
               user_id: user!.id,
               company_id: currentCompanyId!,
-              category: currentTab,
+              category: form.category,
               date: new Date(form.date),
               method: form.method,
               place: form.place,

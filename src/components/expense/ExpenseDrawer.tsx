@@ -82,7 +82,7 @@ export default function ExpenseDrawer({
       method: method.trim(),
       place: place.trim(),
       amount: Number(amount.replace(/[^0-9]/g, "")),
-      category,
+      category: currentCategory,
     });
   };
 

@@ -75,6 +75,7 @@ export async function updateExpense(
     method: string;
     place: string;
     amount: number;
+    category?: "fixed" | "variable" | "other";
     memo?: string;
   }
 ) {
@@ -85,6 +86,7 @@ export async function updateExpense(
       method: payload.method,
       place: payload.place,
       amount: payload.amount,
+      category: payload.category,
       memo: payload.memo ?? null,
     })
     .eq("id", id);
