@@ -5,7 +5,13 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import isBetween from "dayjs/plugin/isBetween";
-import { LuChevronLeft, LuChevronRight, LuChevronDown } from "react-icons/lu";
+import {
+  LuChevronLeft,
+  LuChevronRight,
+  LuChevronsLeft,
+  LuChevronsRight,
+  LuChevronDown,
+} from "react-icons/lu";
 
 import Button from "@/components/Button";
 
@@ -268,7 +274,12 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
                 })}
               >
                 {!hideHeaderButtons && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center">
+                    {renderButton(
+                      <LuChevronsLeft />,
+                      decreaseYear,
+                      year <= minYear
+                    )}
                     {renderButton(
                       <LuChevronLeft />,
                       isMonthPicker ? decreaseYear : decreaseMonth,
@@ -282,11 +293,16 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
                 </p>
 
                 {!hideHeaderButtons && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center">
                     {renderButton(
                       <LuChevronRight />,
                       isMonthPicker ? increaseYear : increaseMonth,
                       year >= maxYear // ✅ 10년 후까지만 가능
+                    )}
+                    {renderButton(
+                      <LuChevronsRight />,
+                      increaseYear,
+                      year >= maxYear
                     )}
                   </div>
                 )}
