@@ -28,7 +28,7 @@ function Income() {
         <FlexWrapper direction="col" items="start" gap={0}>
           <Typography variant="H3">손익계산서</Typography>
         </FlexWrapper>
-        <FlexWrapper justify="center" gap={0} classes="w-full md:w-fit">
+        <FlexWrapper justify="center" gap={0} classes="w-fit">
           <CustomDatePicker
             variant="outline"
             size="md"
@@ -43,7 +43,7 @@ function Income() {
       <FlexWrapper
         direction="col"
         gap={2}
-        classes="w-full h-[100dvh] mt-2 mb-4 md:flex-row"
+        classes="w-full sm:h-[100dvh] mt-2 mb-4 md:flex-row pb-10 sm:pb-0"
       >
         <RevenueSection />
         <OperatingProfitSection />
