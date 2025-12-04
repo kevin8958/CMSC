@@ -49,6 +49,32 @@ export default function Gnb() {
     navigate(url);
   };
 
+  const menus =
+    role === "super_admin"
+      ? [
+          {
+            label: "회사관리",
+            path: "/company",
+          },
+          {
+            label: "멤버관리",
+            path: "/member",
+          },
+          {
+            label: "문의관리",
+            path: "/inquiry",
+          },
+        ]
+      : [
+          { label: "대시보드", path: "/dashboard" },
+          { label: "업무소통", path: "/communication" },
+          { label: "급여대장", path: "/salary" },
+          { label: "연차관리", path: "/attendance" },
+          { label: "고정비와 변동비", path: "/expense" },
+          { label: "손익계산서", path: "/income" },
+          { label: "자료관리", path: "/document" },
+        ];
+
   return (
     <div
       className={classNames(
@@ -133,62 +159,17 @@ export default function Gnb() {
                   classes="h-full"
                 >
                   <FlexWrapper direction="col" gap={0} classes="w-full">
-                    <Button
-                      variant="clear"
-                      size="lg"
-                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/dashboard")}
-                    >
-                      대시보드
-                    </Button>
-                    <Button
-                      variant="clear"
-                      size="lg"
-                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/communication")}
-                    >
-                      업무소통
-                    </Button>
-                    <Button
-                      variant="clear"
-                      size="lg"
-                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/salary")}
-                    >
-                      급여대장
-                    </Button>
-                    <Button
-                      variant="clear"
-                      size="lg"
-                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/attendance")}
-                    >
-                      연차관리
-                    </Button>
-                    <Button
-                      variant="clear"
-                      size="lg"
-                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/expense")}
-                    >
-                      고정비와 변동비
-                    </Button>
-                    <Button
-                      variant="clear"
-                      size="lg"
-                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/income")}
-                    >
-                      손익계산서
-                    </Button>
-                    <Button
-                      variant="clear"
-                      size="lg"
-                      classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/document")}
-                    >
-                      자료관리
-                    </Button>
+                    {menus.map((menu) => (
+                      <Button
+                        key={menu.path}
+                        variant="clear"
+                        size="lg"
+                        classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                        onClick={() => handleMove(menu.path)}
+                      >
+                        {menu.label}
+                      </Button>
+                    ))}
                   </FlexWrapper>
                   <Button
                     variant="clear"
