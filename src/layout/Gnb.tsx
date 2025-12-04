@@ -161,7 +161,7 @@ export default function Gnb() {
                       variant="clear"
                       size="lg"
                       classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
-                      onClick={() => handleMove("/vacation")}
+                      onClick={() => handleMove("/attendance")}
                     >
                       연차관리
                     </Button>
