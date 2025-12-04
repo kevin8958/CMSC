@@ -34,7 +34,7 @@ export default function AttendanceWorkerList({
     <FlexWrapper
       direction="col"
       gap={2}
-      classes="h-[calc(100vh-160px)] bg-white border rounded-xl"
+      classes="h-[300px] sm:h-[calc(100vh-160px)] bg-white border rounded-xl"
     >
       <FlexWrapper gap={2} items="center" classes="p-4 pb-2">
         <Typography variant="H4">멤버목록</Typography>
@@ -42,7 +42,7 @@ export default function AttendanceWorkerList({
           {workers?.length || 0}
         </Badge>
       </FlexWrapper>
-      <div className="w-[360px] h-full overflow-y-auto scroll-thin px-4 flex flex-col gap-1">
+      <div className="w-full sm:w-[360px] h-full overflow-y-auto scroll-thin px-4 flex flex-col gap-1">
         {allListLoading ? (
           skeletons
         ) : workers.length > 0 ? (

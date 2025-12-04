@@ -37,12 +37,7 @@ export default function AttendanceUsageList({
 
   return (
     <FlexWrapper justify="between" direction="col" gap={2} classes="size-full">
-      <FlexWrapper
-        justify="between"
-        items="center"
-        direction="col"
-        classes="sm:flex-row sm:items-end p-4 pb-0"
-      >
+      <FlexWrapper justify="between" items="start" classes="flex-row p-4 pb-0">
         <FlexWrapper gap={2} items="center">
           <Typography variant="H4">연차 사용 내역</Typography>
           <Badge color="green" size="md">
@@ -63,7 +58,7 @@ export default function AttendanceUsageList({
         )}
       </FlexWrapper>
       {monthlyLoading ? (
-        <div className="flex-1 flex flex-col justify-start gap-2 p-4">
+        <div className="flex-1 flex flex-col justify-start gap-2 p-4 pt-0">
           {Array.from({ length: 5 }).map((_, i) => (
             <motion.div
               key={i}
@@ -74,12 +69,12 @@ export default function AttendanceUsageList({
           ))}
         </div>
       ) : monthlyRecords.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-2 p-4">
+        <div className="flex-1 flex flex-col items-center justify-center gap-2 p-4 pt-0">
           <TbMoodEmpty className="text-4xl text-gray-300" />
           <p className="text-gray-400 text-sm">등록된 연차 내역이 없습니다.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 overflow-y-auto scroll-thin flex-1 p-4">
+        <div className="flex flex-col gap-2 overflow-y-auto scroll-thin flex-1 p-4 pt-0">
           {monthlyRecords.map((item) => (
             <div
               key={item.id}
