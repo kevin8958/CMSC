@@ -51,7 +51,7 @@ export default function RevenueSection() {
             gap={2}
             classes="px-4 py-2 rounded-xl border !border-gray-400"
           >
-            <FlexWrapper items="center" gap={2}>
+            <FlexWrapper items="center" gap={2} classes="shrink-0">
               <LuCirclePlus />
               <Typography variant="H3" classes="font-semibold text-primary-700">
                 매출
@@ -168,7 +168,7 @@ export default function RevenueSection() {
                   >
                     <Typography variant="B1">{item.name}</Typography>
 
-                    <FlexWrapper items="center" gap={4}>
+                    <FlexWrapper items="center" gap={2}>
                       <Typography variant="B1" classes="font-semibold">
                         {item.amount.toLocaleString()}원
                       </Typography>

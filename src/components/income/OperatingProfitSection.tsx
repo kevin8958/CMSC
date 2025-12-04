@@ -126,7 +126,7 @@ export default function OperatingProfitSection() {
                   >
                     <Typography variant="B1">{item.name}</Typography>
 
-                    <FlexWrapper items="center" gap={4}>
+                    <FlexWrapper items="center" gap={2}>
                       <Typography variant="B1" classes="font-semibold">
                         {item.amount.toLocaleString()}원
                       </Typography>

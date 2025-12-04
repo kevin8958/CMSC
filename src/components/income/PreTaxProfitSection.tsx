@@ -130,11 +130,11 @@ export default function PreTaxProfitSection() {
                       key={item.id}
                       justify="between"
                       items="center"
-                      classes="py-2 bg-white w-full"
+                      classes="py-1 bg-white w-full"
                     >
                       <Typography variant="B1">{item.name}</Typography>
 
-                      <FlexWrapper items="center" gap={4}>
+                      <FlexWrapper items="center" gap={2}>
                         <Typography variant="B1" classes="font-semibold">
                           {item.amount.toLocaleString()}원
                         </Typography>
@@ -234,7 +234,7 @@ export default function PreTaxProfitSection() {
                     >
                       <Typography variant="B1">{item.name}</Typography>
 
-                      <FlexWrapper items="center" gap={4}>
+                      <FlexWrapper items="center" gap={2}>
                         <Typography variant="B1" classes="font-semibold">
                           {item.amount.toLocaleString()}원
                         </Typography>
