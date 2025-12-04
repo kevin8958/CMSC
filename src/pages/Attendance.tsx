@@ -42,7 +42,7 @@ function Attendance() {
         </FlexWrapper>
 
         {/* Body */}
-        <FlexWrapper gap={2} classes="w-full">
+        <FlexWrapper gap={2} direction="col" classes="w-full md:flex-row">
           {/* Left: Worker List */}
           <AttendanceWorkerList
             workers={allList}
