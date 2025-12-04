@@ -10,14 +10,35 @@ import Section5 from "@/components/home/Section5";
 import Footer from "@/components/home/Footer";
 import { useDialog } from "@/hooks/useDialog";
 import InquiryDialogBody from "@/components/home/InquiryDialogBody";
-import { supabase } from "@/lib/supabase";
 import { useAlert } from "@/components/AlertProvider";
+import { useInquiryStore } from "@/stores/useInquiryStore";
 
 function Home() {
   const navigate = useNavigate();
   const { openDialog } = useDialog();
   const { showAlert } = useAlert();
+  const { sendInquiry } = useInquiryStore();
 
+  const handleSubmit = async (form: {
+    phone: string;
+    name: string;
+    position?: string;
+    content: string;
+  }) => {
+    try {
+      await sendInquiry({
+        ...form,
+      });
+
+      showAlert("문의가 접수되었습니다.", {
+        type: "success",
+      });
+    } catch (e) {
+      showAlert("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.", {
+        type: "danger",
+      });
+    }
+  };
   return (
     <>
       <div className="flex flex-col items-center w-full bg-gradient-to-b from-[rgba(71,208,162,0.3)] to-[rgba(71,208,162,0)] from-0% via-10% via-[rgba(71,208,162,0)] to-100% min-h-screen">
@@ -61,23 +82,7 @@ function Home() {
                   body: (
                     <InquiryDialogBody
                       onSubmit={async (data) => {
-                        const session = await supabase.auth.getSession();
-                        const token = session.data.session?.access_token;
-
-                        await fetch("/api/inquiry/create", {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${token}`,
-                          },
-                          body: JSON.stringify({
-                            ...data,
-                          }),
-                        });
-
-                        showAlert("문의가 접수되었습니다!", {
-                          type: "success",
-                        });
+                        handleSubmit(data);
                       }}
                     />
                   ),

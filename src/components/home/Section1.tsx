@@ -8,14 +8,14 @@ function Section1() {
       direction="col"
       items="center"
       justify="start"
-      gap={6}
+      gap={0}
       classes="sm:justify-center h-screen pb-10 pt-[200px] sm:pt-0"
     >
       <FlexWrapper gap={0} items="center">
         <RotatingText
           texts={["인사담당자", "회계담당자", "구매담당자", "사무직원"]}
-          mainClassName="px-8 py-4 rounded-2xl text-black overflow-hidden justify-center bg-green-300/50"
-          elementLevelClassName="text-3xl sm:text-[48px] font-bold"
+          mainClassName="px-8 py-4 rounded-2xl text-black overflow-hidden justify-center"
+          elementLevelClassName="text-3xl sm:text-[60px] font-extrabold"
           staggerFrom={"first"}
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
@@ -30,7 +30,7 @@ function Section1() {
       <FadeInGsap>
         <FlexWrapper gap={1} items="center" direction="col">
           <FlexWrapper
-            gap={0}
+            gap={1}
             items="center"
             direction="col"
             classes="sm:flex-row"
@@ -43,7 +43,7 @@ function Section1() {
             </p>
           </FlexWrapper>
           <FlexWrapper
-            gap={0}
+            gap={1}
             items="center"
             direction="col"
             classes="sm:flex-row"
