@@ -182,7 +182,7 @@ export default function RevenueSection() {
                             showAlert(
                               `매출원가 항목(${item.name})이 삭제되었습니다.`,
                               {
-                                type: "danger",
+                                type: "success",
                                 durationMs: 3000,
                               }
                             );

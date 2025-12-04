@@ -140,7 +140,7 @@ export default function OperatingProfitSection() {
                             showAlert(
                               `판매관리비 항목(${item.name})이 삭제되었습니다.`,
                               {
-                                type: "danger",
+                                type: "success",
                                 durationMs: 3000,
                               }
                             );

@@ -9,6 +9,7 @@ import Tooltip from "../Tooltip";
 import AddNonOpIncomeDialogBody from "./AddNonOpIncomeDialogBody";
 import AddNonOpExpenseDialogBody from "./AddNonOpExpenseDialogBody";
 import { useAuthStore } from "@/stores/authStore";
+import { useMemo } from "react";
 
 export default function PreTaxProfitSection() {
   const { nonOpIncome, nonOpExpense, deleteNonOp } = useIncomeStore();
@@ -18,9 +19,12 @@ export default function PreTaxProfitSection() {
   // 매출총이익 = RevenueSection에서 계산됨 → store.statement에 저장되어있음
   const { statement } = useIncomeStore();
   const { role } = useAuthStore();
-  const grossProfit = statement?.gross_profit ?? 0;
-  const operatingProfit = statement?.operating_profit ?? 0;
-
+  const grossProfit = useMemo(() => {
+    return useIncomeStore.getState().statement?.gross_profit ?? 0;
+  }, [statement]);
+  const operatingProfit = useMemo(() => {
+    return useIncomeStore.getState().statement?.operating_profit ?? 0;
+  }, [statement]);
   const totalNonOpIncome = nonOpIncome.reduce((s, x) => s + x.amount, 0);
   const totalNonOpExpense = nonOpExpense.reduce((s, x) => s + x.amount, 0);
 
@@ -149,7 +153,7 @@ export default function PreTaxProfitSection() {
                               showAlert(
                                 `영업외수익 항목(${item.name})이 삭제되었습니다.`,
                                 {
-                                  type: "danger",
+                                  type: "success",
                                   durationMs: 3000,
                                 }
                               );
@@ -249,7 +253,7 @@ export default function PreTaxProfitSection() {
                               showAlert(
                                 `영업외비용 항목(${item.name})이 삭제되었습니다.`,
                                 {
-                                  type: "danger",
+                                  type: "success",
                                   durationMs: 3000,
                                 }
                               );
