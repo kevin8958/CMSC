@@ -126,7 +126,7 @@ export default function PreTaxProfitSection() {
                   items="center"
                   justify="start"
                   direction="col"
-                  gap={2}
+                  gap={0}
                   classes="flex-1 overflow-y-auto scroll-thin px-4  min-h-0"
                 >
                   {nonOpIncome.map((item) => (

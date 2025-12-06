@@ -11,10 +11,11 @@ import UspLogo from "@/assets/image/usp_logo.png";
 import { useAuthStore } from "@/stores/authStore";
 import Typography from "@/foundation/Typography";
 import { supabase } from "@/lib/supabase";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Gnb() {
   const [isOpen, setIsOpen] = useState(false);
+  const { pathname } = useLocation();
   const {
     companies,
     fetchCompanies,
@@ -158,27 +159,44 @@ export default function Gnb() {
                   justify="between"
                   classes="h-full"
                 >
-                  <FlexWrapper direction="col" gap={0} classes="w-full">
+                  <FlexWrapper
+                    direction="col"
+                    gap={2}
+                    justify="center"
+                    classes="w-full h-full"
+                  >
                     {menus.map((menu) => (
                       <Button
                         key={menu.path}
                         variant="clear"
                         size="lg"
-                        classes="w-full justify-center !text-primary-900 border-b !rounded-none !py-8 !font-bold"
+                        classes="w-full justify-center !text-primary-900 !rounded-none !font-bold"
                         onClick={() => handleMove(menu.path)}
                       >
-                        {menu.label}
+                        <Typography
+                          variant="H3"
+                          classes={
+                            pathname.includes(menu.path)
+                              ? "!font-bold"
+                              : "!font-thin"
+                          }
+                        >
+                          {menu.label}
+                        </Typography>
                       </Button>
                     ))}
                   </FlexWrapper>
-                  <Button
-                    variant="clear"
-                    size="lg"
-                    classes="w-full justify-center !text-primary-900"
-                    onClick={onLogout}
-                  >
-                    로그아웃
-                  </Button>
+                  <FlexWrapper justify="end" classes="w-full ">
+                    <Button
+                      variant="outline"
+                      color="primary"
+                      size="md"
+                      classes="justify-center"
+                      onClick={onLogout}
+                    >
+                      로그아웃
+                    </Button>
+                  </FlexWrapper>
                 </FlexWrapper>
               </div>
             </motion.div>
