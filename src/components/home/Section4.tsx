@@ -11,7 +11,7 @@ function Section4() {
   return (
     <div className="w-full flex flex-col items-center justify-start pt-[140px] h-fit sm:h-[800px] gap-10">
       <FadeInGsap>
-        <span className="rounded-full bg-gray-100 py-4 font-bold text-lg sm:text-xl px-4 sm:px-8">
+        <span className="rounded-full bg-gray-100 py-4 font-bold text-sm xs:text-lg sm:text-xl px-4 sm:px-8">
           💼 어떤 업무를 지원하는지 궁금하신가요?
         </span>
       </FadeInGsap>

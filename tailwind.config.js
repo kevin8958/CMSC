@@ -7,7 +7,7 @@ export default {
   ],
   theme: {
     screens: {
-      xs: "480px",
+      xs: "374px",
       xl: "1300px",
     },
     fontSize: {

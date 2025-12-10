@@ -4,7 +4,7 @@ function Section3() {
   return (
     <div className="w-full h-[400px] rounded-2xl bg-gradient-to-r from-black to-gray-600 flex flex-col items-center justify-center px-4 gap-10">
       <FadeInGsap>
-        <span className="rounded-full bg-gray-300/30 py-4 font-bold text-lg sm:text-xl px-8 text-gray-100">
+        <span className="rounded-full bg-gray-300/30 py-4 font-bold text-sm xs:text-lg sm:text-xl px-8 text-gray-100">
           😎 딱 맞는 직원 찾기 쉽지 않죠?
         </span>
       </FadeInGsap>

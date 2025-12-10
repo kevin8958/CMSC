@@ -8,16 +8,16 @@ function Section2() {
   return (
     <div className="w-full flex flex-col items-center h-fit sm:h-[680px] gap-10 pb-20">
       <FadeInGsap>
-        <span className="rounded-full bg-gray-100 py-4 font-bold text-lg sm:text-xl px-8">
+        <span className="rounded-full bg-gray-100 py-4 font-bold text-sm xs:text-lg sm:text-xl px-8">
           👍 필요한 지원업무를 고를 수 있습니다!
         </span>
       </FadeInGsap>
       <FadeInGsap>
         <FlexWrapper gap={0} items="center" direction="col">
-          <p className="text-3xl sm:text-[40px] font-bold">
+          <p className="text-xl xs:text-3xl sm:text-[40px] font-bold">
             효율성과 전문성은 높이고
           </p>
-          <p className="text-3xl sm:text-[40px] font-bold break-keep text-center">
+          <p className="text-xl xs:text-3xl sm:text-[40px] font-bold break-keep text-center">
             인간비와 채용 부담을 낮주세요!
           </p>
         </FlexWrapper>
