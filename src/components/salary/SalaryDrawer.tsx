@@ -39,7 +39,7 @@ export default function SalaryDrawer({
 }: Salary.SalaryDrawerProps) {
   const [form, setForm] = useState({
     worker: "",
-    pay_month: dayjs().format("YYYY-MM"),
+    pay_month: dayjs().format("yyyy-MM"),
     status: "pending" as Salary.SalaryStatus,
     emp_type: "정규직" as Salary.EmpType,
     work_days: "",
@@ -65,7 +65,7 @@ export default function SalaryDrawer({
     if (salary) {
       setForm({
         worker: salary.worker_id || "",
-        pay_month: dayjs(salary.pay_month).format("YYYY-MM"),
+        pay_month: dayjs(salary.pay_month).format("yyyy-MM"),
         status: salary.status || "pending",
         emp_type: salary.emp_type || "정규직",
         work_days: salary.work_days?.toString() || "",
@@ -87,7 +87,7 @@ export default function SalaryDrawer({
     } else {
       setForm({
         worker: "",
-        pay_month: dayjs().format("YYYY-MM"),
+        pay_month: dayjs().format("yyyy-MM"),
         status: "pending",
         emp_type: "정규직",
         work_days: "",
@@ -161,7 +161,7 @@ export default function SalaryDrawer({
       await onConfirm({
         worker_id: form.worker,
         user_name: workers.find((m) => m.id === form.worker)?.name || "",
-        pay_month: dayjs(form.pay_month).format("YYYY-MM"),
+        pay_month: dayjs(form.pay_month).format("yyyy-MM"),
         status: form.status,
         emp_type: form.emp_type,
         work_days: Number(form.work_days) || 0,
@@ -192,7 +192,7 @@ export default function SalaryDrawer({
         id: salary.id,
         worker_id: form.worker,
         user_name: workers.find((m) => m.id === form.worker)?.name || "",
-        pay_month: dayjs(form.pay_month).format("YYYY-MM"),
+        pay_month: dayjs(form.pay_month).format("yyyy-MM"),
         status: form.status,
         emp_type: form.emp_type,
         work_days: Number(form.work_days) || 0,

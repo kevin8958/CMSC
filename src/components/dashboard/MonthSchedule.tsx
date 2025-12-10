@@ -53,7 +53,7 @@ function MonthSchedule() {
 
       let cur = start;
       while (cur.isSame(end) || cur.isBefore(end)) {
-        const key = cur.format("YYYY-MM-DD");
+        const key = cur.format("yyyy-MM-DD");
         if (!map[key]) map[key] = [];
         map[key].push(n);
         cur = cur.add(1, "day");

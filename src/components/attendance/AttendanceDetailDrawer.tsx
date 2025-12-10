@@ -59,13 +59,13 @@ export default function AttendanceDetailDrawer({
   const handleSave = async () => {
     await updateRecord({
       id: form.id,
-      start_date: dayjs(rangeValue[0]).format("YYYY-MM-DD"),
-      end_date: dayjs(rangeValue[1]).format("YYYY-MM-DD"),
+      start_date: dayjs(rangeValue[0]).format("yyyy-MM-DD"),
+      end_date: dayjs(rangeValue[1]).format("yyyy-MM-DD"),
       reason: form.reason,
       note: form.note,
     });
     if (currentCompanyId) {
-      const month = dayjs(selectedMonth).format("YYYY-MM");
+      const month = dayjs(selectedMonth).format("yyyy-MM");
       fetchAll(currentCompanyId);
       fetchMonthlyRecords(currentCompanyId, month);
     }
@@ -83,7 +83,7 @@ export default function AttendanceDetailDrawer({
       onConfirm: async () => {
         await deleteRecord(form.id);
         if (currentCompanyId) {
-          const month = dayjs(selectedMonth).format("YYYY-MM");
+          const month = dayjs(selectedMonth).format("yyyy-MM");
           fetchAll(currentCompanyId);
           fetchMonthlyRecords(currentCompanyId, month);
         }

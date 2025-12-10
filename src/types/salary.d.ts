@@ -14,7 +14,7 @@ namespace Salary {
     worker_id: string | null;
     user_name: string | null; // ✅ 추가
 
-    pay_month: string; // YYYY-MM 형식
+    pay_month: string; // yyyy-MM 형식
     status: SalaryStatus;
     emp_type: EmpType;
 

@@ -127,7 +127,7 @@ function CompanyMember(props: { companyId?: string }) {
             classes={row.original.joined_at ? "" : "!text-gray-400"}
           >
             {row.original.joined_at
-              ? dayjs(row.original.joined_at).format("YYYY-MM-DD")
+              ? dayjs(row.original.joined_at).format("yyyy-MM-DD")
               : "초대중"}
           </Typography>
         </FlexWrapper>

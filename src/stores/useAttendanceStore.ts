@@ -37,7 +37,7 @@ export const useAttendanceStore = create<Attendance.AttendanceState>(
 
         // ✅ 등록 후 현재 선택 월 목록 리프레시
         const { currentCompanyId } = useCompanyStore.getState();
-        const month = dayjs(data.start_date).format("YYYY-MM");
+        const month = dayjs(data.start_date).format("yyyy-MM");
 
         await get().fetchMonthlyRecords(currentCompanyId!, month);
       } catch (err) {
@@ -50,7 +50,7 @@ export const useAttendanceStore = create<Attendance.AttendanceState>(
         await updateAttendanceRecord(data);
         // ✅ 수정 후 현재 선택 월 목록 리프레시
         const { currentCompanyId } = useCompanyStore.getState();
-        const month = dayjs(data.start_date).format("YYYY-MM");
+        const month = dayjs(data.start_date).format("yyyy-MM");
 
         await get().fetchMonthlyRecords(currentCompanyId!, month);
       } catch (err) {

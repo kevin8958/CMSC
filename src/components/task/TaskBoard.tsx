@@ -188,7 +188,7 @@ export default function TaskBoard() {
                               description: "",
                               assignee: "",
                               sort_index: 0,
-                              due_date: dayjs().format("YYYY-MM-DD"),
+                              due_date: dayjs().format("yyyy-MM-DD"),
                               task_comments: [],
                               created_at: dayjs().toString(),
                               updated_at: dayjs().toString(),

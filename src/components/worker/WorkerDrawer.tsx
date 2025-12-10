@@ -72,7 +72,7 @@ export default function WorkerDrawer({
         email,
         position,
         duty,
-        joined_at: joinedAt ? dayjs(joinedAt).format("YYYY-MM-DD") : null,
+        joined_at: joinedAt ? dayjs(joinedAt).format("yyyy-MM-DD") : null,
         total_leave: totalLeave || 0,
         used_leave: usedLeave || 0,
       });
@@ -83,7 +83,7 @@ export default function WorkerDrawer({
         email,
         position,
         duty,
-        joined_at: joinedAt ? dayjs(joinedAt).format("YYYY-MM-DD") : null,
+        joined_at: joinedAt ? dayjs(joinedAt).format("yyyy-MM-DD") : null,
         total_leave: totalLeave || 0,
         used_leave: usedLeave || 0,
       });

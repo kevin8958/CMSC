@@ -65,7 +65,7 @@ function Inquiry() {
       header: "작성일",
       cell: ({ row }) => (
         <Typography variant="B2">
-          {dayjs(row.original.created_at).format("YYYY-MM-DD")}
+          {dayjs(row.original.created_at).format("yyyy-MM-DD")}
         </Typography>
       ),
     },

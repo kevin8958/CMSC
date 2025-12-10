@@ -61,7 +61,7 @@ export default function ChecklistDrawer({
       setDueDate(new Date());
     }
     setErrors({ title: "" });
-  }, [item]);
+  }, [item, open]);
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -72,7 +72,7 @@ export default function ChecklistDrawer({
     await onSubmit({
       title: title.trim(),
       description: description || null,
-      due_date: dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : null,
+      due_date: dueDate ? dayjs(dueDate).format("yyyy-MM-DD") : null,
     });
   };
 
@@ -119,7 +119,7 @@ export default function ChecklistDrawer({
             type="single"
             variant="outline"
             size="sm"
-            dateFormat="YYYY.MM.dd"
+            dateFormat="yyyy.MM.dd"
             disabled={disabled}
             value={dueDate}
             onChange={(date) => setDueDate(date)}
