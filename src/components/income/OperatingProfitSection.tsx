@@ -39,14 +39,14 @@ export default function OperatingProfitSection() {
             gap={2}
             classes="px-4 py-2 rounded-xl border !border-gray-400"
           >
-            <FlexWrapper items="center" gap={2}>
+            <FlexWrapper items="center" gap={1}>
               <LuCirclePlus />
               <Typography variant="H4" classes="font-semibold text-primary-700">
                 매출총이익
               </Typography>
             </FlexWrapper>
 
-            <FlexWrapper items="center" gap={2}>
+            <FlexWrapper items="center" gap={0}>
               <Typography
                 variant="H4"
                 classes="flex-1 font-semibold text-primary-700 text-right"

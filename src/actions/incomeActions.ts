@@ -127,6 +127,7 @@ export async function recalcGrossProfit(statementId: string) {
       updated_at: new Date().toISOString(),
     })
     .eq("id", statementId);
+  await recalcOperatingProfit(statementId);
 
   if (error) throw error;
 }

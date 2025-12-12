@@ -46,14 +46,14 @@ export default function PreTaxProfitSection() {
             gap={2}
             classes="px-4 py-2 rounded-xl border !border-gray-400"
           >
-            <FlexWrapper items="center" gap={2}>
+            <FlexWrapper items="center" gap={1}>
               <LuCirclePlus />
               <Typography variant="H4" classes="font-semibold text-primary-700">
                 영업이익
               </Typography>
             </FlexWrapper>
 
-            <FlexWrapper items="center" gap={2}>
+            <FlexWrapper items="center" gap={0}>
               <Typography
                 variant="H4"
                 classes="!w-[180px] font-semibold text-primary-700 text-right"
