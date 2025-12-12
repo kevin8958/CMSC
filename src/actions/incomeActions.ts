@@ -25,23 +25,91 @@ export async function getOrCreateStatement(
   return data;
 }
 
-/** 매출 업데이트 */
-export async function updateRevenue(
-  companyId: string,
-  yearMonth: string,
-  revenue: number
-) {
-  const statement = await getOrCreateStatement(companyId, yearMonth);
+// /** 매출 업데이트 */
+// export async function updateRevenue(
+//   companyId: string,
+//   yearMonth: string,
+//   revenue: number
+// ) {
+//   const statement = await getOrCreateStatement(companyId, yearMonth);
 
-  const { error } = await supabase
-    .from("income_statements")
-    .update({ revenue })
-    .eq("id", statement.id);
+//   const { error } = await supabase
+//     .from("income_statements")
+//     .update({ revenue })
+//     .eq("id", statement.id);
+
+//   if (error) throw error;
+
+//   // 매출총이익 다시 계산
+//   await recalcGrossProfit(statement.id);
+// }
+export async function fetchRevenue(statementId: string) {
+  const { data, error } = await supabase
+    .from("income_items")
+    .select("*")
+    .eq("statement_id", statementId)
+    .eq("category", "revenue")
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function addRevenueItem(
+  statementId: string,
+  name: string,
+  amount: number
+) {
+  const { data, error } = await supabase
+    .from("income_items")
+    .insert([{ statement_id: statementId, category: "revenue", name, amount }])
+    .select()
+    .single();
 
   if (error) throw error;
 
-  // 매출총이익 다시 계산
-  await recalcGrossProfit(statement.id);
+  await recalcRevenue(statementId);
+  return data;
+}
+
+export async function deleteRevenueItem(id: string) {
+  const { data: existing, error: selectErr } = await supabase
+    .from("income_items")
+    .select("statement_id")
+    .eq("id", id)
+    .single();
+
+  if (selectErr) throw selectErr;
+
+  const { error } = await supabase.from("income_items").delete().eq("id", id);
+  if (error) throw error;
+
+  await recalcRevenue(existing.statement_id);
+  return true;
+}
+
+export async function recalcRevenue(statementId: string) {
+  const { data: items } = await supabase
+    .from("income_items")
+    .select("amount")
+    .eq("statement_id", statementId)
+    .eq("category", "revenue");
+
+  const revenueTotal =
+    items?.reduce((sum, x) => sum + Number(x.amount), 0) ?? 0;
+
+  const { error } = await supabase
+    .from("income_statements")
+    .update({
+      revenue: revenueTotal,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", statementId);
+
+  if (error) throw error;
+
+  // 🔗 체인
+  await recalcGrossProfit(statementId);
 }
 
 /** COGS 항목 생성 */

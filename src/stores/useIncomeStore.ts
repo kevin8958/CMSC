@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import {
   getOrCreateStatement,
-  updateRevenue,
+  fetchRevenue,
+  addRevenueItem,
+  deleteRevenueItem,
   createCogsItem,
   updateCogsItem,
   deleteCogsItem,
@@ -16,6 +18,7 @@ import {
 
 interface IncomeStore {
   statement: Income.Statement | null;
+  revenues: Income.Item[];
   cogs: Income.Item[];
   sga: Income.Item[];
   nonOpIncome: Income.Item[];
@@ -25,7 +28,8 @@ interface IncomeStore {
   fetchStatement: (companyId: string, yearMonth: string) => Promise<void>;
 
   // 매출
-  setRevenue: (amount: number) => Promise<void>;
+  addRevenue: (name: string, amount: number) => Promise<void>;
+  deleteRevenue: (id: string) => Promise<void>;
 
   // 매출원가(COGS)
   createCogs: (name: string, amount: number) => Promise<void>;
@@ -47,19 +51,18 @@ interface IncomeStore {
 
 export const useIncomeStore = create<IncomeStore>((set, get) => ({
   statement: null,
+  revenues: [],
   cogs: [],
   sga: [],
   nonOpIncome: [],
   nonOpExpense: [],
   loading: false,
 
-  // ---------------------------------------------------
-  // 1) 손익계산서 + 매출원가 불러오기
-  // ---------------------------------------------------
   fetchStatement: async (companyId, yearMonth) => {
     set({ loading: true });
 
     const statement = await getOrCreateStatement(companyId, yearMonth);
+    const revenues = await fetchRevenue(statement.id);
     const cogs = await fetchCogs(statement.id);
     const sga = await fetchSga(statement.id);
     const nonOpIncome = await fetchNonOp(statement.id, "income");
@@ -67,6 +70,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
 
     set({
       statement,
+      revenues: revenues || [],
       cogs: cogs || [],
       sga: sga || [],
       nonOpIncome: nonOpIncome || [],
@@ -74,23 +78,32 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
       loading: false,
     });
   },
+  // setRevenue: async (amount) => {
+  //   const st = get().statement;
+  //   if (!st) return;
 
-  // ---------------------------------------------------
-  // 2) 매출 업데이트
-  // ---------------------------------------------------
-  setRevenue: async (amount) => {
+  //   await updateRevenue(st.company_id, st.year_month, amount);
+
+  //   // 최신 데이터 다시 불러오기
+  //   await get().fetchStatement(st.company_id, st.year_month);
+  // },
+
+  addRevenue: async (name, amount) => {
     const st = get().statement;
     if (!st) return;
 
-    await updateRevenue(st.company_id, st.year_month, amount);
-
-    // 최신 데이터 다시 불러오기
+    await addRevenueItem(st.id, name, amount);
     await get().fetchStatement(st.company_id, st.year_month);
   },
 
-  // ---------------------------------------------------
-  // 3) 매출원가 생성
-  // ---------------------------------------------------
+  deleteRevenue: async (id) => {
+    const st = get().statement;
+    if (!st) return;
+
+    await deleteRevenueItem(id);
+    await get().fetchStatement(st.company_id, st.year_month);
+  },
+
   createCogs: async (name, amount) => {
     const st = get().statement;
     if (!st) return;
@@ -100,9 +113,6 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
     await get().fetchStatement(st.company_id, st.year_month);
   },
 
-  // ---------------------------------------------------
-  // 4) 매출원가 수정
-  // ---------------------------------------------------
   updateCogs: async (id, data) => {
     const st = get().statement;
     if (!st) return;
@@ -112,9 +122,6 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
     await get().fetchStatement(st.company_id, st.year_month);
   },
 
-  // ---------------------------------------------------
-  // 5) 매출원가 삭제
-  // ---------------------------------------------------
   deleteCogs: async (id) => {
     const st = get().statement;
     if (!st) return;

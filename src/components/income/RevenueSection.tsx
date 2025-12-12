@@ -4,24 +4,18 @@ import FlexWrapper from "@/layout/FlexWrapper";
 import Button from "@/components/Button";
 import { useEffect, useState } from "react";
 import Tooltip from "../Tooltip";
-import {
-  LuCircleMinus,
-  LuCirclePlus,
-  LuPencil,
-  LuPlus,
-  LuSave,
-  LuTrash2,
-} from "react-icons/lu";
+import { LuCircleMinus, LuCirclePlus, LuPlus, LuTrash2 } from "react-icons/lu";
 import AddCogsDialogBody from "./AddCogsDialogBody";
 import { useDialog } from "@/hooks/useDialog";
 import { useIncomeStore } from "@/stores/useIncomeStore";
 import { useAlert } from "../AlertProvider";
 import { useAuthStore } from "@/stores/authStore";
+import AddRevenueDialogBody from "./AddRevenueDialogBody";
 
 export default function RevenueSection() {
-  const [editMode, setEditMode] = useState(false);
   const [tempRevenue, setTempRevenue] = useState<string>("0");
-  const { statement, cogs, setRevenue, deleteCogs } = useIncomeStore();
+  const { statement, cogs, revenues, deleteRevenue, deleteCogs } =
+    useIncomeStore();
   useEffect(() => {
     if (statement) {
       setTempRevenue(statement.revenue?.toString() || "0");
@@ -32,8 +26,11 @@ export default function RevenueSection() {
   const { openDialog } = useDialog();
   const { role } = useAuthStore();
 
+  const totalRevenue = revenues.reduce((s, x) => s + x.amount, 0);
+
   const totalCogsAmount = cogs.reduce((s, x) => s + x.amount, 0);
   const grossProfit = Number(tempRevenue) - totalCogsAmount;
+
   return (
     <>
       {/* 메인 카드 */}
@@ -46,59 +43,100 @@ export default function RevenueSection() {
         <FlexWrapper direction="col" gap={2} classes="p-4 h-full">
           {/* 매출 */}
           <FlexWrapper
-            justify="between"
-            items="center"
-            gap={2}
-            classes="px-4 py-2 rounded-xl border !border-gray-400"
+            direction="col"
+            gap={1}
+            classes="border rounded-xl flex-1 !border-gray-400 w-full"
           >
-            <FlexWrapper items="center" gap={2} classes="shrink-0">
-              <LuCirclePlus />
-              <Typography variant="H3" classes="font-semibold text-primary-700">
-                매출
-              </Typography>
-            </FlexWrapper>
-
-            <FlexWrapper items="center" gap={2}>
-              {editMode ? (
-                <TextInput
-                  classes="flex-1 text-right !h-[36px]"
-                  inputProps={{ value: tempRevenue }}
-                  placeholder="0"
-                  size="md"
-                  type="number"
-                  onChange={(e) => setTempRevenue(e.target.value)}
-                />
-              ) : (
+            {/* 상단: 타이틀 + 추가하기 */}
+            <FlexWrapper
+              justify="between"
+              items="center"
+              classes="w-full px-4 py-2 pb-0"
+            >
+              <FlexWrapper items="center" gap={1}>
+                <LuCirclePlus />
                 <Typography
-                  variant="H3"
-                  classes="flex-1 font-semibold text-primary-700 text-right"
+                  variant="H4"
+                  classes="font-semibold text-primary-700"
                 >
-                  {tempRevenue ? Number(tempRevenue).toLocaleString() : "0"}
+                  매출
                 </Typography>
-              )}
-              <Typography variant="H3" classes="font-semibold text-primary-700">
-                원
-              </Typography>
-              {role === "admin" && (
-                <Button
-                  variant="contain"
-                  size="md"
-                  color="green"
-                  onClick={async () => {
-                    if (editMode) {
-                      await setRevenue(Number(tempRevenue) || 0);
-                      showAlert(`매출이 저장되었습니다.`, {
-                        type: "success",
-                        durationMs: 3000,
+              </FlexWrapper>
+
+              <FlexWrapper items="center" gap={2}>
+                {/* 총합 */}
+                <Typography variant="H4" classes="font-semibold text-right">
+                  총 {totalRevenue.toLocaleString()}원
+                </Typography>
+                {role === "admin" && (
+                  <Button
+                    variant="contain"
+                    color="green"
+                    size="sm"
+                    classes="gap-1 !px-2"
+                    onClick={async () => {
+                      await openDialog({
+                        title: "매출항목 추가",
+                        hideBottom: true,
+                        body: <AddRevenueDialogBody />,
                       });
-                    }
-                    setEditMode(!editMode);
-                  }}
-                >
-                  {editMode ? <LuSave /> : <LuPencil />}
-                </Button>
-              )}
+                    }}
+                  >
+                    <LuPlus className="text-base" />
+                  </Button>
+                )}
+              </FlexWrapper>
             </FlexWrapper>
+            {/* 세부내역 리스트 */}
+            {revenues.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center gap-2 p-6">
+                <p className="text-gray-400 text-sm"> 세부내역이 없습니다</p>
+              </div>
+            ) : (
+              <FlexWrapper
+                items="center"
+                justify="start"
+                direction="col"
+                gap={0}
+                classes="flex-1 min-h-[200px] max-h-[calc(100dvh-76px-44px-24px-32px-42px-32px-44px-68px-36px)]  overflow-y-auto scroll-thin px-4"
+              >
+                {revenues.map((item) => (
+                  <FlexWrapper
+                    key={item.id}
+                    justify="between"
+                    items="center"
+                    classes="py-1 bg-white w-full"
+                  >
+                    <Typography variant="B1">{item.name}</Typography>
+
+                    <FlexWrapper items="center" gap={2}>
+                      <Typography variant="B1" classes="font-semibold">
+                        {item.amount.toLocaleString()}원
+                      </Typography>
+                      {role === "admin" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          color="danger"
+                          onClick={() => {
+                            deleteRevenue(item.id);
+                            showAlert(
+                              `매출 항목(${item.name})이 삭제되었습니다.`,
+                              {
+                                type: "success",
+                                durationMs: 3000,
+                              }
+                            );
+                          }}
+                        >
+                          <LuTrash2 className="text-sm" />
+                        </Button>
+                      )}
+                    </FlexWrapper>
+                  </FlexWrapper>
+                ))}
+              </FlexWrapper>
+            )}
           </FlexWrapper>
           <FlexWrapper
             direction="col"
