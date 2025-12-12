@@ -133,23 +133,30 @@ const SNB = () => {
                 </p>
               )}
               <ul className="flex flex-col w-full">
-                {group.items.map((item) => (
-                  <li key={item.id} className="w-full">
-                    <a
-                      href={item.href}
-                      className={classNames(
-                        "flex items-center gap-3 w-full text-primary-800 hover:bg-green-100/70 rounded-lg py-3 px-4 text-sm transition-all duration-100 ease-in-out",
-                        {
-                          "!text-primary-900 bg-green-100 font-bold":
-                            pathname.includes(item.id),
-                        }
-                      )}
-                    >
-                      {item.icon}
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                {group.items
+                  .filter((item) => {
+                    if (role === "user_a" || role === "user_b") {
+                      return item.id !== "worker";
+                    }
+                    return true;
+                  })
+                  .map((item) => (
+                    <li key={item.id} className="w-full">
+                      <a
+                        href={item.href}
+                        className={classNames(
+                          "flex items-center gap-3 w-full text-primary-800 hover:bg-green-100/70 rounded-lg py-3 px-4 text-sm transition-all duration-100 ease-in-out",
+                          {
+                            "!text-primary-900 bg-green-100 font-bold":
+                              pathname.includes(item.id),
+                          }
+                        )}
+                      >
+                        {item.icon}
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
               </ul>
             </li>
           ))}
