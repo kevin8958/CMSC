@@ -114,14 +114,14 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
             </div>
           )}
 
-          {comments.map((c) => (
-            <FlexWrapper
-              key={c.id}
-              direction="col"
-              classes="py-3 h-[calc(100dvh-50px-358px-50px-30px-16px-60px)] overflow-y-auto scroll-thin"
-              gap={1}
-            >
+          <FlexWrapper
+            direction="col"
+            classes="py-3 h-[calc(100dvh-50px-358px-50px-30px-16px-60px)] overflow-y-auto scroll-thin"
+            gap={1}
+          >
+            {comments.map((c) => (
               <FlexWrapper
+                key={c.id}
                 gap={1}
                 items="start"
                 classes={userId === c.author_id ? "!flex-row-reverse" : ""}
@@ -156,8 +156,9 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
                   </Typography>
                 </FlexWrapper>
               </FlexWrapper>
+            ))}
 
-              {/* {userId === c.author_id && (
+            {/* {userId === c.author_id && (
                 <Button
                   variant="clear"
                   size="sm"
@@ -167,8 +168,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
                   삭제
                 </Button>
               )} */}
-            </FlexWrapper>
-          ))}
+          </FlexWrapper>
           <FlexWrapper gap={2} items="center">
             <TextInput
               classes="flex-1 !h-[42px] !text-sm"
