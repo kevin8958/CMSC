@@ -40,7 +40,7 @@ function SalaryTable(props: {
     //   cell: ({ row }) => (
     //     <Typography variant="B2">
     //       {row.original.send_date
-    //         ? dayjs(row.original.send_date).format("yyyy-MM-DD")
+    //         ? dayjs(row.original.send_date).format("YYYY-MM-DD")
     //         : "-"}
     //     </Typography>
     //   ),

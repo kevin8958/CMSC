@@ -72,7 +72,7 @@ export default function TaskDrawer({
       status,
       priority,
       description,
-      due_date: dueDate ? dayjs(dueDate).format("yyyy-MM-DD") : undefined,
+      due_date: dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : undefined,
       assignee: assignee || undefined,
     });
   };

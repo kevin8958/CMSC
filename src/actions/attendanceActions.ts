@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 export async function fetchMonthlyAttendance(companyId: string, month: string) {
   const start = `${month}-01`;
-  const end = dayjs(start).endOf("month").format("yyyy-MM-DD");
+  const end = dayjs(start).endOf("month").format("YYYY-MM-DD");
 
   const { data, error } = await supabase
     .from("attendance_records")

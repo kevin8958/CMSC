@@ -72,7 +72,7 @@ export default function ChecklistDrawer({
     await onSubmit({
       title: title.trim(),
       description: description || null,
-      due_date: dueDate ? dayjs(dueDate).format("yyyy-MM-DD") : null,
+      due_date: dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : null,
     });
   };
 

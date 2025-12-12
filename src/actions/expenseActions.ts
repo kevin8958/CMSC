@@ -15,7 +15,7 @@ export async function insertExpense(payload: {
     user_id: payload.user_id,
     company_id: payload.company_id,
     category: payload.category,
-    date: dayjs(payload.date).format("yyyy-MM-DD"),
+    date: dayjs(payload.date).format("YYYY-MM-DD"),
     method: payload.method,
     place: payload.place,
     amount: payload.amount,
@@ -32,8 +32,8 @@ export async function fetchExpenses(params: {
   month: Date;
   page: number;
 }) {
-  const start = dayjs(params.month).startOf("month").format("yyyy-MM-DD");
-  const end = dayjs(params.month).endOf("month").format("yyyy-MM-DD");
+  const start = dayjs(params.month).startOf("month").format("YYYY-MM-DD");
+  const end = dayjs(params.month).endOf("month").format("YYYY-MM-DD");
 
   const from = (params.page - 1) * 10;
   const to = from + 10 - 1;
@@ -55,8 +55,8 @@ export async function fetchExpenseSummary(params: {
   company_id: string;
   month: Date;
 }) {
-  const start = dayjs(params.month).startOf("month").format("yyyy-MM-DD");
-  const end = dayjs(params.month).endOf("month").format("yyyy-MM-DD");
+  const start = dayjs(params.month).startOf("month").format("YYYY-MM-DD");
+  const end = dayjs(params.month).endOf("month").format("YYYY-MM-DD");
 
   const { data, error } = await supabase.rpc("get_expense_summary", {
     cid: params.company_id,
@@ -82,7 +82,7 @@ export async function updateExpense(
   const { data, error } = await supabase
     .from("expenses")
     .update({
-      date: dayjs(payload.date).format("yyyy-MM-DD"),
+      date: dayjs(payload.date).format("YYYY-MM-DD"),
       method: payload.method,
       place: payload.place,
       amount: payload.amount,

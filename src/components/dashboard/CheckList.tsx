@@ -87,7 +87,7 @@ export default function CheckList() {
                     title: "",
                     description: "",
                     sort_index: list.length,
-                    due_date: dayjs().format("yyyy-MM-DD"),
+                    due_date: dayjs().format("YYYY-MM-DD"),
                     created_at: "",
                     updated_at: "",
                   });

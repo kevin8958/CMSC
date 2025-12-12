@@ -78,8 +78,8 @@ export default function NoticeDrawer({
     await onSubmit({
       title: title.trim(),
       priority,
-      start_date: dayjs(rangeValue[0])!.format("yyyy-MM-DD"),
-      end_date: dayjs(rangeValue[1])!.format("yyyy-MM-DD"),
+      start_date: dayjs(rangeValue[0])!.format("YYYY-MM-DD"),
+      end_date: dayjs(rangeValue[1])!.format("YYYY-MM-DD"),
       content: content.trim() || "",
     });
   };

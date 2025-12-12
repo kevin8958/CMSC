@@ -90,14 +90,14 @@ export default function AttendanceAddDrawer({
     await createRecord({
       company_id: currentCompanyId,
       worker_id: form.worker,
-      start_date: dayjs(rangeValue[0]).format("yyyy-MM-DD"),
-      end_date: dayjs(rangeValue[1]).format("yyyy-MM-DD"),
+      start_date: dayjs(rangeValue[0]).format("YYYY-MM-DD"),
+      end_date: dayjs(rangeValue[1]).format("YYYY-MM-DD"),
       days: dayjs(rangeValue[1]).diff(dayjs(rangeValue[0]), "day") + 1,
       reason: form.reason,
       note: form.note,
     });
 
-    const month = dayjs(selectedMonth).format("yyyy-MM");
+    const month = dayjs(selectedMonth).format("YYYY-MM");
     fetchAll(currentCompanyId);
     fetchMonthlyRecords(currentCompanyId, month);
     onClose();

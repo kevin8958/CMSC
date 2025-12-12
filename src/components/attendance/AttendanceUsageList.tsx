@@ -30,7 +30,7 @@ export default function AttendanceUsageList({
 
   useEffect(() => {
     if (currentCompanyId && selectedMonth) {
-      const month = dayjs(selectedMonth).format("yyyy-MM");
+      const month = dayjs(selectedMonth).format("YYYY-MM");
       fetchMonthlyRecords(currentCompanyId, month);
     }
   }, [selectedMonth, currentCompanyId]);

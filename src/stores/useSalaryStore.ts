@@ -46,12 +46,12 @@ export const useSalaryStore = create<SalaryState>((set, get) => ({
       .range(from, to);
 
     if (month) {
-      const formatted = dayjs(month).format("yyyy-MM");
+      const formatted = dayjs(month).format("YYYY-MM");
       query = query.eq("pay_month", formatted);
     }
     const { data, count, error } = await query;
 
-    const formattedMonth = month ? dayjs(month).format("yyyy-MM") : null;
+    const formattedMonth = month ? dayjs(month).format("YYYY-MM") : null;
 
     const { data: sums, error: sumError } = await supabase.rpc(
       "get_salary_sums",

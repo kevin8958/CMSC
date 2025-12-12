@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     member_id, // optional
     name,
     emp_type,
-    pay_month, // yyyy-MM or yyyy-MM-01
+    pay_month, // YYYY-MM or YYYY-MM-01
     work_days,
     total_amount,
     net_amount,

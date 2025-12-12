@@ -56,7 +56,7 @@ function Worker() {
       cell: ({ row }: any) => (
         <Typography variant="B2">
           {row.original.joined_at
-            ? dayjs(row.original.joined_at).format("yyyy-MM-DD")
+            ? dayjs(row.original.joined_at).format("YYYY-MM-DD")
             : "-"}
         </Typography>
       ),

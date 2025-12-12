@@ -18,7 +18,7 @@ function Income() {
 
   useEffect(() => {
     if (!currentCompanyId || !selectedMonth) return;
-    const yearMonth = dayjs(selectedMonth).format("yyyy-MM");
+    const yearMonth = dayjs(selectedMonth).format("YYYY-MM");
     fetchStatement(currentCompanyId, yearMonth);
   }, [currentCompanyId, selectedMonth]);
 

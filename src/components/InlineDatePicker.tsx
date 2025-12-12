@@ -65,7 +65,7 @@ export default function InlineDatePicker({
         )}
         /* ⭐ 날짜 셀 기본 스타일 */
         dayClassName={(d) => {
-          const key = dayjs(d).format("yyyy-MM-DD");
+          const key = dayjs(d).format("YYYY-MM-DD");
           const isSelected = dayjs(d).isSame(selected, "day");
           const isCurrentMonth = dayjs(d).isSame(currentMonth, "month");
 
@@ -84,7 +84,7 @@ export default function InlineDatePicker({
         }}
         /* ⭐ 날짜 내부 UI 커스터마이즈 (● 표시) */
         renderDayContents={(day, date) => {
-          const key = dayjs(date).format("yyyy-MM-DD");
+          const key = dayjs(date).format("YYYY-MM-DD");
           const notices = noticeByDate[key];
 
           const highlight =
