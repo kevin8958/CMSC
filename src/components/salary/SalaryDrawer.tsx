@@ -57,6 +57,8 @@ export default function SalaryDrawer({
     longterm_care_fee: "",
     deduction_other: "",
     note: "",
+    bank_name: "",
+    bank_account: "",
   });
 
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
@@ -83,6 +85,8 @@ export default function SalaryDrawer({
         longterm_care_fee: salary.longterm_care_fee?.toString() || "",
         deduction_other: salary.deduction_other?.toString() || "",
         note: salary.note || "",
+        bank_name: salary.bank_name || "",
+        bank_account: salary.bank_account || "",
       });
     } else {
       setForm({
@@ -105,6 +109,8 @@ export default function SalaryDrawer({
         longterm_care_fee: "",
         deduction_other: "",
         note: "",
+        bank_name: "",
+        bank_account: "",
       });
     }
   }, [salary, open]);
@@ -179,6 +185,8 @@ export default function SalaryDrawer({
         longterm_care_fee: Number(form.longterm_care_fee) || 0,
         deduction_other: Number(form.deduction_other) || 0,
         note: form.note,
+        bank_name: form.bank_name,
+        bank_account: form.bank_account,
 
         // ✅ 계산된 값들
         recognized_amount: computed.recognized_amount,
@@ -210,6 +218,8 @@ export default function SalaryDrawer({
         longterm_care_fee: Number(form.longterm_care_fee) || 0,
         deduction_other: Number(form.deduction_other) || 0,
         note: form.note,
+        bank_name: form.bank_name,
+        bank_account: form.bank_account,
 
         // ✅ 계산된 값들
         recognized_amount: computed.recognized_amount,
@@ -812,7 +822,63 @@ export default function SalaryDrawer({
             </FlexWrapper>
           </div>
         </FlexWrapper>
+        <FlexWrapper
+          items="start"
+          direction="col"
+          gap={0}
+          classes="border rounded-lg"
+        >
+          <FlexWrapper
+            items="center"
+            justify="between"
+            gap={2}
+            classes="py-2 px-4 bg-gray-50 w-full border-b rounded-t-lg"
+          >
+            <Typography variant="H4">계좌정보</Typography>
+          </FlexWrapper>
 
+          <div className="grid grid-cols-12 p-2 gap-4 pb-4 w-full">
+            {/* 은행명 */}
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
+              <div className="shrink-0 !w-[80px]">
+                <Label text="은행명" />
+              </div>
+              <TextInput
+                classes="!text-sm !h-[42px] max-h-[42px]"
+                inputProps={{
+                  value: form.bank_name,
+                }}
+                disabled={disable}
+                placeholder="국민은행"
+                onChange={(e) => handleChange("bank_name", e.target.value)}
+              />
+            </FlexWrapper>
+
+            {/* 계좌번호 */}
+            <FlexWrapper
+              items="center"
+              gap={2}
+              classes="col-span-12 sm:col-span-6"
+            >
+              <div className="shrink-0 !w-[80px]">
+                <Label text="계좌번호" />
+              </div>
+              <TextInput
+                classes="!text-sm !h-[42px] max-h-[42px]"
+                inputProps={{
+                  value: form.bank_account,
+                }}
+                disabled={disable}
+                placeholder="123-456-789012"
+                onChange={(e) => handleChange("bank_account", e.target.value)}
+              />
+            </FlexWrapper>
+          </div>
+        </FlexWrapper>
         {/* 메모 */}
         <FlexWrapper direction="col" gap={2}>
           <Label text="비고 / 메모" />

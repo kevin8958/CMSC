@@ -88,6 +88,8 @@ namespace Salary {
     net_amount?: number;
 
     send_date?: string | null;
+    bank_name?: string;
+    bank_account?: string;
   }
 
   // ────────────────────────────────
