@@ -1,15 +1,30 @@
-export async function inviteMember(companyId: string, email: string) {
-  const res = await fetch("/api/invite", {
+import { supabase } from "@/lib/supabase";
+
+export async function inviteMember(body: {
+  company_id: string;
+  email: string;
+}) {
+  // 로그인 유저 확인 (권한 체크용)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("로그인이 필요합니다.");
+
+  const res = await fetch("/api/member/invite", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, companyId }),
+    body: JSON.stringify(body),
   });
 
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "초대 실패");
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error ?? "초대 실패");
+  }
 
-  return data;
+  return res.json();
 }
+
 export async function removeMemberFromCompany(
   companyId: string,
   userId: string

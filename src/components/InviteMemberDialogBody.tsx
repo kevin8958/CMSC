@@ -42,7 +42,10 @@ function InviteMemberDialogBody() {
     try {
       if (!currentCompanyId) throw new Error("회사를 찾을 수 없습니다.");
 
-      const member = await inviteMember(currentCompanyId, email);
+      const member = await inviteMember({
+        company_id: currentCompanyId,
+        email,
+      });
       if (member) {
         showAlert(`${email}로 초대가 완료되었습니다.`, {
           type: "success",
