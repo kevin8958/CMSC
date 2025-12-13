@@ -29,7 +29,7 @@ export default function ExpenseGaugeItem({
       onMouseLeave={() => onHover(null)}
       className={`
         bg-white flex-1 p-2 cursor-pointer transition-colors flex flex-col gap-1 transition-all duration-500 rounded-xl border sm:flex-0 sm:min-w-[180px]
-        ${active ? "bg-gray-200" : hovered ? "bg-gray-100" : ""}
+        ${active ? "border-gray-900 border-2 !bg-gray-100" : hovered ? "!bg-gray-100" : ""}
       `}
     >
       <div className="flex items-center gap-1">
