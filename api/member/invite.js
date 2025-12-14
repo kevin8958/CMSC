@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
         email,
         {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/signup/invite`,
         }
       );
 
