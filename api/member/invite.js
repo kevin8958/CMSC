@@ -7,14 +7,16 @@ export default async function handler(req, res) {
 
   try {
     const { company_id, email, role = "user_b" } = req.body;
+    const { data: users, error } = await supabaseAdmin.auth.admin.listUsers({
+      perPage: 1000,
+    });
 
-    // 1️⃣ 이메일로 기존 유저 존재 여부 확인
-    const { data: users, error: listError } =
-      await supabaseAdmin.auth.admin.listUsers();
+    if (error) throw error;
 
-    if (listError) throw listError;
-
-    const existingUser = users.users.find((u) => u.email === email);
+    const existingUser = users.users.find(
+      (u) => u.email.toLowerCase() === email.toLowerCase()
+    );
+    console.log("existingUser:", existingUser);
     let userId = existingUser?.id;
 
     // 2️⃣ 없으면 초대 메일

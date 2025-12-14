@@ -26,17 +26,26 @@ function SignupInvite() {
     const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
     return regex.test(value);
   };
-
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const token = params.get("access_token");
+    const hash = window.location.hash.replace("#", "");
+    const params = new URLSearchParams(hash);
 
-    if (token) {
-      supabase.auth.setSession({
-        access_token: token,
-        refresh_token: params.get("refresh_token") || "",
+    const access_token = params.get("access_token");
+    const refresh_token = params.get("refresh_token");
+
+    console.log(params, access_token, refresh_token);
+
+    if (!access_token || !refresh_token) {
+      showAlert("초대 링크가 만료되었거나 유효하지 않습니다.", {
+        type: "danger",
       });
+      return;
     }
+
+    supabase.auth.setSession({
+      access_token,
+      refresh_token,
+    });
   }, []);
 
   const handleSubmit = async () => {
