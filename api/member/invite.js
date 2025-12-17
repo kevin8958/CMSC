@@ -16,7 +16,6 @@ export default async function handler(req, res) {
     const existingUser = users.users.find(
       (u) => u.email.toLowerCase() === email.toLowerCase()
     );
-    console.log("existingUser:", existingUser);
     let userId = existingUser?.id;
 
     // 2️⃣ 없으면 초대 메일

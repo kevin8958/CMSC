@@ -5,92 +5,101 @@ import {
   LuArrowUpDown,
   LuShoppingCart,
   LuCalendarCheck2,
+  LuBriefcaseBusiness,
 } from "react-icons/lu";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css/bundle";
+import { Autoplay } from "swiper/modules";
+
+const cards = [
+  {
+    label: "SUPPORT 1",
+    title: "업무보드",
+    icon: <LuListChecks className="text-[40px] text-white" />,
+    desc: "요청한 업무의 접수부터 진행 상황까지 한눈에 확인할 수 있는 업무 보드입니다.",
+  },
+  {
+    label: "SUPPORT 2",
+    title: "현장업무지원",
+    icon: <LuBriefcaseBusiness className="text-[40px] text-white" />, // 임시 아이콘
+    desc: "기기설비관리, 우편 수발신, 관공서 업무 등 현장 방문이 필요한 업무를 지원합니다.",
+  },
+  {
+    label: "SUPPORT 3",
+    title: "인사업무지원",
+    icon: <LuCalendarCheck2 className="text-[40px] text-white" />,
+    desc: "인사·행정 업무를 대신 처리하고 법령 준수에 필요한 정보도 관리합니다.",
+  },
+  {
+    label: "SUPPORT 4",
+    title: "회계업무지원",
+    icon: <LuArrowUpDown className="text-[40px] text-white" />,
+    desc: "수입·지출, 세금 신고까지 회계 실무 전반을 지원합니다.",
+  },
+  {
+    label: "SUPPORT 5",
+    title: "계약/구매업무지원",
+    icon: <LuShoppingCart className="text-[40px] text-white" />,
+    desc: "거래처, 계약, 발주 및 유지보수까지 체계적으로 관리합니다.",
+  },
+];
 
 function Section4() {
   return (
-    <div className="w-full flex flex-col items-center justify-start pt-[140px] h-fit sm:h-[800px] gap-10">
+    <div className="w-full flex flex-col items-center pt-[140px] gap-10">
       <FadeInGsap>
-        <span className="rounded-full bg-gray-100 py-4 font-bold text-sm xs:text-lg sm:text-xl px-4 sm:px-8">
+        <span className="rounded-full bg-gray-100 py-4 font-bold text-sm sm:text-xl px-6">
           💼 어떤 업무를 지원하는지 궁금하신가요?
         </span>
       </FadeInGsap>
+
       <FadeInGsap>
         <p className="text-3xl sm:text-[40px] font-bold">
           이런 업무들을 지원합니다!
         </p>
       </FadeInGsap>
-      <FlexWrapper
-        direction="col"
-        items="center"
-        justify="between"
-        classes="md:flex-row w-full gap-6 mt-6"
-      >
-        <FlexWrapper
-          direction="col"
-          gap={2}
-          items="center"
-          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
+
+      {/* Slider */}
+      <div className="w-full max-w-[1200px] mt-10 px-4">
+        <Swiper
+          modules={[Autoplay]}
+          slidesPerView={1}
+          spaceBetween={16}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          loop
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
         >
-          <p className="text-lg font-semibold text-gray-400">SUPPORT 1</p>
-          <span className="rounded-full p-4 bg-black inline-block my-4">
-            <LuListChecks className="text-[40px] text-white" />
-          </span>
-          <p className="text-[28px] font-bold">업무보드</p>
-          <p className="text-gray-600 text-sm text-center break-keep">
-            요청한 업무가 어떻게 접수되고, 실무 진행 상황이 어디까지 왔는지
-            한눈에 볼 수 있는 업무 보드입니다.
-          </p>
-        </FlexWrapper>
-        <FlexWrapper
-          direction="col"
-          gap={2}
-          items="center"
-          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
-        >
-          <p className="text-lg font-semibold text-gray-400">SUPPORT 2</p>
-          <span className="rounded-full p-4 bg-black inline-block my-4">
-            <LuCalendarCheck2 className="text-[40px] text-white" />
-          </span>
-          <p className="text-[28px] font-bold">인사업무지원</p>
-          <p className="text-gray-600 text-sm text-center break-keep">
-            운영·행정 업무를 대신 처리해 인사 실무가 매끄럽게 돌아가도록 돕고,
-            관련 법령 준수에 필요한 정보도 체계적으로 정리·보관합니다.
-          </p>
-        </FlexWrapper>
-        <FlexWrapper
-          direction="col"
-          gap={2}
-          items="center"
-          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
-        >
-          <p className="text-lg font-semibold text-gray-400">SUPPORT 3</p>
-          <span className="rounded-full p-4 bg-black inline-block my-4">
-            <LuArrowUpDown className="text-[40px] text-white" />
-          </span>
-          <p className="text-[28px] font-bold">회계업무지원</p>
-          <p className="text-gray-600 text-sm text-center break-keep">
-            수입·지출과 세금/공과금 관리, 월별 신고·납부 일정까지 회계 실무
-            전반을 놓침 없이 챙겨드립니다.
-          </p>
-        </FlexWrapper>
-        <FlexWrapper
-          direction="col"
-          gap={2}
-          items="center"
-          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
-        >
-          <p className="text-lg font-semibold text-gray-400">SUPPORT 4</p>
-          <span className="rounded-full p-4 bg-black inline-block my-4">
-            <LuShoppingCart className="text-[40px] text-white" />
-          </span>
-          <p className="text-[28px] font-bold">계약/구매업무지원</p>
-          <p className="text-gray-600 text-sm text-center break-keep">
-            다수의 협력업체를 일괄관리하며, 계약관계와 거래내역을 관리하고,
-            발주와 유지보수를 지원합니다.
-          </p>
-        </FlexWrapper>
-      </FlexWrapper>
+          {cards.map((card, idx) => (
+            <SwiperSlide key={idx}>
+              <FlexWrapper
+                direction="col"
+                gap={2}
+                items="center"
+                classes="rounded-xl bg-gray-100 py-10 px-6 h-[370px]"
+              >
+                <p className="text-lg font-semibold text-gray-400">
+                  {card.label}
+                </p>
+                <span className="rounded-full p-4 bg-black inline-block my-4">
+                  {card.icon}
+                </span>
+                <p className="text-[28px] font-bold">{card.title}</p>
+                <p className="text-gray-600 text-sm text-center break-keep">
+                  {card.desc}
+                </p>
+              </FlexWrapper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </div>
   );
 }

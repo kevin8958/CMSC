@@ -69,7 +69,7 @@ function Home() {
             <Section4 />
             <Section5 />
           </div>
-          <div className="sticky bottom-[52px] mx-auto w-fit">
+          <div className="sticky bottom-[52px] mx-auto w-fit z-[999]">
             <Button
               variant="contain"
               // color="green"
