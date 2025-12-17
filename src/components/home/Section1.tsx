@@ -36,23 +36,28 @@ function Section1() {
             classes="sm:flex-row"
           >
             <p className="text-3xl sm:text-[36px] font-bold text-center">
-              경영지원이 필요할 땐,
+              병의원 총무/경영지원이 필요할 땐,
             </p>
             <p className="text-3xl sm:text-[36px] font-bold text-center">
               EFFICE
             </p>
           </FlexWrapper>
-          <FlexWrapper
-            gap={1}
-            items="center"
-            direction="col"
-            classes="sm:flex-row"
-          >
+          <FlexWrapper gap={1} items="center" direction="col">
+            <FlexWrapper
+              gap={1}
+              items="center"
+              direction="col"
+              classes="sm:flex-row"
+            >
+              <p className="text-lg sm:text-2xl font-semibold text-gray-400 text-center">
+                중요하지만 번거로운 경영지원업무,
+              </p>
+              <p className="text-lg sm:text-2xl font-semibold text-gray-400 text-center">
+                아웃소싱을 통해 간편하게.
+              </p>
+            </FlexWrapper>
             <p className="text-lg sm:text-2xl font-semibold text-gray-400 text-center">
-              중요하지만 번거로운 경영지원업무,
-            </p>
-            <p className="text-lg sm:text-2xl font-semibold text-gray-400 text-center">
-              아웃소싱을 통해 간편하게
+              진료에 집중하시고, 번거로운 업무는 에피스에게 맡기세요.
             </p>
           </FlexWrapper>
         </FlexWrapper>

@@ -30,7 +30,7 @@ function Section4() {
           direction="col"
           gap={2}
           items="center"
-          classes="rounded-xl bg-gray-100 p-10 !flex-1 h-[370px]"
+          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
         >
           <p className="text-lg font-semibold text-gray-400">SUPPORT 1</p>
           <span className="rounded-full p-4 bg-black inline-block my-4">
@@ -46,7 +46,7 @@ function Section4() {
           direction="col"
           gap={2}
           items="center"
-          classes="rounded-xl bg-gray-100 p-10 !flex-1 h-[370px]"
+          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
         >
           <p className="text-lg font-semibold text-gray-400">SUPPORT 2</p>
           <span className="rounded-full p-4 bg-black inline-block my-4">
@@ -62,7 +62,7 @@ function Section4() {
           direction="col"
           gap={2}
           items="center"
-          classes="rounded-xl bg-gray-100 p-10 !flex-1 h-[370px]"
+          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
         >
           <p className="text-lg font-semibold text-gray-400">SUPPORT 3</p>
           <span className="rounded-full p-4 bg-black inline-block my-4">
@@ -78,16 +78,16 @@ function Section4() {
           direction="col"
           gap={2}
           items="center"
-          classes="rounded-xl bg-gray-100 p-10 !flex-1 h-[370px]"
+          classes="rounded-xl bg-gray-100 py-10 px-4 !flex-1 h-[370px]"
         >
           <p className="text-lg font-semibold text-gray-400">SUPPORT 4</p>
           <span className="rounded-full p-4 bg-black inline-block my-4">
             <LuShoppingCart className="text-[40px] text-white" />
           </span>
-          <p className="text-[28px] font-bold">구매업무지원</p>
+          <p className="text-[28px] font-bold">계약/구매업무지원</p>
           <p className="text-gray-600 text-sm text-center break-keep">
-            요청한 업무가 어떻게 접수되고, 실무 진행 상황이 어디까지 왔는지
-            한눈에 볼 수 있는 업무 보드입니다.
+            다수의 협력업체를 일괄관리하며, 계약관계와 거래내역을 관리하고,
+            발주와 유지보수를 지원합니다.
           </p>
         </FlexWrapper>
       </FlexWrapper>

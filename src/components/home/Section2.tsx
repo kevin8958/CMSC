@@ -61,7 +61,7 @@ function Section2() {
             <LuArrowDownRight className="text-[48px] font-bold text-danger" />
           </FlexWrapper>
           <Typography variant="H3" classes="!font-bold">
-            USP평균 수임료
+            에피스 평균 수임료
           </Typography>
           <Typography variant="B1" classes="break-keep !text-gray-400">
             부가세별도, 계산서발행
