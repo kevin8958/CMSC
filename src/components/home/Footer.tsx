@@ -8,7 +8,7 @@ export default function Footer() {
         {/* left */}
         <div className="flex flex-col gap-3">
           <FlexWrapper gap={0} items="start" direction="col">
-            <div className="text-2xl font-extrabold">UNDER STAND PARTNERS</div>
+            <div className="text-2xl font-extrabold">EFFICE</div>
             <p className="text-sm text-gray-500">
               중요한 경영지원업무, 아웃소싱으로 더 효율적으로
             </p>
@@ -37,11 +37,11 @@ export default function Footer() {
               className="text-sm text-primary-500 font-semibold flex items-center gap-2"
             >
               <LuMail className="text-lg text-primary-500" />
-              hello@understand.partners
+              hello@effice.co.kr
             </a>
           </FlexWrapper>
           <p className="text-sm text-gray-400 mt-4">
-            © UNDER STAND PARTNERS. All rights reserved.
+            © EFFICE. All rights reserved.
           </p>
         </div>
       </div>
