@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Button from "@/components/Button";
-import UspLogo from "@/assets/image/usp_logo.png";
+import Logo from "@/assets/image/effice_logo_t.png";
 // import { FcGoogle } from "react-icons/fc";
 // import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
@@ -117,7 +117,7 @@ function Login() {
         classes="w-[90%] sm:w-[400px] mt-[-60px]"
       >
         <a href="/">
-          <img src={UspLogo} alt="USP Logo" className="w-[60px]" />
+          <img src={Logo} alt="USP Logo" className="w-[60px]" />
         </a>
         <FlexWrapper gap={4} items="start" direction="col" classes="w-full">
           {/* <Button

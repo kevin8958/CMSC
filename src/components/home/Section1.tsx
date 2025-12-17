@@ -39,7 +39,7 @@ function Section1() {
               경영지원이 필요할 땐,
             </p>
             <p className="text-3xl sm:text-[36px] font-bold text-center">
-              UNDER STAND
+              EFFICE
             </p>
           </FlexWrapper>
           <FlexWrapper

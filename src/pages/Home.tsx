@@ -1,6 +1,6 @@
 import FlexWrapper from "@/layout/FlexWrapper";
 import Button from "@/components/Button";
-import UspLogo from "@/assets/image/usp_logo.png";
+import Logo from "@/assets/image/effice_logo_t.png";
 import { useNavigate } from "react-router-dom";
 import Section1 from "@/components/home/Section1";
 import Section2 from "@/components/home/Section2";
@@ -49,7 +49,7 @@ function Home() {
             items="center"
           >
             <a href="/">
-              <img src={UspLogo} alt="USP Logo" className="w-[60px]" />
+              <img src={Logo} alt="USP Logo" className="w-[60px]" />
             </a>
 
             <Button
