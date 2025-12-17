@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { BsCheck } from "react-icons/bs";
 
 const boxSize: Record<Common.CheckboxSize, string> = {
-  sm: "size-5 rounded-md",
+  sm: "size-5 rounded-sm",
   md: "size-6 rounded-md",
   lg: "size-8 rounded-lg",
 };
@@ -31,9 +31,7 @@ const Checkbox = (props: Common.CheckboxProps) => {
       htmlFor={id}
       className={classNames(
         "flex items-center gap-2 select-none",
-        disabled
-          ? "cursor-not-allowed text-gray-600"
-          : "cursor-pointer text-white",
+        disabled ? "cursor-not-allowed text-gray-600" : "cursor-pointer",
         classes
       )}
     >
@@ -50,11 +48,11 @@ const Checkbox = (props: Common.CheckboxProps) => {
       {/* 시각적 박스 */}
       <span
         className={classNames(
-          "flex shrink-0 items-center justify-center border transition-colors",
+          "flex shrink-0 items-center justify-center border transition-colors text-gray-200",
           boxSize[size],
           disabled
-            ? "border-primary-700 text-transparent"
-            : "border-primary-700 text-transparent transition peer-checked:text-white",
+            ? "border-gray-400"
+            : "border-gray-400 transition peer-checked:!text-gray-900 peer-checked:border-gray-700",
           disabled && checked && "bg-gray-300 !text-gray-500/70",
           invalid && "!border-danger"
         )}

@@ -117,7 +117,7 @@ function Login() {
         classes="w-[90%] sm:w-[400px] mt-[-60px]"
       >
         <a href="/">
-          <img src={Logo} alt="USP Logo" className="w-[60px]" />
+          <img src={Logo} alt="USP Logo" className="w-[60px] pb-4" />
         </a>
         <FlexWrapper gap={4} items="start" direction="col" classes="w-full">
           {/* <Button

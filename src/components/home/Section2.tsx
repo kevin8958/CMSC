@@ -18,7 +18,7 @@ function Section2() {
             효율성과 전문성은 높이고
           </p>
           <p className="text-xl xs:text-3xl sm:text-[40px] font-bold break-keep text-center">
-            인간비와 채용 부담을 낮주세요!
+            인건비와 채용 부담을 낮주세요!
           </p>
         </FlexWrapper>
       </FadeInGsap>

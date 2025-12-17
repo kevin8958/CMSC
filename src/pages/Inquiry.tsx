@@ -87,7 +87,7 @@ function Inquiry() {
       accessorKey: "content",
       header: "내용",
       cell: ({ row }) => (
-        <Typography variant="B2" classes="max-w-[200px] truncate">
+        <Typography variant="B2" classes="max-w-[400px] truncate">
           {row.original.content}
         </Typography>
       ),
