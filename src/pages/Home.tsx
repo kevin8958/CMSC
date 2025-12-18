@@ -49,7 +49,7 @@ function Home() {
             items="center"
           >
             <a href="/">
-              <img src={Logo} alt="USP Logo" className="w-[60px]" />
+              <img src={Logo} alt="USP Logo" className="w-[80px]" />
             </a>
 
             <Button

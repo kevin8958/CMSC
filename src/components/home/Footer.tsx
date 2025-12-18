@@ -26,7 +26,7 @@ export default function Footer() {
               direction="col"
               classes="mt-4 text-xs"
             >
-              <p>사업자명: 트립트먼트</p>
+              <p>사업자명: 에피스</p>
               <p>사업자등록번호: 176-08-02714</p>
               <p>사업장소재지: 구로구 경인로43길 49 </p>
               <p>문의전화: - </p>

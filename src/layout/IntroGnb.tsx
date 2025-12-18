@@ -46,7 +46,7 @@ export default function IntroGnb() {
       >
         <FlexWrapper gap={4} items="center">
           <a href="/">
-            <img src={Logo} alt="USP Logo" className="w-[60px]" />
+            <img src={Logo} alt="USP Logo" className="w-[80px]" />
           </a>
 
           <FlexWrapper gap={2} items="center" classes="!hidden sm:!flex">

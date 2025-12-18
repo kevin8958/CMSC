@@ -50,10 +50,10 @@ function Section1() {
               classes="sm:flex-row"
             >
               <p className="text-lg sm:text-2xl font-semibold text-gray-400 text-center">
-                중요하지만 번거로운 경영지원업무,
+                백오피스 운영 어떻게 하고 계신가요?
               </p>
               <p className="text-lg sm:text-2xl font-semibold text-gray-400 text-center">
-                아웃소싱을 통해 간편하게.
+                아웃소싱을 통해 효율적으로.
               </p>
             </FlexWrapper>
             <p className="text-lg sm:text-2xl font-semibold text-gray-400 text-center">
