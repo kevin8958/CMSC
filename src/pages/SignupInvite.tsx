@@ -124,7 +124,7 @@ function SignupInvite() {
       classes="w-full h-screen gap-6 px-4"
     >
       <Typography variant="H3" classes="text-center">
-        HandS 가입
+        EFFICE 가입
       </Typography>
 
       <div className="w-full max-w-[360px] flex flex-col gap-4">
