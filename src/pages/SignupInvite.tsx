@@ -28,19 +28,24 @@ function SignupInvite() {
   };
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get("code");
+    const hash = window.location.hash.replace("#", "");
+    const params = new URLSearchParams(hash);
 
-    if (!code) return;
+    const access_token = params.get("access_token");
+    const refresh_token = params.get("refresh_token");
 
-    supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
-      if (error) {
-        showAlert("초대 링크가 만료되었거나 유효하지 않습니다.", {
-          type: "danger",
-        });
-        console.log(data, error);
-        return;
-      }
-      // ✅ 여기서부터 session 정상
+    console.log(params, access_token, refresh_token);
+
+    if (!access_token || !refresh_token) {
+      showAlert("초대 링크가 만료되었거나 유효하지 않습니다.", {
+        type: "danger",
+      });
+      return;
+    }
+
+    supabase.auth.setSession({
+      access_token,
+      refresh_token,
     });
   }, []);
 
