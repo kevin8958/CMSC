@@ -72,6 +72,20 @@ function AppLayout() {
 }
 
 function App() {
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash.includes("access_token")) return;
+
+    // invite 타입인지 확인
+    const params = new URLSearchParams(hash.replace("#", ""));
+    const type = params.get("type");
+
+    if (type === "invite") {
+      // 토큰은 그대로 두고 경로만 이동
+      window.location.replace(`/signup/invite${hash}`);
+    }
+  }, []);
+
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
       <AlertProvider>
