@@ -26,27 +26,45 @@ function SignupInvite() {
     const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
     return regex.test(value);
   };
+
   useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    const params = new URLSearchParams(hash);
+    const code = new URLSearchParams(window.location.search).get("code");
 
-    const access_token = params.get("access_token");
-    const refresh_token = params.get("refresh_token");
+    if (!code) return;
 
-    console.log(params, access_token, refresh_token);
-
-    if (!access_token || !refresh_token) {
-      showAlert("초대 링크가 만료되었거나 유효하지 않습니다.", {
-        type: "danger",
-      });
-      return;
-    }
-
-    supabase.auth.setSession({
-      access_token,
-      refresh_token,
+    supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+      if (error) {
+        showAlert("초대 링크가 만료되었거나 유효하지 않습니다.", {
+          type: "danger",
+        });
+        console.log(data, error);
+        return;
+      }
+      // ✅ 여기서부터 session 정상
     });
   }, []);
+
+  // useEffect(() => {
+  //   const hash = window.location.hash.replace("#", "");
+  //   const params = new URLSearchParams(hash);
+
+  //   const access_token = params.get("access_token");
+  //   const refresh_token = params.get("refresh_token");
+
+  //   console.log(params, access_token, refresh_token);
+
+  //   if (!access_token || !refresh_token) {
+  //     showAlert("초대 링크가 만료되었거나 유효하지 않습니다.", {
+  //       type: "danger",
+  //     });
+  //     return;
+  //   }
+
+  //   supabase.auth.setSession({
+  //     access_token,
+  //     refresh_token,
+  //   });
+  // }, []);
 
   const handleSubmit = async () => {
     const {
