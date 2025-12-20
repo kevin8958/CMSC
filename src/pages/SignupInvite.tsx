@@ -44,28 +44,6 @@ function SignupInvite() {
     });
   }, []);
 
-  // useEffect(() => {
-  //   const hash = window.location.hash.replace("#", "");
-  //   const params = new URLSearchParams(hash);
-
-  //   const access_token = params.get("access_token");
-  //   const refresh_token = params.get("refresh_token");
-
-  //   console.log(params, access_token, refresh_token);
-
-  //   if (!access_token || !refresh_token) {
-  //     showAlert("초대 링크가 만료되었거나 유효하지 않습니다.", {
-  //       type: "danger",
-  //     });
-  //     return;
-  //   }
-
-  //   supabase.auth.setSession({
-  //     access_token,
-  //     refresh_token,
-  //   });
-  // }, []);
-
   const handleSubmit = async () => {
     const {
       data: { session },
