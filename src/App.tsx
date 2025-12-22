@@ -18,6 +18,7 @@ import Document from "@/pages/Document";
 import Company from "@/pages/Company";
 import CompanyDetail from "@/components/company/CompanyDetail";
 import Member from "@/pages/Member";
+import ForgotPassword from "@/pages/ForgotPassword";
 import Settings from "@/pages/Settings";
 import Snb from "@/layout/Snb";
 import FlexWrapper from "@/layout/FlexWrapper";
@@ -32,6 +33,7 @@ import Expense from "@/pages/Expense";
 import Income from "@/pages/Income";
 import Worker from "@/pages/Worker";
 import classNames from "classnames";
+import UpdatePassword from "./pages/UpdatePassword";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -120,6 +122,8 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
               </Route>
               <Route path="/signup/invite" element={<SignupInvite />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/update-password" element={<UpdatePassword />} />
             </Routes>
           </BrowserRouter>
         </DialogProvider>

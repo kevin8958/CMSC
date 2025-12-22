@@ -184,18 +184,23 @@ function Login() {
             <Typography variant="B2" classes="!font-normal">
               비밀번호를 잊으셨나요?
             </Typography>
-            <a
-              href="/"
-              className="font-semibold text-sm text-primary-900 underline"
+            <Button
+              variant="outline"
+              size="sm"
+              classes="!text-gray-900"
+              onClick={() => navigate("/forgot-password")}
             >
               비밀번호 재설정
-            </a>
+            </Button>
           </FlexWrapper>
           <Button
             classes="w-full"
             color="primary"
             variant="contain"
             size="lg"
+            disabled={
+              !email || !password || !!errors.email || !!errors.password
+            }
             onClick={handleSubmit}
           >
             로그인
