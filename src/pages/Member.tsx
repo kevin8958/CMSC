@@ -49,7 +49,7 @@ function Member() {
       setMembers(
         data.map((m: any) => ({
           user_id: m.id,
-          nickname: m.nickname ?? "-",
+          display_name: m.display_name ?? "-",
           email: m.email ?? "-",
           role: m.company_members?.[0]?.role ?? "-",
           joined_at: m.company_members?.[0]?.joined_at ?? null,
@@ -76,14 +76,14 @@ function Member() {
 
   const columns: ColumnDef<any>[] = [
     {
-      accessorKey: "nickname",
+      accessorKey: "display_name",
       header: "닉네임",
       cell: ({ row }) => (
         <Typography
           variant="B2"
           classes={row.original.joined_at ? "" : "!text-gray-400"}
         >
-          {row.original.nickname || "-"}
+          {row.original.display_name || "-"}
         </Typography>
       ),
     },

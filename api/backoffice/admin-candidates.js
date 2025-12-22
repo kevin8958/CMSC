@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   // 1) 전체 admin 프로필 (service role 이라 RLS 무시)
   const { data: allAdmins, error: adminsError } = await supabaseAdmin
     .from("profiles")
-    .select("id, nickname, email")
+    .select("id, display_name, email")
     .eq("role", "admin");
 
   if (adminsError) {
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
 
   const result = (allAdmins ?? []).map((adm) => ({
     id: adm.id,
-    nickname: adm.nickname,
+    display_name: adm.display_name,
     email: adm.email,
     alreadyAssigned: assignedIds.has(adm.id),
   }));

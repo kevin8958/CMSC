@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       `
     id,
     email,
-    nickname,
+    display_name,
     company_members!left(role, joined_at)
   `,
       { count: "exact" }

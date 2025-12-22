@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       role,
       joined_at,
       created_at,
-      profiles(id, nickname, email)
+      profiles(id, display_name, email)
     `
     )
     .eq("company_id", companyId)

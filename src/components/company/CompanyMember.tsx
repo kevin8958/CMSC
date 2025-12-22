@@ -59,14 +59,14 @@ function CompanyMember(props: { companyId?: string }) {
 
   const columns: ColumnDef<any>[] = [
     {
-      accessorKey: "nickname",
+      accessorKey: "display_name",
       header: "닉네임",
       cell: ({ row }) => (
         <Typography
           variant="B2"
           classes={row.original.joined_at ? "" : "!text-gray-400"}
         >
-          {row.original.nickname || "-"}
+          {row.original.display_name || "-"}
         </Typography>
       ),
     },

@@ -130,13 +130,13 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
                   <Avatar
                     size="sm"
                     type="text"
-                    name={c.profiles?.nickname || "-"}
+                    name={c.profiles?.display_name || "-"}
                   />
                   <Typography
                     variant="C1"
                     classes="!font-semibol text-gray-800 w-[60px] truncate"
                   >
-                    {c.profiles?.nickname || "익명"}
+                    {c.profiles?.display_name || "익명"}
                   </Typography>
                 </FlexWrapper>
                 <FlexWrapper

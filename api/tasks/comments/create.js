@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         updated_at,
         profiles (
           id,
-          nickname,
+          display_name,
           email
         )
       `

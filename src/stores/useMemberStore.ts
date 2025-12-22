@@ -5,7 +5,7 @@ import { useCompanyStore } from "@/stores/useCompanyStore";
 
 interface Member {
   user_id: string;
-  nickname: string;
+  display_name: string;
   email: string;
   joined_at: string;
   created_at: string;
@@ -50,7 +50,7 @@ export const useMemberStore = create<MemberStore>()((set, get) => ({
 
     const members = data.map((m: any) => ({
       user_id: m.user_id,
-      nickname: m.profiles?.nickname ?? "-",
+      display_name: m.profiles?.display_name ?? "-",
       email: m.profiles?.email ?? "-",
       joined_at: m.joined_at,
       created_at: m.created_at,

@@ -15,7 +15,7 @@ export interface ChecklistComment {
   content: string;
   created_by: string;
   created_at: string;
-  nickname: string | null;
+  display_name: string | null;
 }
 export async function fetchChecklist(companyId: string) {
   const { data, error } = await supabase

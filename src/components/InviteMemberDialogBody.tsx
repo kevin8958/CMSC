@@ -151,7 +151,7 @@ function InviteMemberDialogBody() {
                     variant="B1"
                     classes={`${adm.alreadyAssigned ? "opacity-50" : ""}`}
                   >
-                    {adm.nickname}
+                    {adm.display_name}
                   </Typography>
                   <Typography
                     variant="C1"
