@@ -2,8 +2,8 @@ import { LuConstruction } from "react-icons/lu";
 
 function UnderConstruction() {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-50 px-4">
-      <div className="w-max bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12 text-center">
+    <div className="min-h-[calc(100dvh-76px)] sm:min-h-screen w-full flex flex-col items-center justify-center bg-gray-50 px-4">
+      <div className="w-full sm:w-max bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12 text-center">
         {/* 아이콘 영역 */}
         <div className="flex justify-center mb-6">
           <div className="p-4 bg-amber-100 rounded-full">
@@ -17,8 +17,7 @@ function UnderConstruction() {
         </h1>
         <p className="text-gray-600 mb-8 leading-relaxed word-keep-all">
           더 나은 서비스를 제공하기 위해 현재 페이지를 준비하고 있습니다.
-          <br className="hidden md:block" /> 빠른 시일 내에 찾아뵙겠습니다.
-          이용에 불편을 드려 죄송합니다.
+          <br /> 빠른 시일 내에 찾아뵙겠습니다. 이용에 불편을 드려 죄송합니다.
         </p>
       </div>
     </div>
