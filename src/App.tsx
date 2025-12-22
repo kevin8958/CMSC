@@ -34,6 +34,7 @@ import Income from "@/pages/Income";
 import Worker from "@/pages/Worker";
 import classNames from "classnames";
 import UpdatePassword from "./pages/UpdatePassword";
+import UnderConstruction from "./pages/UnderConstruction";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -120,6 +121,10 @@ function App() {
                 <Route path="/member" element={<Member />} />
                 <Route path="/inquiry" element={<Inquiry />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route
+                  path="/under-construction"
+                  element={<UnderConstruction />}
+                />
               </Route>
               <Route path="/signup/invite" element={<SignupInvite />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
