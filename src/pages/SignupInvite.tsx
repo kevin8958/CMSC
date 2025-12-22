@@ -17,11 +17,14 @@ function SignupInvite() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  // 중복 클릭 방지를 위한 로딩 상태
+  const [submitting, setSubmitting] = useState(false);
+
   const validateNickname = (v: string) => {
     const regex = /^[a-zA-Z0-9가-힣]{2,20}$/;
     return regex.test(v);
   };
-  // 영소문자 + 숫자 + 특수문자 포함 최소 8자
+
   const validatePassword = (value: string) => {
     const regex = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
     return regex.test(value);
@@ -38,12 +41,8 @@ function SignupInvite() {
     if (!access_token || !refresh_token) return;
 
     supabase.auth
-      .setSession({
-        access_token,
-        refresh_token,
-      })
+      .setSession({ access_token, refresh_token })
       .then(() => {
-        // 🔥 토큰 처리 후 hash 제거 (중요)
         window.history.replaceState(
           {},
           document.title,
@@ -54,6 +53,8 @@ function SignupInvite() {
   }, []);
 
   const handleSubmit = async () => {
+    if (submitting) return; // 이미 제출 중이면 차단
+
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -64,29 +65,42 @@ function SignupInvite() {
       return;
     }
 
-    //  update
-    const { error } = await supabase.auth.updateUser({
-      password,
-      data: { nickname },
-    });
-    await supabase
-      .from("profiles")
-      .update({ nickname })
-      .eq("id", session.user.id);
+    setSubmitting(true);
 
-    await fetch("/api/member-join", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: session.user.id }),
-    });
+    try {
+      // 1. Auth User MetaData 업데이트 (display_name 필드 사용)
+      const { error: authError } = await supabase.auth.updateUser({
+        password,
+        data: { display_name: nickname }, // nickname을 display_name으로 저장
+      });
 
-    if (error) {
-      showAlert(error.message, { type: "danger" });
-      return;
+      if (authError) throw authError;
+
+      // 2. profiles 테이블 동기화
+      // DB의 profiles 테이블 컬럼명도 display_name으로 맞추는 것을 추천합니다.
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ display_name: nickname })
+        .eq("id", session.user.id);
+
+      if (profileError) throw profileError;
+
+      // 3. 백엔드 가입 처리
+      const res = await fetch("/api/member-join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: session.user.id }),
+      });
+
+      if (!res.ok) throw new Error("멤버 정보 업데이트에 실패했습니다.");
+
+      showAlert("가입이 완료되었습니다.", { type: "success" });
+      navigate("/dashboard");
+    } catch (error: any) {
+      showAlert(error.message || "오류가 발생했습니다.", { type: "danger" });
+    } finally {
+      setSubmitting(false);
     }
-
-    showAlert("가입이 완료되었습니다.", { type: "success" });
-    navigate("/dashboard");
   };
 
   const onPasswordChange = (v: string) => {
@@ -95,11 +109,11 @@ function SignupInvite() {
       setPasswordError("");
       return;
     }
-    if (!validatePassword(v)) {
-      setPasswordError("영문 소문자, 숫자, 특수문자를 포함해야 합니다.");
-    } else {
-      setPasswordError("");
-    }
+    setPasswordError(
+      validatePassword(v)
+        ? ""
+        : "영문 소문자, 숫자, 특수문자를 포함해야 합니다."
+    );
   };
 
   const onNicknameChange = (v: string) => {
@@ -108,18 +122,16 @@ function SignupInvite() {
       setNicknameError("");
       return;
     }
-    if (!validateNickname(v)) {
-      setNicknameError("한글/영문/숫자 2~20자, 공백/특수문자 불가");
-    } else {
-      setNicknameError("");
-    }
+    setNicknameError(
+      validateNickname(v) ? "" : "한글/영문/숫자 2~20자, 공백/특수문자 불가"
+    );
   };
 
   const isFormValid =
     validatePassword(password) &&
-    password.length >= 8 &&
     password === passwordConfirm &&
-    validateNickname(nickname);
+    validateNickname(nickname) &&
+    !submitting;
 
   return (
     <FlexWrapper
@@ -134,7 +146,7 @@ function SignupInvite() {
 
       <div className="w-full max-w-[360px] flex flex-col gap-4">
         <TextInput
-          label="닉네임"
+          label="닉네임 (표시 이름)"
           id="nickname"
           type="text"
           error={!!nicknameError}
@@ -149,7 +161,6 @@ function SignupInvite() {
           errorMsg={passwordError}
           onChange={(e) => onPasswordChange(e.target.value)}
         />
-
         <TextInput
           label="비밀번호 확인"
           id="passwordConfirm"
@@ -166,7 +177,7 @@ function SignupInvite() {
           disabled={!isFormValid}
           onClick={handleSubmit}
         >
-          가입 완료
+          {submitting ? "처리 중..." : "가입 완료"}
         </Button>
       </div>
     </FlexWrapper>
