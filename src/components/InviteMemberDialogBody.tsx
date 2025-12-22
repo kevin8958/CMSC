@@ -18,6 +18,9 @@ function InviteMemberDialogBody() {
   const [email, setEmail] = useState("");
   const [adminCandidates, setAdminCandidates] = useState<any[]>([]);
 
+  // 1. 로딩 상태 추가 (중복 클릭 방지용)
+  const [submitting, setSubmitting] = useState(false);
+
   useEffect(() => {
     const loadAdmins = async () => {
       if (!currentCompanyId) return;
@@ -39,8 +42,13 @@ function InviteMemberDialogBody() {
 
   // 신규 초대
   const onInvite = async () => {
+    // 2. 이미 제출 중이면 함수 실행 방지
+    if (submitting) return;
+
     try {
       if (!currentCompanyId) throw new Error("회사를 찾을 수 없습니다.");
+
+      setSubmitting(true); // 로딩 시작
 
       const member = await inviteMember({
         company_id: currentCompanyId,
@@ -59,13 +67,20 @@ function InviteMemberDialogBody() {
         type: "danger",
         durationMs: 3000,
       });
+    } finally {
+      // 3. 성공하든 실패하든 로딩 상태 해제 (다시 누를 수 있게)
+      setSubmitting(false);
     }
   };
 
   // 기존 admin 추가
   const onAddAdmin = async (userId: string) => {
+    if (submitting) return;
+
     try {
       if (!currentCompanyId) throw new Error("회사를 찾을 수 없습니다.");
+
+      setSubmitting(true); // 로딩 시작
 
       await addExistingAdmin(currentCompanyId, userId);
 
@@ -81,6 +96,8 @@ function InviteMemberDialogBody() {
         type: "danger",
         durationMs: 3000,
       });
+    } finally {
+      setSubmitting(false); // 로딩 해제
     }
   };
 
@@ -99,10 +116,11 @@ function InviteMemberDialogBody() {
           size="lg"
           variant="contain"
           classes="w-full"
-          disabled={email.trim() === ""}
+          // 4. 이메일이 없거나 제출 중일 때 버튼 비활성화
+          disabled={email.trim() === "" || submitting}
           onClick={onInvite}
         >
-          초대하기
+          {submitting ? "초대 중..." : "초대하기"}
         </Button>
       </FlexWrapper>
 
@@ -145,10 +163,15 @@ function InviteMemberDialogBody() {
                 <Button
                   size="sm"
                   variant="outline"
-                  disabled={adm.alreadyAssigned}
+                  // 5. 이미 추가되었거나 다른 작업이 처리 중일 때 비활성화
+                  disabled={adm.alreadyAssigned || submitting}
                   onClick={() => onAddAdmin(adm.id)}
                 >
-                  {adm.alreadyAssigned ? "이미 추가됨" : "추가"}
+                  {adm.alreadyAssigned
+                    ? "이미 추가됨"
+                    : submitting
+                      ? "추가 중"
+                      : "추가"}
                 </Button>
               </FlexWrapper>
             ))}
