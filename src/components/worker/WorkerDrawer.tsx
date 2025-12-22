@@ -145,28 +145,28 @@ export default function WorkerDrawer({
         {/* 직급 */}
         <FlexWrapper items="center" gap={2}>
           <div className="shrink-0 w-[70px]">
-            <Label text="직급" />
+            <Label text="부서" />
           </div>
           <TextInput
             inputProps={{ value: position ?? "" }}
             onChange={(e) => setPosition(e.target.value || null)}
             disabled={disabled}
             classes="!h-[42px]"
-            placeholder="예: 대리, 과장"
+            placeholder="예: 원무팀, 운영팀"
           />
         </FlexWrapper>
 
         {/* 직책 */}
         <FlexWrapper items="center" gap={2}>
           <div className="shrink-0 w-[70px]">
-            <Label text="직책" />
+            <Label text="직급" />
           </div>
           <TextInput
             inputProps={{ value: duty ?? "" }}
             onChange={(e) => setDuty(e.target.value || null)}
             disabled={disabled}
             classes="!h-[42px]"
-            placeholder="예: 개발팀, 운영팀"
+            placeholder="예: 대리, 과장"
           />
         </FlexWrapper>
 
