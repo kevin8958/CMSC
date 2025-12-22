@@ -112,7 +112,7 @@ export default function YearlyIncomeChart() {
   };
 
   return (
-    <div className="w-full border rounded-xl bg-white p-4 pb-2 h-full min-h-[300px] max-h-[400px] flex flex-col gap-2 mb-[60px] sm:mb-4">
+    <div className="w-full bg-white p-4 pb-2 h-full min-h-[300px] flex flex-col justify-between gap-2 mb-[60px] sm:mb-4 pr-6">
       {/* 연도 컨트롤 */}
       <FlexWrapper justify="between" items="center" classes="w-full">
         <Typography variant="H4">매출매입</Typography>
@@ -130,7 +130,7 @@ export default function YearlyIncomeChart() {
       </FlexWrapper>
 
       {/* 차트 */}
-      <div className="flex-1">
+      <div className="flex-1 max-h-[420px]">
         <Bar key={width} data={chartData} options={options} />
       </div>
     </div>

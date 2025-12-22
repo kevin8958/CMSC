@@ -18,18 +18,20 @@ function Dashboard() {
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-2 pb-2">
+      <div className="grid grid-cols-12 gap-2 pb-2 h-full">
         <div className="col-span-12 xl:col-span-6 bg-white border rounded-xl">
           <MonthSchedule />
         </div>
-        <div className="col-span-12 sm:col-span-6 xl:col-span-3 bg-white border rounded-xl">
+        <div className="col-span-12 xl:col-span-6 bg-white border rounded-xl">
           <CheckList />
         </div>
-        <div className="col-span-12  sm:col-span-6 xl:col-span-3 border rounded-xl bg-white">
+        <div className="col-span-12 xl:col-span-3 border rounded-xl bg-white">
           <PositionDoughnutChart workers={allList} />
         </div>
+        <div className="col-span-12 xl:col-span-9 bg-white border rounded-xl h-full">
+          <YearlyIncomeChart />
+        </div>
       </div>
-      <YearlyIncomeChart />
     </>
   );
 }
