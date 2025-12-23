@@ -64,7 +64,7 @@ export default function CheckList() {
       {loading ? (
         <CheckListSkeleton />
       ) : (
-        <div className="h-[288px] flex flex-col w-full">
+        <div className="flex flex-col w-full h-full">
           <FlexWrapper justify="between" items="center" classes="p-4 pb-0">
             <FlexWrapper gap={2} items="center">
               <Typography variant="H4">확인해주세요</Typography>
@@ -100,13 +100,13 @@ export default function CheckList() {
           </FlexWrapper>
           <DragDropContext onDragEnd={onDragEnd}>
             {list.length > 0 ? (
-              <div className="w-full">
+              <div className="size-full">
                 <Droppable droppableId="checklist-droppable">
                   {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className="rounded-md h-[200px] overflow-y-auto scroll-thin flex flex-col w-full px-4 pt-2"
+                      className="rounded-md h-[calc(100%-56px)] overflow-y-auto scroll-thin flex flex-col w-full px-4 pt-2"
                     >
                       {/* Header */}
 

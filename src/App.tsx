@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   Outlet,
+  useLocation,
   // useLocation,
 } from "react-router-dom";
 import Home from "@/pages/Home";
@@ -51,8 +52,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 // ✅ Outlet 기반 AppLayout
 function AppLayout() {
-  // const location = useLocation();
-  // const pathname = location.pathname;
+  const location = useLocation();
+  const pathname = location.pathname;
   return (
     <div className="min-h-screen w-full">
       <Gnb />
@@ -60,10 +61,10 @@ function AppLayout() {
         <Snb />
         <main
           className={classNames(
-            "pt-[76px] px-4 flex-1 h-screen flex flex-col overflow-scroll",
+            "pt-[76px] px-4 flex-1 flex flex-col overflow-scroll bg-[linear-gradient(to_bottom,#F3FCF9_0%,#F3FCF9_90%,white_100%)]",
             {
-              "bg-[linear-gradient(to_bottom,#F3FCF9_0%,#F3FCF9_90%,white_100%)]": true,
-              // ["/dashboard", "/communication"].includes(pathname),
+              "min-h-screen xl:h-screen": ["/dashboard"].includes(pathname),
+              "h-screen ": !["/dashboard"].includes(pathname),
             }
           )}
         >
