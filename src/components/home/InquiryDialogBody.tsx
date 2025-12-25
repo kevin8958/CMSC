@@ -1,5 +1,6 @@
 import { useState } from "react";
 import FlexWrapper from "@/layout/FlexWrapper";
+import Typography from "@/foundation/Typography"; // ✅ 추가
 import Label from "@/components/Label";
 import TextInput from "@/components/TextInput";
 import Button from "@/components/Button";
@@ -52,7 +53,9 @@ export default function InquiryDialogBody({
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
-  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+
+  // ✅ 효율적인 관리를 위해 Set 사용 (참고 컴포넌트 방식)
+  const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
 
   /** 연락처 포맷 */
   const formatPhone = (value: string) => {
@@ -64,40 +67,45 @@ export default function InquiryDialogBody({
 
   /** 개별 업무 토글 */
   const toggleTask = (task: string) => {
-    setSelectedTasks((prev) =>
-      prev.includes(task) ? prev.filter((t) => t !== task) : [...prev, task]
-    );
+    const next = new Set(selectedTasks);
+    if (next.has(task)) {
+      next.delete(task);
+    } else {
+      next.add(task);
+    }
+    setSelectedTasks(next);
   };
 
-  /** 그룹 전체 토글 */
+  /** 그룹 전체 토글 (버튼 클릭용) */
   const toggleGroup = (items: string[]) => {
-    const allSelected = items.every((i) => selectedTasks.includes(i));
+    const next = new Set(selectedTasks);
+    const allSelected = items.every((i) => next.has(i));
 
-    setSelectedTasks((prev) =>
-      allSelected
-        ? prev.filter((t) => !items.includes(t))
-        : Array.from(new Set([...prev, ...items]))
-    );
+    if (allSelected) {
+      items.forEach((i) => next.delete(i));
+    } else {
+      items.forEach((i) => next.add(i));
+    }
+    setSelectedTasks(next);
   };
 
   const buildTaskContentText = (
-    selectedTasks: string[],
+    selectedTasksSet: Set<string>,
     taskGroups: typeof TASK_GROUPS
   ) => {
+    // const selectedArray = Array.from(selectedTasksSet);
     return taskGroups
       .map((group) => {
         const selectedInGroup = group.items.filter((item) =>
-          selectedTasks.includes(item)
+          selectedTasksSet.has(item)
         );
 
         if (selectedInGroup.length === 0) return null;
 
-        // ✅ 그룹 전체 선택
         if (selectedInGroup.length === group.items.length) {
           return `${group.label} 전체`;
         }
 
-        // ✅ 일부 선택
         return `${group.label} - ${selectedInGroup.join(", ")}`;
       })
       .filter(Boolean)
@@ -114,88 +122,95 @@ export default function InquiryDialogBody({
       showAlert("담당자명을 입력해주세요.", { type: "danger" });
       return;
     }
-    if (selectedTasks.length === 0) {
+    if (selectedTasks.size === 0) {
       showAlert("업무를 하나 이상 선택해주세요.", {
         type: "danger",
       });
       return;
     }
-    const taskText = buildTaskContentText(selectedTasks, TASK_GROUPS);
 
-    const mergedContent = `
-${taskText}
-`.trim();
+    const taskText = buildTaskContentText(selectedTasks, TASK_GROUPS);
 
     onSubmit({
       phone,
       name,
       position,
-      content: mergedContent,
+      content: taskText.trim(),
     });
     close(true);
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      {/* 연락처 */}
-      <TextInput
-        label="연락처"
-        required
-        inputProps={{ value: phone, maxLength: 13 }}
-        onChange={(e) => setPhone(formatPhone(e.target.value))}
-        placeholder="010-1234-5678"
-      />
-
-      {/* 담당자명 */}
-      <FlexWrapper gap={4} items="center">
+    <div className="flex flex-col gap-6 w-full">
+      {/* 정보 입력 영역 */}
+      <FlexWrapper direction="col" gap={3}>
         <TextInput
-          label="담당자명"
+          label="연락처"
           required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="홍길동"
+          inputProps={{ value: phone, maxLength: 13 }}
+          onChange={(e) => setPhone(formatPhone(e.target.value))}
+          placeholder="010-1234-5678"
         />
 
-        {/* 직책 */}
-        <TextInput
-          label="직책"
-          value={position}
-          onChange={(e) => setPosition(e.target.value)}
-          placeholder="인사총괄"
-        />
+        <FlexWrapper gap={4} items="center">
+          <TextInput
+            label="담당자명"
+            required
+            classes="flex-1"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="홍길동"
+          />
+          <TextInput
+            label="직책"
+            classes="flex-1"
+            value={position}
+            onChange={(e) => setPosition(e.target.value)}
+            placeholder="인사총괄"
+          />
+        </FlexWrapper>
       </FlexWrapper>
 
-      {/* 업무 선택 */}
-      <FlexWrapper gap={2} direction="col" items="start">
+      {/* 업무 선택 영역 (MenuSettingDialogBody 스타일 적용) */}
+      <FlexWrapper direction="col" gap={2}>
         <Label text="업무선택" required />
-
         <FlexWrapper
-          gap={2}
-          items="start"
           direction="col"
-          classes="w-full h-[300px] overflow-y-auto"
+          gap={5}
+          classes="w-full h-[320px] overflow-y-auto scroll-thin pr-2"
         >
           {TASK_GROUPS.map((group) => {
-            const allChecked = group.items.every((i) =>
-              selectedTasks.includes(i)
+            const isGroupAllSelected = group.items.every((i) =>
+              selectedTasks.has(i)
             );
 
             return (
-              <div
-                key={group.label}
-                className="border rounded-lg p-3 bg-gray-50 w-full"
-              >
-                <Checkbox
-                  id={group.label}
-                  checked={allChecked}
-                  onChange={() => toggleGroup(group.items)}
-                  label={`${group.label} 전체`}
-                />
-                <div className="grid grid-cols-2 gap-2 mt-2 pl-6">
+              <div key={group.label} className="flex flex-col gap-2">
+                {/* 그룹 헤더: 배경색 + 버튼 */}
+                <FlexWrapper
+                  justify="between"
+                  items="center"
+                  classes="bg-gray-50 px-3 py-2 rounded"
+                >
+                  <Typography variant="H4" classes="text-gray-700">
+                    {group.label}
+                  </Typography>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => toggleGroup(group.items)}
+                  >
+                    {isGroupAllSelected ? "전체 해제" : "전체 선택"}
+                  </Button>
+                </FlexWrapper>
+
+                {/* 그룹 내 아이템들: Grid 구성 */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 p-1">
                   {group.items.map((item) => (
                     <Checkbox
+                      key={item}
                       id={item}
-                      checked={selectedTasks.includes(item)}
+                      checked={selectedTasks.has(item)}
                       onChange={() => toggleTask(item)}
                       label={item}
                     />
@@ -206,12 +221,13 @@ ${taskText}
           })}
         </FlexWrapper>
       </FlexWrapper>
-      {/* 제출 */}
+
+      {/* 제출 버튼 */}
       <Button
         variant="contain"
         color="green"
         size="lg"
-        classes="w-full mt-2"
+        classes="w-full"
         onClick={handleSubmit}
       >
         문의 보내기
