@@ -214,11 +214,11 @@ function CompanyMember(props: { companyId?: string }) {
       </FlexWrapper>
 
       {loading || companyId !== currentCompanyId ? (
-        <FlexWrapper classes="h-[400px] mt-4" justify="center" items="start">
+        <FlexWrapper classes="h-full mt-4" justify="center" items="start">
           <TableSkeleton rows={8} columns={6} />
         </FlexWrapper>
       ) : (
-        <FlexWrapper classes="h-[400px] mt-4">
+        <FlexWrapper classes="h-full mt-4">
           <Table
             data={members || []}
             columns={columns}

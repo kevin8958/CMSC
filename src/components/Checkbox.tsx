@@ -52,7 +52,7 @@ const Checkbox = (props: Common.CheckboxProps) => {
           boxSize[size],
           disabled
             ? "border-gray-400"
-            : "border-gray-400 transition peer-checked:!text-gray-900 peer-checked:border-gray-700",
+            : "border-gray-400 transition peer-checked:!bg-green-600",
           disabled && checked && "bg-gray-300 !text-gray-500/70",
           invalid && "!border-danger"
         )}

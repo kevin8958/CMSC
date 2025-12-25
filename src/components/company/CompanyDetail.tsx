@@ -4,14 +4,18 @@ import { useCompanyStore } from "@/stores/useCompanyStore";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Typography from "@/foundation/Typography";
 import Button from "@/components/Button";
-import { LuChevronLeft } from "react-icons/lu";
+import { LuChevronLeft, LuSettings } from "react-icons/lu";
 import CompanyMember from "@/components/company/CompanyMember";
 import { motion } from "motion/react";
 import { useMemberStore } from "@/stores/useMemberStore";
+import dayjs from "dayjs";
+import { useDialog } from "@/hooks/useDialog";
+import MenuSettingDialogBody from "./MenuSettingDialogBody";
 
 function CompanyDetail() {
   const { companyId } = useParams();
   const navigate = useNavigate();
+  const { openDialog } = useDialog();
 
   // stores
   const { companies, fetchCompanies, currentCompanyId, selectCompany } =
@@ -58,7 +62,7 @@ function CompanyDetail() {
   }
 
   return (
-    <FlexWrapper direction="col" gap={4}>
+    <FlexWrapper direction="col" gap={4} classes="h-full">
       <FlexWrapper direction="col" items="start" gap={4}>
         <Button
           variant="outline"
@@ -73,9 +77,22 @@ function CompanyDetail() {
         </Button>
         <FlexWrapper gap={3} items="end">
           <Typography variant="H3">{company.name}</Typography>
+
+          <Button
+            variant="contain"
+            size="md"
+            onClick={async () => {
+              await openDialog({
+                title: "메뉴 설정",
+                hideBottom: true,
+                body: <MenuSettingDialogBody />,
+              });
+            }}
+          >
+            <LuSettings className="text-lg" />
+          </Button>
         </FlexWrapper>
       </FlexWrapper>
-
       <FlexWrapper direction="col">
         <FlexWrapper gap={3} items="center">
           <Typography variant="H4" classes="w-[52px]">
@@ -91,13 +108,13 @@ function CompanyDetail() {
           <span className="w-[1px] h-4 bg-primary-100 mr-2"></span>
           <Typography variant="B2">
             {company.created_at
-              ? new Date(company.created_at).toLocaleDateString()
+              ? dayjs(company.created_at).format("YYYY-MM-DD HH:mm:ss")
               : "-"}
           </Typography>
         </FlexWrapper>
       </FlexWrapper>
 
-      <FlexWrapper direction="col" gap={3}>
+      <FlexWrapper direction="col" gap={3} classes="flex-1">
         <CompanyMember companyId={company.id} />
       </FlexWrapper>
     </FlexWrapper>
