@@ -20,7 +20,7 @@ function SalaryTable(props: {
 }) {
   const { month, onRowClick } = props;
   const { currentCompanyId, currentCompanyDetail } = useCompanyStore();
-  const { list, total, fetchRecords, loading } = usePayrollStore();
+  const { list, total, fetchRecords } = usePayrollStore();
 
   // 회사의 설정 타입 가져오기 (기본값 B)
   const payrollType = (currentCompanyDetail?.payroll_type as "A" | "B") || "B";
