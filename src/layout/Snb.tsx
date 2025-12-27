@@ -78,11 +78,11 @@ const SNB = () => {
             items: [
               { id: "worker", label: "근로자관리", href: "/worker" },
               { id: "salary", label: "급여대장", href: "/salary" },
-              {
-                id: "bonus",
-                label: "수당/상여대장",
-                href: "/under-construction",
-              },
+              // {
+              //   id: "bonus",
+              //   label: "수당/상여대장",
+              //   href: "/under-construction",
+              // },
               { id: "attendance", label: "연차휴가대장", href: "/attendance" },
               {
                 id: "education",

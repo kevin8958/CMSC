@@ -21,7 +21,7 @@ const MENU_CONFIG = [
     items: [
       { id: "worker", label: "근로자관리" },
       { id: "salary", label: "급여대장" },
-      { id: "bonus", label: "수당/상여대장" },
+      // { id: "bonus", label: "수당/상여대장" },
       { id: "attendance", label: "연차휴가대장" },
       { id: "education", label: "교육관리" },
       { id: "time-management", label: "근태관리" },

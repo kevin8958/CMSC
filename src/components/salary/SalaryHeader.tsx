@@ -167,7 +167,7 @@ function SalaryHeader({ selectedMonth }: SalaryHeaderProps) {
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "급여대장");
 
-      const fileName = `급여대장_${dayjs(selectedMonth).format("YYYYMM")}.xlsx`;
+      const fileName = `급여대장_${dayjs(selectedMonth).format("YYYYMMDD")}.xlsx`;
       XLSX.writeFile(workbook, fileName);
 
       showAlert?.("다운로드가 완료되었습니다.", { type: "success" });
@@ -260,42 +260,46 @@ function SalaryHeader({ selectedMonth }: SalaryHeaderProps) {
       </FlexWrapper>
 
       {/* 액션 버튼 영역 */}
-      {role === "admin" && (
-        <FlexWrapper gap={2}>
-          {total !== 0 && (
-            <>
-              <Button
-                variant="outline"
-                color="danger"
-                size="md"
-                classes="gap-1 !px-3"
-                onClick={handleDeleteAll}
-              >
-                <LuTrash2 className="text-lg" />
-                전체 삭제
-              </Button>
+      <FlexWrapper gap={2}>
+        {/* 1. 전체 삭제 (관리자 전용 & 데이터가 있을 때만) */}
+        {role === "admin" && total !== 0 && (
+          <Button
+            variant="outline"
+            color="danger"
+            size="md"
+            classes="gap-1 !px-3"
+            onClick={handleDeleteAll}
+            disabled={isDownloading}
+          >
+            <LuTrash2 className="text-lg" />
+            전체 삭제
+          </Button>
+        )}
 
-              {/* ✅ 엑셀 다운로드 버튼 추가 */}
-              <Button
-                variant="outline"
-                size="md"
-                classes="gap-1 !px-3 !w-[124px]"
-                onClick={handleDownloadExcel}
-                disabled={isDownloading}
-              >
-                <LuDownload
-                  className={`text-lg ${isDownloading ? "animate-bounce" : ""}`}
-                />
-                {isDownloading ? "생성 중..." : "엑셀 다운로드"}
-              </Button>
-            </>
-          )}
+        {/* 2. 엑셀 다운로드 (모든 사용자 & 데이터가 있을 때만) */}
+        {total !== 0 && (
+          <Button
+            variant="outline"
+            size="md"
+            classes="gap-1 !px-3 !w-[124px]"
+            onClick={handleDownloadExcel}
+            disabled={isDownloading}
+          >
+            <LuDownload
+              className={`text-lg ${isDownloading ? "animate-bounce" : ""}`}
+            />
+            {isDownloading ? "생성 중..." : "엑셀 다운로드"}
+          </Button>
+        )}
 
+        {/* 3. 엑셀 업로드 (관리자 전용) */}
+        {role === "admin" && (
           <Button
             variant="contain"
             color="green"
             size="md"
             classes="gap-1 !px-3"
+            disabled={isDownloading}
             onClick={async () => {
               await openDialog({
                 title: "엑셀 업로드",
@@ -312,8 +316,8 @@ function SalaryHeader({ selectedMonth }: SalaryHeaderProps) {
             <LuUpload className="text-lg" />
             엑셀 업로드
           </Button>
-        </FlexWrapper>
-      )}
+        )}
+      </FlexWrapper>
     </FlexWrapper>
   );
 }

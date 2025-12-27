@@ -169,25 +169,6 @@ function SalaryTable(props: {
       classes="h-screen mt-4 rounded-xl border bg-white mb-4 overflow-hidden"
       gap={0}
     >
-      {/* 상단 정보 영역 */}
-      <FlexWrapper
-        justify="between"
-        items="center"
-        classes="px-4 py-2 border-b bg-gray-50"
-      >
-        <Typography variant="C1" classes="text-gray-500">
-          현재 적용 양식:{" "}
-          <span className="font-bold text-gray-700">
-            {payrollType === "A" ? "A타입 (상세형)" : "B타입 (표준형)"}
-          </span>
-        </Typography>
-        {loading && (
-          <Typography variant="C1" classes="text-green-500 animate-pulse">
-            데이터 동기화 중...
-          </Typography>
-        )}
-      </FlexWrapper>
-
       {/* 테이블 본체 */}
       <Table
         data={list || []}

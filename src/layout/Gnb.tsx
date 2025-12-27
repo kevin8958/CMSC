@@ -92,12 +92,12 @@ export default function Gnb() {
           href: "/salary",
           icon: <LuWalletMinimal />,
         },
-        {
-          id: "bonus",
-          label: "수당/상여대장",
-          href: "/under-construction",
-          icon: null,
-        },
+        // {
+        //   id: "bonus",
+        //   label: "수당/상여대장",
+        //   href: "/under-construction",
+        //   icon: null,
+        // },
         {
           id: "attendance",
           label: "연차휴가대장",
