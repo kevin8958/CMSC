@@ -1,55 +1,26 @@
 import { create } from "zustand";
+import dayjs from "dayjs";
+import { supabase } from "@/lib/supabase";
+import { useCompanyStore } from "./useCompanyStore";
 import {
   getOrCreateStatement,
   fetchRevenue,
-  addRevenueItem,
-  deleteRevenueItem,
-  createCogsItem,
-  updateCogsItem,
-  deleteCogsItem,
   fetchCogs,
-  addSga,
-  deleteSga,
-  addNonOp,
-  deleteNonOp,
   fetchSga,
   fetchNonOp,
+  recalcRevenue, // 이 함수가 최종적으로 모든 수익/이익을 체인으로 계산함
 } from "@/actions/incomeActions";
 
-interface IncomeStore {
-  statement: Income.Statement | null;
-  revenues: Income.Item[];
-  cogs: Income.Item[];
-  sga: Income.Item[];
-  nonOpIncome: Income.Item[];
-  nonOpExpense: Income.Item[];
-  loading: boolean;
+// 한글 구분 -> DB category 매핑 표
+const CATEGORY_MAP: Record<string, string> = {
+  매출: "revenue",
+  매출원가: "cogs",
+  판매관리비: "sga",
+  영업외수익: "non_op_income",
+  영업외비용: "non_op_expense",
+};
 
-  fetchStatement: (companyId: string, yearMonth: string) => Promise<void>;
-
-  // 매출
-  addRevenue: (name: string, amount: number) => Promise<void>;
-  deleteRevenue: (id: string) => Promise<void>;
-
-  // 매출원가(COGS)
-  createCogs: (name: string, amount: number) => Promise<void>;
-  updateCogs: (
-    id: string,
-    data: Partial<Pick<Income.Item, "name" | "amount">>
-  ) => Promise<void>;
-  deleteCogs: (id: string) => Promise<void>;
-
-  // SGA
-  addSga: (name: string, amount: number) => Promise<void>;
-  deleteSga: (id: string) => Promise<void>;
-
-  // NON OP
-  addNonOpIncome: (name: string, amount: number) => Promise<void>;
-  addNonOpExpense: (name: string, amount: number) => Promise<void>;
-  deleteNonOp: (id: string) => Promise<void>;
-}
-
-export const useIncomeStore = create<IncomeStore>((set, get) => ({
+export const useIncomeStore = create<any>((set, get) => ({
   statement: null,
   revenues: [],
   cogs: [],
@@ -58,119 +29,101 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   nonOpExpense: [],
   loading: false,
 
-  fetchStatement: async (companyId, yearMonth) => {
+  fetchStatement: async (companyId: string, yearMonth: string) => {
     set({ loading: true });
+    try {
+      const statement = await getOrCreateStatement(companyId, yearMonth);
+      const [rev, cog, sga, nInc, nExp] = await Promise.all([
+        fetchRevenue(statement.id),
+        fetchCogs(statement.id),
+        fetchSga(statement.id),
+        fetchNonOp(statement.id, "income"),
+        fetchNonOp(statement.id, "expense"),
+      ]);
 
-    const statement = await getOrCreateStatement(companyId, yearMonth);
-    const revenues = await fetchRevenue(statement.id);
-    const cogs = await fetchCogs(statement.id);
-    const sga = await fetchSga(statement.id);
-    const nonOpIncome = await fetchNonOp(statement.id, "income");
-    const nonOpExpense = await fetchNonOp(statement.id, "expense");
-
-    set({
-      statement,
-      revenues: revenues || [],
-      cogs: cogs || [],
-      sga: sga || [],
-      nonOpIncome: nonOpIncome || [],
-      nonOpExpense: nonOpExpense || [],
-      loading: false,
-    });
-  },
-  // setRevenue: async (amount) => {
-  //   const st = get().statement;
-  //   if (!st) return;
-
-  //   await updateRevenue(st.company_id, st.year_month, amount);
-
-  //   // 최신 데이터 다시 불러오기
-  //   await get().fetchStatement(st.company_id, st.year_month);
-  // },
-
-  addRevenue: async (name, amount) => {
-    const st = get().statement;
-    if (!st) return;
-
-    await addRevenueItem(st.id, name, amount);
-    await get().fetchStatement(st.company_id, st.year_month);
+      set({
+        statement,
+        revenues: rev || [],
+        cogs: cog || [],
+        sga: sga || [],
+        nonOpIncome: nInc || [],
+        nonOpExpense: nExp || [],
+      });
+    } finally {
+      set({ loading: false });
+    }
   },
 
-  deleteRevenue: async (id) => {
-    const st = get().statement;
-    if (!st) return;
+  // ✅ 엑셀 데이터 벌크 업로드 (수정됨)
+  uploadIncomeExcelData: async (parsedData: any[], month: Date) => {
+    const { currentCompanyId } = useCompanyStore.getState();
+    if (!currentCompanyId) throw new Error("회사 정보가 없습니다.");
 
-    await deleteRevenueItem(id);
-    await get().fetchStatement(st.company_id, st.year_month);
+    const yearMonth = dayjs(month).format("YYYY-MM");
+    set({ loading: true });
+    try {
+      const statement = await getOrCreateStatement(currentCompanyId, yearMonth);
+
+      const finalItems = parsedData
+        .map((d) => ({
+          statement_id: statement.id,
+          category: CATEGORY_MAP[d.category],
+          name: d.name,
+          amount: d.amount,
+          // description: d.description || "",  <-- 이 줄을 삭제하거나 주석 처리
+        }))
+        .filter((item) => item.category);
+
+      if (finalItems.length === 0) return;
+
+      // 3. 단일 테이블인 income_items에 벌크 인서트
+      const { error } = await supabase.from("income_items").insert(finalItems);
+      if (error) throw error;
+
+      // 4. ✅ 중요: 통계 데이터 재계산 실행
+      // recalcRevenue가 호출되면 내부적으로 recalcGrossProfit -> recalcOperatingProfit -> recalcPreTaxProfit 순으로 실행됨
+      await recalcRevenue(statement.id);
+
+      // 5. 최신 데이터 리프레시
+      await get().fetchStatement(currentCompanyId, yearMonth);
+    } finally {
+      set({ loading: false });
+    }
   },
 
-  createCogs: async (name, amount) => {
-    const st = get().statement;
-    if (!st) return;
-
-    await createCogsItem(st.id, name, amount);
-
-    await get().fetchStatement(st.company_id, st.year_month);
+  // ✅ 엑셀 다운로드용 데이터 (수정됨)
+  downloadAllIncomeRecords: async () => {
+    const { revenues, cogs, sga, nonOpIncome, nonOpExpense } = get();
+    // 한글로 다시 역변환해서 내보냄
+    return [
+      ...revenues.map((d: any) => ({ ...d, category_name: "매출" })),
+      ...cogs.map((d: any) => ({ ...d, category_name: "매출원가" })),
+      ...sga.map((d: any) => ({ ...d, category_name: "판매관리비" })),
+      ...nonOpIncome.map((d: any) => ({ ...d, category_name: "영업외수익" })),
+      ...nonOpExpense.map((d: any) => ({ ...d, category_name: "영업외비용" })),
+    ];
   },
 
-  updateCogs: async (id, data) => {
-    const st = get().statement;
-    if (!st) return;
-
-    await updateCogsItem(id, data);
-
-    await get().fetchStatement(st.company_id, st.year_month);
-  },
-
-  deleteCogs: async (id) => {
-    const st = get().statement;
-    if (!st) return;
-
-    await deleteCogsItem(id);
-
-    await get().fetchStatement(st.company_id, st.year_month);
-  },
-
-  addSga: async (name, amount) => {
+  // ✅ 전체 삭제 (수정됨)
+  deleteAllIncomeData: async () => {
     const { statement } = get();
     if (!statement) return;
-    const item = await addSga(statement.id, name, amount);
-    set({ sga: [...get().sga, item] });
-    await get().fetchStatement(statement.company_id, statement.year_month);
-  },
 
-  deleteSga: async (id) => {
-    const { statement } = get();
-    if (!statement) return;
-    await deleteSga(id);
-    set({ sga: get().sga.filter((x) => x.id !== id) });
-    await get().fetchStatement(statement.company_id, statement.year_month);
-  },
+    set({ loading: true });
+    try {
+      // income_items 테이블에서 현재 statement_id를 가진 모든 데이터 삭제
+      const { error } = await supabase
+        .from("income_items")
+        .delete()
+        .eq("statement_id", statement.id);
 
-  addNonOpIncome: async (name, amount) => {
-    const { statement } = get();
-    if (!statement) return;
-    const item = await addNonOp(statement.id, "income", name, amount);
-    set({ nonOpIncome: [...get().nonOpIncome, item] });
-    await get().fetchStatement(statement.company_id, statement.year_month);
-  },
+      if (error) throw error;
 
-  addNonOpExpense: async (name, amount) => {
-    const { statement } = get();
-    if (!statement) return;
-    const item = await addNonOp(statement.id, "expense", name, amount);
-    set({ nonOpExpense: [...get().nonOpExpense, item] });
-    await get().fetchStatement(statement.company_id, statement.year_month);
-  },
-
-  deleteNonOp: async (id) => {
-    const { statement } = get();
-    if (!statement) return;
-    await deleteNonOp(id);
-    set({
-      nonOpIncome: get().nonOpIncome.filter((x) => x.id !== id),
-      nonOpExpense: get().nonOpExpense.filter((x) => x.id !== id),
-    });
-    await get().fetchStatement(statement.company_id, statement.year_month);
+      // 삭제 후 다시 통계 재계산 (모두 0원이 됨)
+      await recalcRevenue(statement.id);
+      await get().fetchStatement(statement.company_id, statement.year_month);
+    } finally {
+      set({ loading: false });
+    }
   },
 }));

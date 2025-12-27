@@ -15,6 +15,7 @@ export default function RevenueSection() {
   const [tempRevenue, setTempRevenue] = useState<string>("0");
   const { statement, cogs, revenues, deleteRevenue, deleteCogs } =
     useIncomeStore();
+
   useEffect(() => {
     if (statement) {
       setTempRevenue(statement.revenue?.toString() || "0");
@@ -26,31 +27,32 @@ export default function RevenueSection() {
   const { role } = useAuthStore();
 
   const totalRevenue = revenues.reduce((s, x) => s + x.amount, 0);
-
   const totalCogsAmount = cogs.reduce((s, x) => s + x.amount, 0);
   const grossProfit = Number(tempRevenue) - totalCogsAmount;
 
   return (
     <>
-      {/* 메인 카드 */}
+      {/* 메인 카드 컨테이너: overflow-hidden으로 자식이 삐져나오지 않게 가둠 */}
       <FlexWrapper
         direction="col"
         justify="between"
         gap={0}
-        classes="size-full border rounded-xl bg-white sm:min-w-[370px]"
+        classes="size-full border rounded-xl bg-white sm:min-w-[370px] overflow-hidden"
       >
-        <FlexWrapper direction="col" gap={2} classes="p-4 h-full">
-          {/* 매출 */}
+        {/* 상단 본문 영역: flex-1과 min-h-0를 주어 남은 높이를 차지하게 함 */}
+        <FlexWrapper direction="col" gap={2} classes="p-4 flex-1 min-h-0">
+          {/* 1. 매출 섹션 박스 */}
           <FlexWrapper
             direction="col"
             gap={1}
-            classes="border rounded-xl flex-1 !border-gray-400 w-full"
+            // flex-1 min-h-0: 매출원가 섹션과 높이를 정확히 반반(또는 유동적으로) 나눠 가짐
+            classes="border rounded-xl flex-1 min-h-0 !border-gray-400 w-full overflow-hidden"
           >
-            {/* 상단: 타이틀 + 추가하기 */}
+            {/* 상단 헤더: shrink-0로 높이 고정 */}
             <FlexWrapper
               justify="between"
               items="center"
-              classes="w-full px-4 py-2 pb-0"
+              classes="w-full px-4 py-2 pb-0 shrink-0"
             >
               <FlexWrapper items="center" gap={1}>
                 <LuCirclePlus />
@@ -63,7 +65,6 @@ export default function RevenueSection() {
               </FlexWrapper>
 
               <FlexWrapper items="center" gap={2}>
-                {/* 총합 */}
                 <Typography variant="H4" classes="font-semibold text-right">
                   총 {totalRevenue.toLocaleString()}원
                 </Typography>
@@ -86,7 +87,8 @@ export default function RevenueSection() {
                 )}
               </FlexWrapper>
             </FlexWrapper>
-            {/* 세부내역 리스트 */}
+
+            {/* 매출 세부내역 리스트: overflow-y-auto로 내부 스크롤 발생 */}
             {revenues.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center gap-2 p-6">
                 <p className="text-gray-400 text-sm"> 세부내역이 없습니다</p>
@@ -97,14 +99,14 @@ export default function RevenueSection() {
                 justify="start"
                 direction="col"
                 gap={0}
-                classes="flex-1 min-h-[200px] max-h-[calc(100dvh-76px-44px-24px-32px-42px-32px-44px-68px-36px)]  overflow-y-auto scroll-thin px-4"
+                classes="flex-1 overflow-y-auto scroll-thin px-4 min-h-0"
               >
                 {revenues.map((item) => (
                   <FlexWrapper
                     key={item.id}
                     justify="between"
                     items="center"
-                    classes="py-1 bg-white w-full"
+                    classes="py-1 bg-white w-full shrink-0" // shrink-0로 리스트 아이템 높이 유지
                   >
                     <Typography variant="B1">{item.name}</Typography>
 
@@ -137,16 +139,18 @@ export default function RevenueSection() {
               </FlexWrapper>
             )}
           </FlexWrapper>
+
+          {/* 2. 매출원가 섹션 박스 */}
           <FlexWrapper
             direction="col"
             gap={1}
-            classes="border rounded-xl flex-1 !border-gray-400 w-full"
+            // 매출 섹션과 동일하게 flex-1 min-h-0 적용
+            classes="border rounded-xl flex-1 min-h-0 !border-gray-400 w-full overflow-hidden"
           >
-            {/* 상단: 타이틀 + 추가하기 */}
             <FlexWrapper
               justify="between"
               items="center"
-              classes="w-full px-4 py-2 pb-0"
+              classes="w-full px-4 py-2 pb-0 shrink-0"
             >
               <FlexWrapper items="center" gap={2}>
                 <LuCircleMinus className="text-danger" />
@@ -156,7 +160,6 @@ export default function RevenueSection() {
               </FlexWrapper>
 
               <FlexWrapper items="center" gap={2}>
-                {/* 총합 */}
                 <Typography
                   variant="H4"
                   classes="font-semibold !text-danger text-right"
@@ -183,7 +186,7 @@ export default function RevenueSection() {
               </FlexWrapper>
             </FlexWrapper>
 
-            {/* 세부내역 리스트 */}
+            {/* 매출원가 세부내역 리스트 */}
             {cogs.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center gap-2 p-6">
                 <p className="text-gray-400 text-sm"> 세부내역이 없습니다</p>
@@ -194,14 +197,14 @@ export default function RevenueSection() {
                 justify="start"
                 direction="col"
                 gap={0}
-                classes="flex-1 min-h-[200px] max-h-[calc(100dvh-76px-44px-24px-32px-42px-32px-44px-68px-36px)]  overflow-y-auto scroll-thin px-4"
+                classes="flex-1 overflow-y-auto scroll-thin px-4 min-h-0"
               >
                 {cogs.map((item) => (
                   <FlexWrapper
                     key={item.id}
                     justify="between"
                     items="center"
-                    classes="py-1 bg-white w-full"
+                    classes="py-1 bg-white w-full shrink-0"
                   >
                     <Typography variant="B1">{item.name}</Typography>
 
@@ -236,8 +239,12 @@ export default function RevenueSection() {
           </FlexWrapper>
         </FlexWrapper>
 
-        {/* 매출총이익 */}
-        <FlexWrapper items="end" justify="between" classes="border-t p-4">
+        {/* 하단 요약(Footer): shrink-0로 높이 고정 (절대 줄어들지 않음) */}
+        <FlexWrapper
+          items="end"
+          justify="between"
+          classes="border-t p-4 shrink-0 bg-gray-50"
+        >
           <Typography variant="H3" classes="font-semibold text-primary-700">
             =
           </Typography>

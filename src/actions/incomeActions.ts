@@ -317,7 +317,7 @@ export async function recalcPreTaxProfit(statementId: string) {
     .from("income_items")
     .select("amount")
     .eq("statement_id", statementId)
-    .eq("category", "non_income");
+    .eq("category", "non_op_income");
 
   const nonIncomeTotal =
     nonIncome?.reduce((s, x) => s + Number(x.amount), 0) ?? 0;
@@ -327,7 +327,7 @@ export async function recalcPreTaxProfit(statementId: string) {
     .from("income_items")
     .select("amount")
     .eq("statement_id", statementId)
-    .eq("category", "non_expense");
+    .eq("category", "non_op_expense");
 
   const nonExpenseTotal =
     nonExpense?.reduce((s, x) => s + Number(x.amount), 0) ?? 0;
