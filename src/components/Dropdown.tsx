@@ -190,7 +190,9 @@ const Dropdown = (props: Common.DropdownProps) => {
         ref={dialogRef}
         open={isOpen}
       >
-        <ul>{renderItems(items)}</ul>
+        <ul className="max-h-[300px] overflow-y-auto scroll-thin">
+          {renderItems(items)}
+        </ul>
       </dialog>
     </div>
   );

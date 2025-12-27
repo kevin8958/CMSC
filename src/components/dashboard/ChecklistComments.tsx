@@ -61,7 +61,7 @@ export default function ChecklistComments({
   //   };
 
   return (
-    <FlexWrapper direction="col" gap={0} classes="pt-4 bg-gray-50 px-4 pb-6">
+    <FlexWrapper direction="col" gap={0} classes="pt-4 bg-gray-50 px-4">
       <FlexWrapper gap={2} items="center">
         <Typography variant="H4">댓글</Typography>
         <Badge color="green" size="md">

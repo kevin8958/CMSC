@@ -78,7 +78,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
   }, [taskId]);
 
   return (
-    <FlexWrapper direction="col" gap={0} classes="pt-4 bg-gray-50 px-4 pb-6">
+    <FlexWrapper direction="col" gap={0} classes="pt-4 bg-gray-50 px-4">
       <FlexWrapper gap={2} items="center">
         <Typography variant="H4">댓글</Typography>
         <Badge color="green" size="md">
@@ -107,58 +107,57 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
         </FlexWrapper>
       ) : (
         <div>
-          {comments.length === 0 && (
+          {comments.length === 0 ? (
             <div className="h-[calc(100dvh-50px-358px-50px-30px-16px-60px)] flex flex-col items-center justify-center gap-2 p-6">
               <TbMoodEmpty className="text-4xl text-gray-300" />
               <p className="text-gray-400 text-sm">댓글이 없습니다</p>
             </div>
-          )}
-
-          <FlexWrapper
-            direction="col"
-            classes="py-3 h-[calc(100dvh-50px-358px-50px-30px-16px-60px)] overflow-y-auto scroll-thin"
-            gap={1}
-          >
-            {comments.map((c) => (
-              <FlexWrapper
-                key={c.id}
-                gap={1}
-                items="start"
-                classes={userId === c.author_id ? "!flex-row-reverse" : ""}
-              >
-                <FlexWrapper gap={1} items="center" direction="col">
-                  <Avatar
-                    size="sm"
-                    type="text"
-                    name={c.profiles?.display_name || "-"}
-                  />
-                  <Typography
-                    variant="C1"
-                    classes="!font-semibol text-gray-800 w-[60px] truncate"
-                  >
-                    {c.profiles?.display_name || "익명"}
-                  </Typography>
-                </FlexWrapper>
+          ) : (
+            <FlexWrapper
+              direction="col"
+              classes="py-3 h-[calc(100dvh-50px-358px-50px-30px-16px-60px)] overflow-y-auto scroll-thin"
+              gap={1}
+            >
+              {comments.map((c) => (
                 <FlexWrapper
+                  key={c.id}
                   gap={1}
-                  items={userId === c.author_id ? "end" : "start"}
-                  direction="col"
-                  classes="max-w-[calc(100%-120px)] bg-white rounded-lg border p-2 min-h-[62px]"
+                  items="start"
+                  classes={userId === c.author_id ? "!flex-row-reverse" : ""}
                 >
-                  <Typography
-                    variant="B2"
-                    classes="text-gray-700 whitespace-pre-wrap"
+                  <FlexWrapper gap={1} items="center" direction="col">
+                    <Avatar
+                      size="sm"
+                      type="text"
+                      name={c.profiles?.display_name || "-"}
+                    />
+                    <Typography
+                      variant="C1"
+                      classes="!font-semibol text-gray-800 w-[60px] truncate"
+                    >
+                      {c.profiles?.display_name || "익명"}
+                    </Typography>
+                  </FlexWrapper>
+                  <FlexWrapper
+                    gap={1}
+                    items={userId === c.author_id ? "end" : "start"}
+                    direction="col"
+                    classes="max-w-[calc(100%-120px)] bg-white rounded-lg border p-2 min-h-[62px]"
                   >
-                    {c.content}
-                  </Typography>
-                  <Typography variant="C1" classes="!text-gray-400">
-                    {dayjs(c.created_at).format("YYYY.MM.DD HH:mm")}
-                  </Typography>
+                    <Typography
+                      variant="B2"
+                      classes="text-gray-700 whitespace-pre-wrap"
+                    >
+                      {c.content}
+                    </Typography>
+                    <Typography variant="C1" classes="!text-gray-400">
+                      {dayjs(c.created_at).format("YYYY.MM.DD HH:mm")}
+                    </Typography>
+                  </FlexWrapper>
                 </FlexWrapper>
-              </FlexWrapper>
-            ))}
+              ))}
 
-            {/* {userId === c.author_id && (
+              {/* {userId === c.author_id && (
                 <Button
                   variant="clear"
                   size="sm"
@@ -168,7 +167,8 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
                   삭제
                 </Button>
               )} */}
-          </FlexWrapper>
+            </FlexWrapper>
+          )}
           <FlexWrapper gap={2} items="center">
             <TextInput
               classes="flex-1 !h-[42px] !text-sm"
