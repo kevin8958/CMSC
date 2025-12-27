@@ -4,47 +4,35 @@ import dayjs from "dayjs";
 import CustomDatePicker from "@/components/DatePicker";
 import { useEffect, useState } from "react";
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import { usePayrollStore } from "@/stores/usePayrollStore"; // ✅ 새 스토어 임포트
 import SalaryHeader from "@/components/salary/SalaryHeader";
 import SalaryTable from "@/components/salary/SalaryTable";
 import Badge from "@/components/Badge";
-import { useSalaryStore } from "@/stores/useSalaryStore";
-import SalaryDrawer from "@/components/salary/SalaryDrawer";
-import { useWorkerStore } from "@/stores/useWorkerStore";
-import { useAlert } from "@/components/AlertProvider";
-import { useAuthStore } from "@/stores/authStore";
 
 function Salary() {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(
     dayjs().toDate()
   );
+
   const { currentCompanyId } = useCompanyStore();
-  const { total, fetchSalaries, addSalary, updateSalary, deleteSalary } =
-    useSalaryStore();
-  const { showAlert } = useAlert();
 
+  // ✅ usePayrollStore에서 필요한 상태와 액션만 추출
+  const { total, fetchRecords, clear } = usePayrollStore();
+
+  // ✅ 데이터 페칭 로직 통합
+  // 회사 ID가 바뀌거나 선택된 달이 바뀔 때 데이터를 새로 불러옵니다.
   useEffect(() => {
-    fetchSalaries(1, 10, selectedMonth);
-  }, [currentCompanyId]);
-
-  // Drawer 상태
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
-  const [currentSalary, setCurrentSalary] = useState<any>(null);
-
-  const { allList, fetchAll } = useWorkerStore();
-  const { role } = useAuthStore();
-
-  useEffect(() => {
-    if (currentCompanyId) {
-      fetchAll(currentCompanyId);
-      (async () => {
-        await fetchSalaries(1, 10, selectedMonth);
-      })();
+    if (currentCompanyId && selectedMonth) {
+      fetchRecords(1, 10, selectedMonth);
     }
-  }, [currentCompanyId]);
+
+    // 컴포넌트 언마운트 시 데이터 초기화 (선택 사항)
+    return () => clear();
+  }, [currentCompanyId, selectedMonth, fetchRecords, clear]);
 
   return (
     <>
+      {/* 상단 타이틀 및 날짜 선택 영역 */}
       <FlexWrapper gap={4} items="start" justify="between" classes="w-full">
         <FlexWrapper gap={2} items="center">
           <Typography variant="H3" classes="shrink-0">
@@ -54,6 +42,7 @@ function Salary() {
             {total}
           </Badge>
         </FlexWrapper>
+
         <CustomDatePicker
           variant="outline"
           size="md"
@@ -65,50 +54,16 @@ function Salary() {
         />
       </FlexWrapper>
 
-      {/* ✅ Header에서 Drawer 여는 핸들러 전달 */}
-      <SalaryHeader
-        onAddClick={() => {
-          setDrawerMode("create");
-          setCurrentSalary(null);
-          setDrawerOpen(true);
-        }}
-      />
+      {/* ✅ Header: 엑셀 업로드 및 전체 삭제 버튼이 포함될 곳 */}
+      {/* selectedMonth를 넘겨주어 해당 월에 대한 액션이 가능하도록 합니다. */}
+      <SalaryHeader selectedMonth={selectedMonth} />
 
+      {/* ✅ Table: 데이터 표시 전용 (개별 수정 삭제 기능 제거) */}
       <SalaryTable
         month={selectedMonth}
-        onRowClick={(row: Salary.Row) => {
-          setDrawerMode("edit");
-          setCurrentSalary(row);
-          setDrawerOpen(true);
-        }}
-      />
-
-      {/* ✅ Drawer 연결 */}
-      <SalaryDrawer
-        open={drawerOpen}
-        disable={role !== "admin"}
-        month={selectedMonth}
-        mode={drawerMode}
-        salary={currentSalary}
-        workers={allList}
-        onClose={() => setDrawerOpen(false)}
-        onConfirm={async (data) => {
-          if (!currentCompanyId) return;
-          await addSalary({ company_id: currentCompanyId, ...data });
-          showAlert("급여내역이 추가되었습니다.", { type: "success" });
-          setDrawerOpen(false);
-        }}
-        onEdit={async (data) => {
-          if (!currentCompanyId) return;
-          await updateSalary(currentSalary!.id, data);
-          showAlert("급여내역이 수정되었습니다.", { type: "success" });
-          setDrawerOpen(false);
-        }}
-        onDelete={async () => {
-          if (!currentSalary) return;
-          await deleteSalary(currentSalary.id);
-          showAlert("급여내역이 삭제되었습니다.", { type: "danger" });
-          setDrawerOpen(false);
+        // 개별 데이터 수정이 없으므로 onRowClick은 필요에 따라 제거하거나 뷰어로만 활용
+        onRowClick={(row) => {
+          console.log("선택된 데이터:", row);
         }}
       />
     </>

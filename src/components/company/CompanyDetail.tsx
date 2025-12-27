@@ -4,13 +4,14 @@ import { useCompanyStore } from "@/stores/useCompanyStore";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Typography from "@/foundation/Typography";
 import Button from "@/components/Button";
-import { LuChevronLeft, LuSettings } from "react-icons/lu";
+import { LuChevronLeft } from "react-icons/lu";
 import CompanyMember from "@/components/company/CompanyMember";
 import { motion } from "motion/react";
 import { useMemberStore } from "@/stores/useMemberStore";
 import dayjs from "dayjs";
 import { useDialog } from "@/hooks/useDialog";
 import MenuSettingDialogBody from "./MenuSettingDialogBody";
+import PayrollTypeDialogBody from "./PayrollTypeDialogBody";
 
 function CompanyDetail() {
   const { companyId } = useParams();
@@ -75,11 +76,12 @@ function CompanyDetail() {
             회사목록
           </FlexWrapper>
         </Button>
-        <FlexWrapper gap={3} items="end">
-          <Typography variant="H3">{company.name}</Typography>
-
+        <FlexWrapper gap={2} items="end">
+          <Typography variant="H2" classes="mr-2">
+            {company.name}
+          </Typography>
           <Button
-            variant="contain"
+            variant="outline"
             size="md"
             onClick={async () => {
               await openDialog({
@@ -89,7 +91,20 @@ function CompanyDetail() {
               });
             }}
           >
-            <LuSettings className="text-lg" />
+            메뉴설정
+          </Button>
+          <Button
+            variant="outline"
+            size="md"
+            onClick={async () => {
+              await openDialog({
+                title: "급여대장 설정",
+                hideBottom: true,
+                body: <PayrollTypeDialogBody />,
+              });
+            }}
+          >
+            급여대장설정
           </Button>
         </FlexWrapper>
       </FlexWrapper>

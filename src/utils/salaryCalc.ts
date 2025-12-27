@@ -1,6 +1,6 @@
 // src/utils/salaryCalc.ts
 export type SalaryCalcInput = {
-  base_salary: number; // 기본급
+  base_salary: number; // 급여
   non_taxable: number; // 비과세급
   base_work_days: number; // 소정근로일수
   absent_days: number; // 미달근무일
@@ -42,7 +42,7 @@ export function calcSalary(i: SalaryCalcInput): SalaryCalcOutput {
 
   const other = Number(i.deduction_other) || 0;
 
-  // ✅ 실질인정금액: (기본급 + 비과세급) × ((소정근로일수 - 미달근무일) / 소정근로일수)
+  // ✅ 실질인정금액: (급여 + 비과세급) × ((소정근로일수 - 미달근무일) / 소정근로일수)
   const ratio = baseDays > 0 ? (baseDays - absent) / baseDays : 0;
   const recognized_amount = Math.floor((base + nonTax) * ratio);
 

@@ -55,3 +55,13 @@ export async function updateCompanyMenus(
 
   return data; // 업데이트된 회사 객체 반환
 }
+export const updateCompanyPayrollTypeAction = async (
+  companyId: string,
+  type: "A" | "B"
+) => {
+  const { error } = await supabase
+    .from("companies")
+    .update({ payroll_type: type })
+    .eq("id", companyId);
+  if (error) throw error;
+};

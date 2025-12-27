@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-table";
 import classNames from "classnames";
 import type { RefObject } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import {
   LuChevronFirst,
   LuChevronLast,
@@ -20,6 +20,7 @@ const TableComponent = (props: Common.TableProps) => {
   const scrollRef: RefObject<HTMLDivElement | null> = useRef(null);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const {
     classes,
@@ -38,6 +39,19 @@ const TableComponent = (props: Common.TableProps) => {
     onRowClick,
   } = props;
 
+  // 컨테이너 너비를 측정하여 스크롤 시에도 가시 영역 중앙을 유지하기 위함
+  useLayoutEffect(() => {
+    const updateWidth = () => {
+      if (scrollRef.current) {
+        setContainerWidth(scrollRef.current.clientWidth);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
   const table = useReactTable({
     data,
     columns,
@@ -53,7 +67,7 @@ const TableComponent = (props: Common.TableProps) => {
           : updater;
       setPageIndex(next.pageIndex);
       setPageSize(next.pageSize);
-      onPageChange?.(next.pageIndex + 1, next.pageSize); // 👈 서버 호출 트리거
+      onPageChange?.(next.pageIndex + 1, next.pageSize);
     },
     getCoreRowModel: getCoreRowModel(),
   });
@@ -72,7 +86,7 @@ const TableComponent = (props: Common.TableProps) => {
 
   const totalPages = table.getPageCount();
   const currentPage = table.getState().pagination.pageIndex + 1;
-  const visiblePages = 5; // 한 번에 보여줄 페이지 수
+  const visiblePages = 5;
   const startPage =
     Math.floor((currentPage - 1) / visiblePages) * visiblePages + 1;
   const endPage = Math.min(startPage + visiblePages - 1, totalPages);
@@ -177,8 +191,16 @@ const TableComponent = (props: Common.TableProps) => {
               ))
             ) : (
               <tr>
-                <td className="!border-none" colSpan={columns.length}>
-                  <div className="flex flex-col items-center justify-center gap-2 p-6">
+                <td className="!border-none p-0" colSpan={columns.length}>
+                  {/* ✅ sticky left-0: 스크롤 영역 안에서 화면 왼쪽에 고정 
+                    ✅ width: containerWidth: 컨테이너의 실제 가시 너비를 강제하여 중앙 정렬 수행
+                  */}
+                  <div
+                    className="flex flex-col items-center justify-center gap-2 p-10 sticky left-0"
+                    style={{
+                      width: containerWidth ? `${containerWidth}px` : "100%",
+                    }}
+                  >
                     <TbMoodEmpty className="text-4xl text-gray-300" />
                     <p className="text-gray-400">데이터가 없습니다</p>
                   </div>
@@ -188,6 +210,7 @@ const TableComponent = (props: Common.TableProps) => {
           </tbody>
         </table>
       </div>
+
       {!hideSize && (
         <div className="absolute bottom-[30px] left-2 z-50">
           <Dropdown
@@ -199,10 +222,9 @@ const TableComponent = (props: Common.TableProps) => {
           />
         </div>
       )}
-      {/* ✅ 페이지 버튼형 pagination */}
+
       {showPagination && totalPages > 0 && (
         <div className="flex w-full items-center justify-center gap-2">
-          {/* 처음 / 이전 */}
           <button
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
@@ -218,7 +240,6 @@ const TableComponent = (props: Common.TableProps) => {
             <LuChevronLeft />
           </button>
 
-          {/* 페이지 번호 버튼들 */}
           {pageNumbers.map((page) => (
             <button
               key={page}
@@ -235,7 +256,6 @@ const TableComponent = (props: Common.TableProps) => {
             </button>
           ))}
 
-          {/* 다음 / 마지막 */}
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}

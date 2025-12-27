@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { supabase } from "@/lib/supabase";
 import {
   fetchCompanyDetail,
+  updateCompanyPayrollTypeAction,
   updateCompanyMenus as updateMenusAction,
 } from "@/actions/companyActions"; // 액션 임포트
 
@@ -13,6 +14,7 @@ export interface Company {
   member_count?: number;
   admins?: string[];
   enabled_menus?: string[]; // ✅ 새 컬럼 추가
+  payroll_type?: "A" | "B"; // 급여대장 양식 타입 추가
 }
 
 interface CompanyStore {
@@ -31,6 +33,10 @@ interface CompanyStore {
   createCompany: (name: string) => Promise<Company | null>;
   // ✅ 메뉴 업데이트 함수 정의 추가
   updateCompanyMenus: (companyId: string, menus: string[]) => Promise<void>;
+  updateCompanyPayrollType: (
+    companyId: string,
+    type: "A" | "B"
+  ) => Promise<void>;
 }
 
 export const useCompanyStore = create<CompanyStore>()(
@@ -145,6 +151,23 @@ export const useCompanyStore = create<CompanyStore>()(
           // 목록에서도 찾아 업데이트 (있을 경우만)
           companies: state.companies.map((c) =>
             c.id === companyId ? { ...c, enabled_menus: menus } : c
+          ),
+        }));
+      },
+      updateCompanyPayrollType: async (companyId, type) => {
+        await updateCompanyPayrollTypeAction(companyId, type);
+
+        // UI 상태 동기화
+        set((state) => ({
+          // 상세 정보 동기화
+          currentCompanyDetail:
+            state.currentCompanyDetail?.id === companyId
+              ? { ...state.currentCompanyDetail, payroll_type: type }
+              : state.currentCompanyDetail,
+
+          // 전체 목록 동기화
+          companies: state.companies.map((c) =>
+            c.id === companyId ? { ...c, payroll_type: type } : c
           ),
         }));
       },
