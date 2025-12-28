@@ -32,11 +32,19 @@ export default async function handler(req, res) {
     }
 
     // 3️⃣ profiles upsert
-    await supabaseAdmin.from("profiles").upsert({
-      id: userId,
-      email,
-      role,
-    });
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .upsert({
+        id: userId, // PK 역할
+        user_id: userId, // 질문하신 user_id 필드 추가
+        email: email.toLowerCase(),
+        role: role,
+      });
+
+    if (profileError) {
+      console.error("❌ Profile upsert error:", profileError);
+      throw profileError;
+    }
 
     // 4️⃣ company_members 추가
     const { error: memberError } = await supabaseAdmin
@@ -45,7 +53,7 @@ export default async function handler(req, res) {
         company_id,
         user_id: userId,
         role,
-        joined_at: null,
+        joined_at: null, // 초대한 상태이므로 아직 가입일은 null
       });
 
     if (memberError) throw memberError;
