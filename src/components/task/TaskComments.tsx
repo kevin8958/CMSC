@@ -10,6 +10,8 @@ import { motion } from "framer-motion";
 import { useAlert } from "../AlertProvider";
 import Badge from "../Badge";
 import Avatar from "../Avatar";
+import { useCompanyStore } from "@/stores/useCompanyStore";
+import { useTaskStore } from "@/stores/taskStore";
 
 interface TaskCommentsProps {
   taskId: string;
@@ -21,6 +23,9 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
+
+  const { fetchTasks } = useTaskStore();
+  const { currentCompanyId } = useCompanyStore();
 
   // ✅ 댓글 불러오기
   const fetchComments = async () => {
@@ -53,6 +58,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
       type: "success",
       durationMs: 3000,
     });
+    if (currentCompanyId) fetchTasks(currentCompanyId);
   };
 
   //   // ✅ 댓글 삭제
@@ -172,7 +178,9 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
           <FlexWrapper gap={2} items="center">
             <TextInput
               classes="flex-1 !h-[42px] !text-sm"
-              value={newComment}
+              inputProps={{
+                value: newComment,
+              }}
               onChange={(event) => {
                 setNewComment(event?.target.value || "");
               }}
