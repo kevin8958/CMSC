@@ -97,14 +97,16 @@ export default function ClientManagement() {
   return (
     <>
       {/* 헤더 영역 */}
-      <FlexWrapper classes="mb-6" items="center" justify="between">
-        <Typography variant="H3">거래처 관리</Typography>
+      <FlexWrapper classes="mb-4 lg:mb-6" items="center" justify="between">
+        <Typography variant="H3" classes="text-xl lg:text-2xl">
+          거래처 관리
+        </Typography>
         {role === "admin" && (
           <Button
             variant="contain"
             color="green"
             size="md"
-            classes="gap-1 !px-3"
+            classes="gap-1 !px-2 lg:!px-3 text-sm lg:text-base"
             onClick={() => {
               setDrawerMode("create");
               setCurrentClient(null);
@@ -112,23 +114,25 @@ export default function ClientManagement() {
             }}
           >
             <LuPlus className="text-lg" />
-            거래처 추가
+            <span className="hidden xs:inline">거래처 추가</span>
+            <span className="xs:hidden font-bold">추가</span>
           </Button>
         )}
       </FlexWrapper>
 
       {/* 보드 영역 */}
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex w-full gap-6 h-[calc(100dvh-76px-36px-16px-24px)]">
+        <div className="flex flex-col lg:flex-row w-full gap-6 lg:h-[calc(100dvh-76px-36px-16px-24px)] overflow-y-auto lg:overflow-visible">
           {/* 1. 왼쪽: 거래 중 (Grid Layout) */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <FlexWrapper items="center" gap={2} classes="mb-4">
+          <div className="flex-1 flex flex-col min-w-0 min-h-[400px] lg:min-h-0">
+            <FlexWrapper items="center" gap={2} classes="mb-3 lg:mb-4">
               <div className="w-2 h-2 rounded-full bg-green-500" />
               <Typography variant="H4">거래 중</Typography>
               <Badge color="green" size="md">
                 {clients.filter((c) => c.status === "active").length}
               </Badge>
             </FlexWrapper>
+
             <Droppable
               droppableId={CLIENT_STATUS.ACTIVE}
               direction="horizontal"
@@ -144,13 +148,13 @@ export default function ClientManagement() {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     className={`
-          bg-white border border-dashed rounded-xl p-4 overflow-y-auto w-full h-full
-          ${
-            isEmpty
-              ? "flex flex-col items-center justify-center" // 데이터 없을 때: 중앙 정렬
-              : "grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4 content-start" // 데이터 있을 때: 그리드
-          }
-        `}
+                      bg-white border border-dashed rounded-xl p-3 overflow-y-auto w-full h-full
+                      ${
+                        isEmpty
+                          ? "flex flex-col items-center justify-center py-10 lg:py-0"
+                          : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3  lg:gap-4 content-start"
+                      }
+                    `}
                   >
                     {!isEmpty ? (
                       activeClients.map((client, index) => (
@@ -177,7 +181,6 @@ export default function ClientManagement() {
                         </Draggable>
                       ))
                     ) : (
-                      /* 데이터 없음 표시: 부모가 flex이므로 이제 중앙에 위치합니다 */
                       <div className="flex flex-col items-center justify-center text-gray-400">
                         <TbMoodEmpty className="text-4xl mb-2" />
                         <p className="text-sm font-medium">
@@ -192,9 +195,9 @@ export default function ClientManagement() {
             </Droppable>
           </div>
 
-          {/* 2. 오른쪽: 거래 종료 (Sidebar Column Layout) */}
-          <div className="w-[340px] flex flex-col flex-shrink-0">
-            <FlexWrapper items="center" gap={2} classes="mb-4">
+          {/* 2. 오른쪽: 거래 종료 (Sidebar Layout) */}
+          <div className="w-full lg:w-[340px] flex flex-col flex-shrink-0 min-h-0">
+            <FlexWrapper items="center" gap={2} classes="mb-3 lg:mb-4">
               <div className="w-2 h-2 rounded-full bg-gray-400" />
               <Typography variant="H4">거래 종료</Typography>
               <Badge color="green" size="md">
@@ -203,58 +206,64 @@ export default function ClientManagement() {
             </FlexWrapper>
 
             <Droppable droppableId={CLIENT_STATUS.TERMINATED}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="bg-white border rounded-xl p-3 overflow-y-auto flex flex-col gap-3 h-full"
-                >
-                  {clients
-                    .filter((c) => c.status === CLIENT_STATUS.TERMINATED)
-                    .map((client, index) => (
-                      <Draggable
-                        key={client.id}
-                        draggableId={client.id}
-                        index={index}
-                      >
-                        {(p) => (
-                          <div
-                            ref={p.innerRef}
-                            {...p.draggableProps}
-                            {...p.dragHandleProps}
-                            onClick={() => {
-                              setDrawerMode("edit");
-                              setCurrentClient(client);
-                              setDrawerOpen(true);
-                            }}
-                          >
-                            <ClientCard
-                              client={client}
-                              workers={workers}
-                              isTerminated
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                  {provided.placeholder}
+              {(provided) => {
+                const terminatedClients = clients.filter(
+                  (c) => c.status === "terminated"
+                );
+                const isEmpty = terminatedClients.length === 0;
 
-                  {/* 거래 종료 데이터 없음 표시 */}
-                  {clients.filter((c) => c.status === "terminated").length ===
-                    0 && (
-                    <div className="h-full flex flex-col items-center justify-center text-gray-400 opacity-60">
-                      <TbMoodEmpty className="text-4xl mb-2" />
-                      <p className="text-sm">종료된 거래처가 없습니다</p>
-                    </div>
-                  )}
-                </div>
-              )}
+                return (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={`
+                      bg-white border rounded-xl p-3 overflow-y-auto flex flex-col  
+                      max-h-[400px] lg:max-h-none lg:h-full
+                      ${isEmpty ? "items-center justify-center py-10 lg:py-0" : ""}
+                    `}
+                  >
+                    {!isEmpty ? (
+                      terminatedClients.map((client, index) => (
+                        <Draggable
+                          key={client.id}
+                          draggableId={client.id}
+                          index={index}
+                        >
+                          {(p) => (
+                            <div
+                              ref={p.innerRef}
+                              {...p.draggableProps}
+                              {...p.dragHandleProps}
+                              onClick={() => {
+                                setDrawerMode("edit");
+                                setCurrentClient(client);
+                                setDrawerOpen(true);
+                              }}
+                            >
+                              <ClientCard
+                                client={client}
+                                workers={workers}
+                                isTerminated
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-gray-400 opacity-60">
+                        <TbMoodEmpty className="text-4xl mb-2" />
+                        <p className="text-sm">종료된 거래처가 없습니다</p>
+                      </div>
+                    )}
+                    {provided.placeholder}
+                  </div>
+                );
+              }}
             </Droppable>
           </div>
         </div>
       </DragDropContext>
 
-      {/* 상세/수정/생성 Drawer */}
       <ClientDrawer
         open={drawerOpen}
         disabled={role !== "admin"}
