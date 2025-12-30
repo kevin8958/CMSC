@@ -1,37 +1,30 @@
-import { useEffect } from "react"; // ✅ 추가
+import { useEffect, useState } from "react";
 import classNames from "classnames";
-import { useLocation } from "react-router-dom";
-import {
-  // LuChartNoAxesCombined,
-  // LuListChecks,
-  // LuCalculator,
-  // LuNotebookPen,
-  // LuHardDrive,
-  LuBuilding,
-  // LuCalendarCheck2,
-  // LuWalletMinimal,
-  LuMailCheck,
-} from "react-icons/lu";
+import { useLocation, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { LuBuilding, LuMailCheck, LuChevronDown } from "react-icons/lu";
 import { AiOutlineTeam } from "react-icons/ai";
 import { useAuthStore } from "@/stores/authStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
+import Typography from "@/foundation/Typography";
 
 const SNB = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const role = useAuthStore((s) => s.role);
 
-  // ✅ 스토어에서 상태와 페칭 함수 가져오기
+  // 아코디언 상태 관리 (GNB와 동일 로직)
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+
   const { currentCompanyId, currentCompanyDetail, fetchCurrentCompanyDetail } =
     useCompanyStore();
 
-  // ✅ [추가] 상세 정보가 없으면 불러오는 로직
   useEffect(() => {
     if (currentCompanyId) {
       fetchCurrentCompanyDetail();
     }
   }, [currentCompanyId]);
 
-  // ✅ 필터링에 사용할 메뉴 ID 배열 (데이터가 아직 없다면 빈 배열)
   const enabledMenus = currentCompanyDetail?.enabled_menus || [];
 
   const rawGroups =
@@ -63,7 +56,7 @@ const SNB = () => {
         ]
       : [
           {
-            title: null,
+            title: null, // GNB의 '기본항목' 역할
             items: [
               { id: "dashboard", label: "대시보드", href: "/dashboard" },
               {
@@ -78,11 +71,6 @@ const SNB = () => {
             items: [
               { id: "worker", label: "근로자관리", href: "/worker" },
               { id: "salary", label: "급여대장", href: "/salary" },
-              // {
-              //   id: "bonus",
-              //   label: "수당/상여대장",
-              //   href: "/under-construction",
-              // },
               { id: "attendance", label: "연차휴가대장", href: "/attendance" },
               {
                 id: "education",
@@ -219,7 +207,7 @@ const SNB = () => {
           },
         ];
 
-  // ✅ 필터링 logic (이전과 동일)
+  // 필터링된 그룹 생성
   const snbGroups = rawGroups
     .map((group) => ({
       ...group,
@@ -234,40 +222,113 @@ const SNB = () => {
     }))
     .filter((group) => group.items.length > 0);
 
+  // 현재 경로 기준 자동 펼침 로직
+  useEffect(() => {
+    const currentGroup = snbGroups.find((group) =>
+      group.items.some(
+        (item) =>
+          pathname.includes(item.href) && item.href !== "/under-construction"
+      )
+    );
+
+    if (currentGroup && currentGroup.title) {
+      setExpandedGroup(currentGroup.title);
+    } else {
+      setExpandedGroup(null);
+    }
+  }, [pathname, currentCompanyDetail]); // 데이터 로드 후에도 체크되도록 detail 추가
+
+  const toggleGroup = (title: string) => {
+    setExpandedGroup((prev) => (prev === title ? null : title));
+  };
+
+  const handleMove = (url: string) => {
+    navigate(url);
+  };
+
   return (
-    <aside className="scroll-thin z-40 hidden sm:flex flex-col justify-between h-[100dvh] overflow-y-auto pt-[60px] pb-4 pr-0 w-[180px] border-r border-primary-100">
-      <nav className="w-full rounded-xl py-4 px-2">
-        <ul className="flex flex-col w-full">
-          {snbGroups.map((group, gIdx) => (
-            <li
-              key={gIdx}
-              className="mb-2 border-b border-primary-100 last:border-none"
-            >
-              {group.title && (
-                <p className="px-2 py-1 text-xs font-semibold tracking-wide uppercase bg-green-600 text-white w-max rounded-md mb-1">
-                  {group.title}
-                </p>
-              )}
-              <ul className="flex flex-col w-full">
-                {group.items.map((item) => (
-                  <li key={item.id} className="w-full">
-                    <a
-                      href={item.href}
-                      className={classNames(
-                        "flex items-center gap-3 w-full text-primary-800 hover:bg-green-100/70 rounded-lg py-2 px-4 text-sm transition-all duration-100 ease-in-out",
-                        {
-                          "!text-primary-900 bg-green-100 font-bold":
-                            pathname.includes(item.id),
-                        }
-                      )}
+    <aside className="scroll-thin z-40 hidden sm:flex flex-col h-[100dvh] overflow-y-auto pt-[60px] pb-4 w-[200px] border-r border-primary-100 bg-white">
+      <nav className="w-full py-4 px-3">
+        <ul className="flex flex-col w-full gap-1">
+          {snbGroups.map((group) => {
+            // 1. 타이틀이 없는 경우 (기본항목)
+            if (!group.title) {
+              return group.items.map((item) => (
+                <li key={item.id} className="w-full">
+                  <button
+                    onClick={() => handleMove(item.href)}
+                    className={classNames(
+                      "flex items-center justify-between w-full rounded-lg py-2.5 px-3 text-sm transition-all duration-200 mb-1",
+                      pathname === item.href
+                        ? "bg-primary-50 text-primary-900 !font-bold"
+                        : "text-gray-700 hover:bg-gray-50 font-bold"
+                    )}
+                  >
+                    <span className="truncate">{item.label}</span>
+                    {pathname === item.href && (
+                      <div className="size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] shrink-0" />
+                    )}
+                  </button>
+                </li>
+              ));
+            }
+
+            // 2. 타이틀이 있는 경우 (아코디언)
+            const isExpanded = expandedGroup === group.title;
+            return (
+              <li key={group.title} className="flex flex-col w-full mb-1">
+                <button
+                  onClick={() => toggleGroup(group.title!)}
+                  className={classNames(
+                    "flex items-center justify-between w-full py-2.5 px-3 rounded-md transition-colors",
+                    isExpanded
+                      ? "bg-green-100 text-primary-900"
+                      : "bg-transparent text-gray-700 hover:bg-gray-50"
+                  )}
+                >
+                  <Typography variant="B2" classes="font-bold">
+                    {group.title}
+                  </Typography>
+                  <LuChevronDown
+                    className={classNames(
+                      "text-gray-400 transition-transform duration-300",
+                      isExpanded && "rotate-180"
+                    )}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden flex flex-col pl-2 mt-1 gap-1"
                     >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
+                      {group.items.map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => handleMove(item.href)}
+                          className={classNames(
+                            "flex items-center justify-between w-full py-2 px-3 rounded-md text-sm transition-all",
+                            pathname === item.href
+                              ? "bg-primary-50 text-primary-900 !font-bold"
+                              : "text-gray-500 hover:text-primary-800 hover:bg-gray-50 font-normal"
+                          )}
+                        >
+                          <span className="truncate">{item.label}</span>
+                          {pathname === item.href && (
+                            <div className="size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] shrink-0" />
+                          )}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </aside>

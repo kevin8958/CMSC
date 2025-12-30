@@ -49,7 +49,7 @@ const Button = forwardRef(
 
     const getOutlineClasses = (buttonColor: Common.ButtonColor) => {
       const styles = {
-        primary: "border-primary-500 text-primary-900 !font-semibold",
+        primary: "border text-primary-900 !font-semibold",
         info: "border-info !text-info",
         success: "border-success !text-success",
         warning: "border-warning !text-warning",
