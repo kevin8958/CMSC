@@ -130,7 +130,7 @@ function Income() {
         {/* 탭 메뉴 (높이 고정) */}
         <FlexWrapper
           gap={0}
-          classes="w-full border-b overflow-x-auto scroll-thin shrink-0 bg-white"
+          classes="w-full border overflow-x-auto scroll-thin shrink-0 bg-white rounded-t-xl"
         >
           {tabs.map((tab) => (
             <button
