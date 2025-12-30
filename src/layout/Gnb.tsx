@@ -189,7 +189,7 @@ export default function Gnb() {
         {
           id: "vendor-management",
           label: "거래처관리",
-          href: "/under-construction",
+          href: "/client-management",
           icon: null,
         },
         {

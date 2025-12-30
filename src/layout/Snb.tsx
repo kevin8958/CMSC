@@ -149,7 +149,7 @@ const SNB = () => {
               {
                 id: "vendor-management",
                 label: "거래처관리",
-                href: "/under-construction",
+                href: "/client-management",
               },
               {
                 id: "contract-management",
