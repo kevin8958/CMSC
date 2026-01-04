@@ -8,7 +8,8 @@ import TextInput from "@/components/TextInput";
 import Textarea from "@/components/TextArea";
 import CustomDatePicker from "@/components/DatePicker";
 import dayjs from "dayjs";
-// 임의의 상태 설정 (프로젝트의 실제 경로에 맞춰 수정 필요)
+
+// 거래처 상태 설정
 const CLIENT_STATUS = {
   active: { label: "거래 중", color: "green" },
   terminated: { label: "거래 종료", color: "gray" },
@@ -16,7 +17,6 @@ const CLIENT_STATUS = {
 
 type ClientStatus = keyof typeof CLIENT_STATUS;
 
-// 거래처 상태 배지 (TaskStatusBadge 대신 간단히 구현하거나 기존 것을 활용)
 const ClientStatusBadge = ({ status }: { status: ClientStatus }) => {
   const config = CLIENT_STATUS[status];
   const colorClass =
@@ -37,10 +37,9 @@ interface ClientDrawerProps {
   open: boolean;
   disabled?: boolean;
   mode: "create" | "edit";
-  client?: any; // 실제 Client 타입으로 교체 필요
-  workers: any[]; // 담당자(직원) 목록
+  client?: Client.Client | null; // 실제 Client 타입 적용 권장
   onClose: () => void;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: Partial<Client.Client>) => Promise<void>;
   onDelete?: () => void;
 }
 
@@ -49,36 +48,48 @@ export default function ClientDrawer({
   disabled,
   mode,
   client,
-  workers,
   onClose,
   onSubmit,
   onDelete,
 }: ClientDrawerProps) {
   const [name, setName] = useState("");
   const [status, setStatus] = useState<ClientStatus>("active");
-  const [contact, setContact] = useState(""); // 연락처 추가
-  const [managerId, setManagerId] = useState(""); // 담당자
+
+  // 담당자 정보 필드 세분화
+  const [managerName, setManagerName] = useState("");
+  const [managerPhone, setManagerPhone] = useState("");
+  const [managerEmail, setManagerEmail] = useState("");
+  const [fax, setFax] = useState("");
+
   const [contractDate, setContractDate] = useState<Date | null>(new Date());
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState({ name: "" });
 
+  // 초기화 및 데이터 바인딩
   useEffect(() => {
-    if (client) {
+    if (client && open) {
       setName(client.name || "");
       setStatus((client.status as ClientStatus) || "active");
-      setContact(client.contact || "");
-      setManagerId(client.manager_id || "");
+      setManagerName(client.manager_name || "");
+      setManagerPhone(client.manager_phone || "");
+      setManagerEmail(client.manager_email || "");
+      setFax(client.fax || "");
       setContractDate(
         client.contract_date ? dayjs(client.contract_date).toDate() : new Date()
       );
       setDescription(client.description || "");
-    } else {
+      setErrors({ name: "" });
+    } else if (open) {
+      // 초기화
       setName("");
       setStatus("active");
-      setContact("");
-      setManagerId("");
+      setManagerName("");
+      setManagerPhone("");
+      setManagerEmail("");
+      setFax("");
       setContractDate(new Date());
       setDescription("");
+      setErrors({ name: "" });
     }
   }, [client, open]);
 
@@ -91,8 +102,10 @@ export default function ClientDrawer({
     await onSubmit({
       name: name.trim(),
       status,
-      contact,
-      manager_id: managerId || undefined,
+      manager_name: managerName,
+      manager_phone: managerPhone,
+      manager_email: managerEmail,
+      fax: fax,
       contract_date: contractDate
         ? dayjs(contractDate).format("YYYY-MM-DD")
         : undefined,
@@ -140,90 +153,130 @@ export default function ClientDrawer({
       onDelete={onDelete}
       onConfirm={handleSubmit}
     >
-      <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6 px-4">
-        {/* 거래처명 */}
-        <FlexWrapper items="center" gap={2}>
-          <div className="shrink-0 w-[80px]">
-            <Label text="거래처명" required />
-          </div>
-          <TextInput
-            classes="!text-sm !h-[42px]"
-            inputProps={{ value: name }}
-            disabled={disabled}
-            onChange={(e) => setName(e.target.value)}
-            error={!!errors.name}
-            errorMsg={errors.name}
-            placeholder="거래처 이름을 입력하세요"
-          />
-        </FlexWrapper>
+      <FlexWrapper direction="col" gap={5} classes="pt-4 pb-6 px-4">
+        {/* --- 기본 정보 섹션 --- */}
+        <section className="space-y-4">
+          <Typography
+            variant="B2"
+            classes="font-bold text-gray-400 border-b pb-1"
+          >
+            기본 정보
+          </Typography>
 
-        {/* 연락처 */}
-        <FlexWrapper items="center" gap={2}>
-          <div className="shrink-0 w-[80px]">
-            <Label text="연락처" />
-          </div>
-          <TextInput
-            classes="!text-sm !h-[42px]"
-            inputProps={{ value: contact }}
-            disabled={disabled}
-            onChange={(e) => setContact(e.target.value)}
-            placeholder="010-0000-0000"
-          />
-        </FlexWrapper>
+          <FlexWrapper items="center" gap={2}>
+            <div className="shrink-0 w-[80px]">
+              <Label text="거래처명" required />
+            </div>
+            <TextInput
+              classes="!text-sm !h-[42px]"
+              inputProps={{
+                value: name,
+              }}
+              disabled={disabled}
+              error={!!errors.name}
+              errorMsg={errors.name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="거래처 이름을 입력하세요"
+            />
+          </FlexWrapper>
 
-        {/* 담당자 (내부 직원) */}
-        <FlexWrapper items="center" gap={2}>
-          <div className="shrink-0 w-[80px]">
-            <Label text="담당 직원" />
-          </div>
-          <Dropdown
-            hideDownIcon
-            buttonSize="sm"
-            buttonVariant="outline"
-            disabled={disabled}
-            items={workers.map((w) => ({
-              type: "item",
-              id: w.id,
-              label: w.name,
-            }))}
-            dialogWidth={160}
-            onChange={(val) => setManagerId(val as string)}
-            buttonItem={
-              managerId
-                ? workers.find((w) => w.id === managerId)?.name
-                : "직원 선택"
-            }
-            buttonClasses="!font-normal !w-[140px] !h-[36px] !border-gray-300 hover:!bg-gray-50 !text-sm"
-          />
-        </FlexWrapper>
+          <FlexWrapper items="center" gap={2}>
+            <div className="shrink-0 w-[80px]">
+              <Label text="계약일" />
+            </div>
+            <CustomDatePicker
+              classes="w-[140px]"
+              type="single"
+              variant="outline"
+              size="sm"
+              disabled={disabled}
+              dateFormat="YYYY.MM.DD"
+              value={contractDate}
+              onChange={(date) => setContractDate(date)}
+            />
+          </FlexWrapper>
+        </section>
 
-        {/* 계약일 / 거래 시작일 */}
-        <FlexWrapper items="center" gap={2}>
-          <div className="shrink-0 w-[80px]">
-            <Label text="계약일" />
-          </div>
-          <CustomDatePicker
-            classes="w-[140px]"
-            type="single"
-            variant="outline"
-            size="sm"
-            disabled={disabled}
-            dateFormat="YYYY.MM.DD"
-            value={contractDate}
-            onChange={(date) => setContractDate(date)}
-          />
-        </FlexWrapper>
+        {/* --- 담당자 정보 섹션 --- */}
+        <section className="space-y-4">
+          <Typography
+            variant="B2"
+            classes="font-bold text-gray-400 border-b pb-1"
+          >
+            담당자 정보
+          </Typography>
 
-        {/* 설명 / 비고 */}
-        <div className="space-y-2">
-          <Label text="상세 메모" />
+          <FlexWrapper items="center" gap={2}>
+            <div className="shrink-0 w-[80px]">
+              <Label text="담당자명" />
+            </div>
+            <TextInput
+              classes="!text-sm !h-[42px]"
+              inputProps={{
+                value: managerName,
+              }}
+              disabled={disabled}
+              onChange={(e) => setManagerName(e.target.value)}
+              placeholder="담당자 성함 입력"
+            />
+          </FlexWrapper>
+
+          <FlexWrapper items="center" gap={2}>
+            <div className="shrink-0 w-[80px]">
+              <Label text="연락처" />
+            </div>
+            <TextInput
+              classes="!text-sm !h-[42px]"
+              inputProps={{
+                value: managerPhone,
+              }}
+              onChange={(e) => setManagerPhone(e.target.value)}
+              disabled={disabled}
+              placeholder="010-0000-0000"
+            />
+          </FlexWrapper>
+
+          <FlexWrapper items="center" gap={2}>
+            <div className="shrink-0 w-[80px]">
+              <Label text="이메일" />
+            </div>
+            <TextInput
+              classes="!text-sm !h-[42px]"
+              inputProps={{
+                value: managerEmail,
+              }}
+              onChange={(e) => setManagerEmail(e.target.value)}
+              disabled={disabled}
+              placeholder="example@email.com"
+            />
+          </FlexWrapper>
+
+          <FlexWrapper items="center" gap={2}>
+            <div className="shrink-0 w-[80px]">
+              <Label text="팩스번호" />
+            </div>
+            <TextInput
+              classes="!text-sm !h-[42px]"
+              inputProps={{
+                value: fax,
+              }}
+              disabled={disabled}
+              onChange={(e) => setFax(e.target.value)}
+              placeholder="02-000-0000"
+            />
+          </FlexWrapper>
+        </section>
+
+        {/* --- 기타 메모 --- */}
+        <section className="space-y-2">
+          <Label text="상세 메모 (비고)" />
           <Textarea
             value={description}
             disabled={disabled}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="거래처 관련 특이사항을 입력하세요"
           />
-        </div>
+        </section>
       </FlexWrapper>
     </Drawer>
   );
