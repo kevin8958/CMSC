@@ -14,7 +14,6 @@ import { TbMoodEmpty } from "react-icons/tb";
 // Stores & Hooks
 import { useClientStore } from "@/stores/useClientStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
-import { useWorkerStore } from "@/stores/useWorkerStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useAlert } from "@/components/AlertProvider";
 import { useDialog } from "@/hooks/useDialog";
@@ -49,7 +48,6 @@ export default function ClientManagement() {
     setClients,
   } = useClientStore();
   const { currentCompanyId } = useCompanyStore();
-  const { allList: workers, fetchAll } = useWorkerStore();
   const { role } = useAuthStore();
   const { showAlert } = useAlert();
   const { openDialog } = useDialog();
@@ -58,7 +56,6 @@ export default function ClientManagement() {
   useEffect(() => {
     if (currentCompanyId) {
       fetchClients(currentCompanyId);
-      fetchAll(currentCompanyId);
     }
   }, [currentCompanyId]);
 
@@ -122,7 +119,7 @@ export default function ClientManagement() {
 
       {/* 보드 영역 */}
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex flex-col lg:flex-row w-full gap-6 lg:h-[calc(100dvh-76px-36px-16px-24px)] overflow-y-auto lg:overflow-visible">
+        <div className="flex flex-col lg:flex-row w-full gap-2 lg:h-[calc(100dvh-76px-36px-16px-24px)] overflow-y-auto lg:overflow-visible">
           {/* 1. 왼쪽: 거래 중 (Grid Layout) */}
           <div className="flex-1 flex flex-col min-w-0 min-h-[400px] lg:min-h-0">
             <FlexWrapper items="center" gap={2} classes="mb-3 lg:mb-4">
@@ -175,7 +172,7 @@ export default function ClientManagement() {
                                 setDrawerOpen(true);
                               }}
                             >
-                              <ClientCard client={client} workers={workers} />
+                              <ClientCard client={client} />
                             </div>
                           )}
                         </Draggable>
@@ -240,11 +237,7 @@ export default function ClientManagement() {
                                 setDrawerOpen(true);
                               }}
                             >
-                              <ClientCard
-                                client={client}
-                                workers={workers}
-                                isTerminated
-                              />
+                              <ClientCard client={client} isTerminated />
                             </div>
                           )}
                         </Draggable>
@@ -269,7 +262,6 @@ export default function ClientManagement() {
         disabled={role !== "admin"}
         mode={drawerMode}
         client={currentClient}
-        workers={workers}
         onClose={() => {
           setDrawerOpen(false);
           setCurrentClient(null);
@@ -277,7 +269,10 @@ export default function ClientManagement() {
         onSubmit={async (data) => {
           if (!currentCompanyId) return;
           if (drawerMode === "create") {
-            await createClient(currentCompanyId, data);
+            await createClient(
+              currentCompanyId,
+              data as Client.CreateClientInput
+            );
             showAlert("거래처가 추가되었습니다.", { type: "success" });
           } else if (drawerMode === "edit" && currentClient) {
             await updateClient(currentClient.id, data);
