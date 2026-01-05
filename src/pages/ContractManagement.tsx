@@ -8,58 +8,57 @@ import {
 import Button from "@/components/Button";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Typography from "@/foundation/Typography";
-import { LuPlus } from "react-icons/lu";
+import { LuPlus, LuSettings } from "react-icons/lu";
 import { TbMoodEmpty } from "react-icons/tb";
 
-// Stores & Hooks
-import { useClientStore } from "@/stores/useClientStore";
+// Stores & Hooks (생성되어 있다고 가정)
+import { useContractStore } from "@/stores/useContractStore";
+import { useContractCategoryStore } from "@/stores/useContractCategoryStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useAlert } from "@/components/AlertProvider";
 import { useDialog } from "@/hooks/useDialog";
 
 // Components
-import ClientDrawer from "@/components/clientManage/ClientDrawer";
-import ClientCard from "@/components/clientManage/ClientCard";
+import ContractDrawer from "@/components/contractManage/ContractDrawer";
+import ContractCard from "@/components/contractManage/ContractCard";
+import CategorySettingsDrawer from "@/components/contractManage/CategorySettingsDrawer";
 import ClientBoardSkeleton from "@/components/clientManage/ClientBoardSkeleton";
 import Badge from "@/components/Badge";
 
-const CLIENT_STATUS = {
+const CONTRACT_STATUS = {
   ACTIVE: "active",
   TERMINATED: "terminated",
 } as const;
 
-export default function ClientManagement() {
-  // 1. States
+export default function ContractManagement() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [categoryDrawerOpen, setCategoryDrawerOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
-  const [currentClient, setCurrentClient] = useState<Client.Client | null>(
-    null
-  );
+  const [currentContract, setCurrentContract] = useState<any | null>(null);
 
-  // 2. Stores
   const {
-    clients,
+    contracts,
     fetching,
-    fetchClients,
-    createClient,
-    updateClient,
-    deleteClient,
-    setClients,
-  } = useClientStore();
+    fetchContracts,
+    createContract,
+    updateContract,
+    deleteContract,
+    setContracts,
+  } = useContractStore();
+  const { categories, fetchCategories } = useContractCategoryStore();
   const { currentCompanyId } = useCompanyStore();
   const { role } = useAuthStore();
   const { showAlert } = useAlert();
   const { openDialog } = useDialog();
 
-  // 3. Initial Fetch
   useEffect(() => {
     if (currentCompanyId) {
-      fetchClients(currentCompanyId);
+      fetchContracts(currentCompanyId);
+      fetchCategories(currentCompanyId);
     }
   }, [currentCompanyId]);
 
-  // 4. Drag and Drop Handler
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
     if (!destination) return;
@@ -69,23 +68,23 @@ export default function ClientManagement() {
     )
       return;
 
-    const newClients = [...clients];
-    const draggedItem = newClients.find((c) => c.id === draggableId);
+    const newContracts = [...contracts];
+    const draggedItem = newContracts.find((c) => c.id === draggableId);
     if (!draggedItem) return;
 
-    const filtered = newClients.filter((c) => c.id !== draggableId);
+    const filtered = newContracts.filter((c) => c.id !== draggableId);
     const updatedItem = {
       ...draggedItem,
       status: destination.droppableId as "active" | "terminated",
     };
 
-    setClients([...filtered, updatedItem]);
+    setContracts([...filtered, updatedItem]);
 
     if (currentCompanyId) {
       if (destination.droppableId !== source.droppableId) {
-        showAlert("거래 상태가 변경되었습니다.", { type: "success" });
+        showAlert("계약 상태가 변경되었습니다.", { type: "success" });
       }
-      await updateClient(draggableId, { status: updatedItem.status });
+      await updateContract(draggableId, { status: updatedItem.status });
     }
   };
 
@@ -93,71 +92,73 @@ export default function ClientManagement() {
 
   return (
     <>
-      {/* 헤더 영역 */}
       <FlexWrapper classes="mb-4 lg:mb-6" items="center" justify="between">
         <Typography variant="H3" classes="text-xl lg:text-2xl">
-          거래처 관리
+          계약 관리
         </Typography>
+
         {role === "admin" && (
-          <Button
-            variant="contain"
-            color="green"
-            size="md"
-            classes="gap-1 !px-2 lg:!px-3 text-sm lg:text-base"
-            onClick={() => {
-              setDrawerMode("create");
-              setCurrentClient(null);
-              setDrawerOpen(true);
-            }}
-          >
-            <LuPlus className="text-lg" />
-            <span className="hidden xs:inline">거래처 추가</span>
-            <span className="xs:hidden font-bold">추가</span>
-          </Button>
+          <FlexWrapper gap={2}>
+            <Button
+              variant="outline"
+              size="md"
+              classes="gap-1 !px-2 lg:!px-3 text-sm"
+              onClick={() => setCategoryDrawerOpen(true)}
+            >
+              <LuSettings className="text-lg" />
+              분류 설정
+            </Button>
+            <Button
+              variant="contain"
+              color="green"
+              size="md"
+              classes="gap-1 !px-2 lg:!px-3 text-sm"
+              onClick={() => {
+                setDrawerMode("create");
+                setCurrentContract(null);
+                setDrawerOpen(true);
+              }}
+            >
+              <LuPlus className="text-lg" />
+              계약 추가
+            </Button>
+          </FlexWrapper>
         )}
       </FlexWrapper>
 
-      {/* 보드 영역 */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-col lg:flex-row w-full gap-2 lg:h-[calc(100dvh-76px-36px-16px-24px)] overflow-y-auto lg:overflow-visible">
-          {/* 1. 왼쪽: 거래 중 (Grid Layout) */}
+          {/* 1. 계약 중 (그리드) */}
           <div className="flex-1 flex flex-col min-w-0 min-h-[400px] lg:min-h-0">
             <FlexWrapper items="center" gap={2} classes="mb-3 lg:mb-4">
               <div className="w-2 h-2 rounded-full bg-green-500" />
-              <Typography variant="H4">거래 중</Typography>
+              <Typography variant="H4">계약 중</Typography>
               <Badge color="green" size="md">
-                {clients.filter((c) => c.status === "active").length}
+                {contracts.filter((c) => c.status === "active").length}
               </Badge>
             </FlexWrapper>
 
             <Droppable
-              droppableId={CLIENT_STATUS.ACTIVE}
+              droppableId={CONTRACT_STATUS.ACTIVE}
               direction="horizontal"
             >
               {(provided) => {
-                const activeClients = clients.filter(
+                const activeItems = contracts.filter(
                   (c) => c.status === "active"
                 );
-                const isEmpty = activeClients.length === 0;
-
+                const isEmpty = activeItems.length === 0;
                 return (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`
-                      bg-white border rounded-xl p-3 overflow-y-auto w-full h-full
-                      ${
-                        isEmpty
-                          ? "flex flex-col items-center justify-center py-10 lg:py-0"
-                          : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3  lg:gap-4 content-start"
-                      }
-                    `}
+                    className={`bg-white border rounded-xl p-3 lg:p-4 overflow-y-auto w-full h-full 
+                      ${isEmpty ? "flex flex-col items-center justify-center" : "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 content-start"}`}
                   >
                     {!isEmpty ? (
-                      activeClients.map((client, index) => (
+                      activeItems.map((item, index) => (
                         <Draggable
-                          key={client.id}
-                          draggableId={client.id}
+                          key={item.id}
+                          draggableId={item.id}
                           index={index}
                         >
                           {(p) => (
@@ -168,21 +169,24 @@ export default function ClientManagement() {
                               className="h-fit"
                               onClick={() => {
                                 setDrawerMode("edit");
-                                setCurrentClient(client);
+                                setCurrentContract(item);
                                 setDrawerOpen(true);
                               }}
                             >
-                              <ClientCard client={client} />
+                              <ContractCard
+                                contract={item}
+                                category={categories.find(
+                                  (cat) => cat.id === item.category_id
+                                )}
+                              />
                             </div>
                           )}
                         </Draggable>
                       ))
                     ) : (
-                      <div className="flex flex-col items-center justify-center text-gray-400">
-                        <TbMoodEmpty className="text-4xl mb-2" />
-                        <p className="text-sm font-medium">
-                          거래 중인 업체가 없습니다
-                        </p>
+                      <div className="text-center text-gray-400">
+                        <TbMoodEmpty className="text-4xl mb-2 mx-auto" />
+                        <p className="text-sm">진행 중인 계약이 없습니다</p>
                       </div>
                     )}
                     {provided.placeholder}
@@ -192,38 +196,34 @@ export default function ClientManagement() {
             </Droppable>
           </div>
 
-          {/* 2. 오른쪽: 거래 종료 (Sidebar Layout) */}
-          <div className="w-full lg:w-[340px] flex flex-col flex-shrink-0 min-h-0">
+          {/* 2. 계약 종료 (사이드바) */}
+          <div className="w-full lg:w-[340px] flex flex-col flex-shrink-0 min-h-[200px] lg:min-h-0">
             <FlexWrapper items="center" gap={2} classes="mb-3 lg:mb-4">
               <div className="w-2 h-2 rounded-full bg-gray-400" />
-              <Typography variant="H4">거래 종료</Typography>
+              <Typography variant="H4">계약 종료</Typography>
               <Badge color="green" size="md">
-                {clients.filter((c) => c.status === "terminated").length}
+                {contracts.filter((c) => c.status === "terminated").length}
               </Badge>
             </FlexWrapper>
 
-            <Droppable droppableId={CLIENT_STATUS.TERMINATED}>
+            <Droppable droppableId={CONTRACT_STATUS.TERMINATED}>
               {(provided) => {
-                const terminatedClients = clients.filter(
+                const terminatedItems = contracts.filter(
                   (c) => c.status === "terminated"
                 );
-                const isEmpty = terminatedClients.length === 0;
-
+                const isEmpty = terminatedItems.length === 0;
                 return (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`
-                      bg-white border rounded-xl p-3 overflow-y-auto flex flex-col  
-                      max-h-[400px] lg:max-h-none lg:h-full
-                      ${isEmpty ? "items-center justify-center py-10 lg:py-0" : ""}
-                    `}
+                    className={`bg-white border rounded-xl p-3 overflow-y-auto flex flex-col gap-3 max-h-[400px] lg:max-h-none lg:h-full
+                      ${isEmpty ? "items-center justify-center" : ""}`}
                   >
                     {!isEmpty ? (
-                      terminatedClients.map((client, index) => (
+                      terminatedItems.map((item, index) => (
                         <Draggable
-                          key={client.id}
-                          draggableId={client.id}
+                          key={item.id}
+                          draggableId={item.id}
                           index={index}
                         >
                           {(p) => (
@@ -233,19 +233,25 @@ export default function ClientManagement() {
                               {...p.dragHandleProps}
                               onClick={() => {
                                 setDrawerMode("edit");
-                                setCurrentClient(client);
+                                setCurrentContract(item);
                                 setDrawerOpen(true);
                               }}
                             >
-                              <ClientCard client={client} isTerminated />
+                              <ContractCard
+                                contract={item}
+                                category={categories.find(
+                                  (cat) => cat.id === item.category_id
+                                )}
+                                isTerminated
+                              />
                             </div>
                           )}
                         </Draggable>
                       ))
                     ) : (
-                      <div className="flex flex-col items-center justify-center text-gray-400 opacity-60">
-                        <TbMoodEmpty className="text-4xl mb-2" />
-                        <p className="text-sm">종료된 거래처가 없습니다</p>
+                      <div className="text-center text-gray-400 opacity-60">
+                        <TbMoodEmpty className="text-4xl mb-2 mx-auto" />
+                        <p className="text-sm">종료된 계약이 없습니다</p>
                       </div>
                     )}
                     {provided.placeholder}
@@ -256,42 +262,46 @@ export default function ClientManagement() {
           </div>
         </div>
       </DragDropContext>
-
-      <ClientDrawer
+      <ContractDrawer
         open={drawerOpen}
-        disabled={role !== "admin"}
         mode={drawerMode}
-        client={currentClient}
+        contract={currentContract}
+        categories={categories}
         onClose={() => {
           setDrawerOpen(false);
-          setCurrentClient(null);
+          setCurrentContract(null);
         }}
+        // ✅ missing onSubmit 추가
         onSubmit={async (data) => {
           if (!currentCompanyId) return;
+
           if (drawerMode === "create") {
-            await createClient(
+            // 새 계약 생성
+            await createContract(
               currentCompanyId,
-              data as Client.CreateClientInput
+              data as Contract.CreateContractInput
             );
-            showAlert("거래처가 추가되었습니다.", { type: "success" });
-          } else if (drawerMode === "edit" && currentClient) {
-            await updateClient(currentClient.id, data);
-            showAlert("거래처 정보가 수정되었습니다.", { type: "success" });
+            showAlert("계약이 추가되었습니다.", { type: "success" });
+          } else if (drawerMode === "edit" && currentContract) {
+            // 기존 계약 수정
+            await updateContract(currentContract.id, data);
+            showAlert("계약 정보가 수정되었습니다.", { type: "success" });
           }
           setDrawerOpen(false);
         }}
+        // ✅ 삭제 로직도 필요한 경우 추가
         onDelete={
           drawerMode === "edit"
             ? async () => {
                 await openDialog({
-                  title: "거래처 삭제",
-                  message: `"${currentClient?.name}" 거래처를 제거하시겠습니까?`,
+                  title: "계약 삭제",
+                  message: `"${currentContract?.title}" 계약을 삭제하시겠습니까?`,
                   confirmText: "삭제",
                   cancelText: "취소",
                   state: "danger",
                   onConfirm: async () => {
-                    if (currentClient) {
-                      await deleteClient(currentClient.id);
+                    if (currentContract) {
+                      await deleteContract(currentContract.id);
                       showAlert("삭제되었습니다.", { type: "success" });
                     }
                     setDrawerOpen(false);
@@ -301,6 +311,10 @@ export default function ClientManagement() {
               }
             : undefined
         }
+      />
+      <CategorySettingsDrawer
+        open={categoryDrawerOpen}
+        onClose={() => setCategoryDrawerOpen(false)}
       />
     </>
   );

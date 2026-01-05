@@ -148,7 +148,7 @@ export default function Gnb() {
         {
           id: "contract-management",
           label: "계약관리",
-          href: "/under-construction",
+          href: "/contract-management",
         },
         {
           id: "equipment-purchase",
