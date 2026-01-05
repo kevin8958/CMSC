@@ -190,7 +190,7 @@ export default function ClientDrawer({
               variant="outline"
               size="sm"
               disabled={disabled}
-              dateFormat="YYYY.MM.DD"
+              dateFormat="yyyy.MM.dd"
               value={contractDate}
               onChange={(date) => setContractDate(date)}
             />
