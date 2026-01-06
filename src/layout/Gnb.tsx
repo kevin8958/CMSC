@@ -368,14 +368,18 @@ export default function Gnb() {
                         <Typography
                           variant="B1"
                           classes={
-                            pathname === item.href ? "!font-bold" : "font-bold"
+                            pathname === item.href &&
+                            pathname !== "/under-construction"
+                              ? "!font-bold"
+                              : "font-bold"
                           }
                         >
                           {item.label}
                         </Typography>
-                        {pathname === item.href && (
-                          <div className="size-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-                        )}
+                        {pathname === item.href &&
+                          pathname !== "/under-construction" && (
+                            <div className="size-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                          )}
                       </button>
                     ));
                   }
@@ -424,16 +428,18 @@ export default function Gnb() {
                                 <Typography
                                   variant="B1"
                                   classes={
-                                    pathname === item.href
+                                    pathname === item.href &&
+                                    pathname !== "/under-construction"
                                       ? "!font-bold"
                                       : "font-normal"
                                   }
                                 >
                                   {item.label}
                                 </Typography>
-                                {pathname === item.href && (
-                                  <div className="size-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-                                )}
+                                {pathname === item.href &&
+                                  pathname !== "/under-construction" && (
+                                    <div className="size-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                                  )}
                               </button>
                             ))}
                           </motion.div>

@@ -259,15 +259,17 @@ const SNB = () => {
                     onClick={() => handleMove(item.href)}
                     className={classNames(
                       "flex items-center justify-between w-full rounded-lg py-2.5 px-3 text-sm transition-all duration-200 mb-1",
-                      pathname === item.href
+                      pathname === item.href &&
+                        pathname !== "/under-construction"
                         ? "bg-primary-50 text-primary-900 !font-bold"
                         : "text-gray-700 hover:bg-gray-50 font-bold"
                     )}
                   >
                     <span className="truncate">{item.label}</span>
-                    {pathname === item.href && (
-                      <div className="size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] shrink-0" />
-                    )}
+                    {pathname === item.href &&
+                      pathname !== "/under-construction" && (
+                        <div className="size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] shrink-0" />
+                      )}
                   </button>
                 </li>
               ));
@@ -312,15 +314,17 @@ const SNB = () => {
                           onClick={() => handleMove(item.href)}
                           className={classNames(
                             "flex items-center justify-between w-full py-2 px-3 rounded-md text-sm transition-all",
-                            pathname === item.href
+                            pathname === item.href &&
+                              pathname !== "/under-construction"
                               ? "bg-primary-50 text-primary-900 !font-bold"
                               : "text-gray-500 hover:text-primary-800 hover:bg-gray-50 font-normal"
                           )}
                         >
                           <span className="truncate">{item.label}</span>
-                          {pathname === item.href && (
-                            <div className="size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] shrink-0" />
-                          )}
+                          {pathname === item.href &&
+                            pathname !== "/under-construction" && (
+                              <div className="size-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] shrink-0" />
+                            )}
                         </button>
                       ))}
                     </motion.div>
