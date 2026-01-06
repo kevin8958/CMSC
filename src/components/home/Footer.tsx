@@ -29,7 +29,7 @@ export default function Footer() {
               <p>사업자명: 에피스</p>
               <p>사업자등록번호: 176-08-02714</p>
               <p>사업장소재지: 구로구 경인로43길 49 </p>
-              <p>문의전화: - </p>
+              <p>문의전화: 070-8144-2107</p>
             </FlexWrapper>
             <a
               href="mailto:hello@understand.partners"
