@@ -8,37 +8,46 @@ import Section3 from "@/components/home/Section3";
 import Section4 from "@/components/home/Section4";
 import Section5 from "@/components/home/Section5";
 import Footer from "@/components/home/Footer";
-import { useDialog } from "@/hooks/useDialog";
-import InquiryDialogBody from "@/components/home/InquiryDialogBody";
-import { useAlert } from "@/components/AlertProvider";
-import { useInquiryStore } from "@/stores/useInquiryStore";
+// import { useDialog } from "@/hooks/useDialog";
+// import InquiryDialogBody from "@/components/home/InquiryDialogBody";
+// import { useAlert } from "@/components/AlertProvider";
+// import { useInquiryStore } from "@/stores/useInquiryStore";
 
 function Home() {
   const navigate = useNavigate();
-  const { openDialog } = useDialog();
-  const { showAlert } = useAlert();
-  const { sendInquiry } = useInquiryStore();
+  // const { openDialog } = useDialog();
+  // const { showAlert } = useAlert();
+  // const { sendInquiry } = useInquiryStore();
 
-  const handleSubmit = async (form: {
-    phone: string;
-    name: string;
-    position?: string;
-    content: string;
-  }) => {
-    try {
-      await sendInquiry({
-        ...form,
-      });
+  // const handleSubmit = async (form: {
+  //   phone: string;
+  //   name: string;
+  //   position?: string;
+  //   content: string;
+  // }) => {
+  //   try {
+  //     await sendInquiry({
+  //       ...form,
+  //     });
 
-      showAlert("문의가 접수되었습니다.", {
-        type: "success",
-      });
-    } catch (e) {
-      showAlert("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.", {
-        type: "danger",
-      });
-    }
+  //     showAlert("문의가 접수되었습니다.", {
+  //       type: "success",
+  //     });
+  //   } catch (e) {
+  //     showAlert("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.", {
+  //       type: "danger",
+  //     });
+  //   }
+  // };
+
+  const KAKAO_CHANNEL_ID = "_xexeegn"; // 실제 채널 아이디 입력
+  const CHAT_URL = `https://pf.kakao.com/${KAKAO_CHANNEL_ID}/chat`;
+
+  const handleContact = () => {
+    // 새 창으로 상담창 열기
+    window.open(CHAT_URL, "_blank");
   };
+
   return (
     <>
       <div className="flex flex-col items-center w-full bg-gradient-to-b from-[rgba(71,208,162,0.3)] to-[rgba(71,208,162,0)] from-0% via-10% via-[rgba(71,208,162,0)] to-100% min-h-screen">
@@ -76,17 +85,18 @@ function Home() {
               size="lg"
               classes="!w-[200px] !text-xl !font-bold !rounded-lg !py-6"
               onClick={() => {
-                openDialog({
-                  title: "문의하기",
-                  hideBottom: true, // 아래 confirm/cancel 안 쓰고 body에서 버튼 있음
-                  body: (
-                    <InquiryDialogBody
-                      onSubmit={async (data) => {
-                        handleSubmit(data);
-                      }}
-                    />
-                  ),
-                });
+                handleContact();
+                // openDialog({
+                //   title: "문의하기",
+                //   hideBottom: true, // 아래 confirm/cancel 안 쓰고 body에서 버튼 있음
+                //   body: (
+                //     <InquiryDialogBody
+                //       onSubmit={async (data) => {
+                //         handleSubmit(data);
+                //       }}
+                //     />
+                //   ),
+                // });
               }}
             >
               문의하기
