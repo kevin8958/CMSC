@@ -68,7 +68,7 @@ function Home() {
             </a>
 
             <Button
-              variant="outline"
+              variant="contain"
               onClick={() => {
                 navigate("/login");
               }}
