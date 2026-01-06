@@ -8,44 +8,50 @@ import Section3 from "@/components/home/Section3";
 import Section4 from "@/components/home/Section4";
 import Section5 from "@/components/home/Section5";
 import Footer from "@/components/home/Footer";
-// import { useDialog } from "@/hooks/useDialog";
-// import InquiryDialogBody from "@/components/home/InquiryDialogBody";
-// import { useAlert } from "@/components/AlertProvider";
-// import { useInquiryStore } from "@/stores/useInquiryStore";
+import { useDialog } from "@/hooks/useDialog";
+import InquiryDialogBody from "@/components/home/InquiryDialogBody";
+import { useAlert } from "@/components/AlertProvider";
+import { useInquiryStore } from "@/stores/useInquiryStore";
+import { RiKakaoTalkFill } from "react-icons/ri"; // 카카오 아이콘 추가
 
 function Home() {
   const navigate = useNavigate();
-  // const { openDialog } = useDialog();
-  // const { showAlert } = useAlert();
-  // const { sendInquiry } = useInquiryStore();
+  const { openDialog } = useDialog();
+  const { showAlert } = useAlert();
+  const { sendInquiry } = useInquiryStore();
 
-  // const handleSubmit = async (form: {
-  //   phone: string;
-  //   name: string;
-  //   position?: string;
-  //   content: string;
-  // }) => {
-  //   try {
-  //     await sendInquiry({
-  //       ...form,
-  //     });
+  const handleSubmit = async (form: {
+    phone: string;
+    name: string;
+    position?: string;
+    content: string;
+  }) => {
+    try {
+      await sendInquiry({ ...form });
+      showAlert("문의가 접수되었습니다.", { type: "success" });
+    } catch (e) {
+      showAlert("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.", {
+        type: "danger",
+      });
+    }
+  };
 
-  //     showAlert("문의가 접수되었습니다.", {
-  //       type: "success",
-  //     });
-  //   } catch (e) {
-  //     showAlert("문의 전송에 실패했습니다. 잠시 후 다시 시도해주세요.", {
-  //       type: "danger",
-  //     });
-  //   }
-  // };
-
-  const KAKAO_CHANNEL_ID = "_xexeegn"; // 실제 채널 아이디 입력
+  // 카카오톡 설정
+  const KAKAO_CHANNEL_ID = "_xexeegn"; // 💡 실제 채널 ID (앞에 _ 포함)를 입력하세요.
   const CHAT_URL = `https://pf.kakao.com/${KAKAO_CHANNEL_ID}/chat`;
 
-  const handleContact = () => {
-    // 새 창으로 상담창 열기
-    window.open(CHAT_URL, "_blank");
+  // 팝업창으로 열기 함수
+  const handleKakaoPopup = () => {
+    const width = 500;
+    const height = 700;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    window.open(
+      CHAT_URL,
+      "KakaoTalkChatPopup",
+      `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+    );
   };
 
   return (
@@ -70,33 +76,33 @@ function Home() {
               회원 로그인
             </Button>
           </FlexWrapper>
+
           <div className="flex flex-col gap-4 items-center">
-            {/* <IntroGnb /> */}
             <Section1 />
             <Section2 />
             <Section3 />
             <Section4 />
             <Section5 />
           </div>
+
+          {/* 기존 하단 중앙 문의하기 버튼 */}
           <div className="sticky bottom-[52px] mx-auto w-fit z-[999]">
             <Button
               variant="contain"
-              // color="green"
               size="lg"
-              classes="!w-[200px] !text-xl !font-bold !rounded-lg !py-6"
+              classes="!w-[200px] !text-xl !font-bold !rounded-lg !py-6 shadow-xl"
               onClick={() => {
-                handleContact();
-                // openDialog({
-                //   title: "문의하기",
-                //   hideBottom: true, // 아래 confirm/cancel 안 쓰고 body에서 버튼 있음
-                //   body: (
-                //     <InquiryDialogBody
-                //       onSubmit={async (data) => {
-                //         handleSubmit(data);
-                //       }}
-                //     />
-                //   ),
-                // });
+                openDialog({
+                  title: "문의하기",
+                  hideBottom: true,
+                  body: (
+                    <InquiryDialogBody
+                      onSubmit={async (data) => {
+                        handleSubmit(data);
+                      }}
+                    />
+                  ),
+                });
               }}
             >
               문의하기
@@ -104,6 +110,20 @@ function Home() {
           </div>
         </div>
         <Footer />
+
+        {/* --- 카카오톡 플로팅 버튼 추가 --- */}
+        <button
+          onClick={handleKakaoPopup}
+          className="fixed bottom-8 right-8 z-[1000] w-14 h-14 bg-[#FEE500] rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group"
+          aria-label="카카오톡 상담하기"
+        >
+          <RiKakaoTalkFill className="text-[32px] text-[#191919]" />
+
+          {/* 툴팁 (선택 사항) */}
+          <span className="absolute right-16 bg-white text-gray-800 text-sm font-bold py-2 px-3 rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            카톡 상담하기
+          </span>
+        </button>
       </div>
     </>
   );
