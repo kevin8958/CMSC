@@ -6,12 +6,21 @@ export interface CreateInquiryParams {
   position?: string;
   content: string;
   company_id?: string;
+  privacy_policy_agreed: boolean; // 필수 동의
+  marketing_agreed: boolean; // 선택 동의
 }
 
 export async function createInquiry(params: CreateInquiryParams) {
-  const { phone, name, position, content } = params;
+  const {
+    phone,
+    name,
+    position,
+    content,
+    privacy_policy_agreed,
+    marketing_agreed,
+  } = params;
 
-  if (!phone || !name || !content) {
+  if (!phone || !name || !content || !privacy_policy_agreed) {
     throw new Error("필수 값이 누락되었습니다.");
   }
 
@@ -22,6 +31,8 @@ export async function createInquiry(params: CreateInquiryParams) {
       name,
       position,
       content,
+      privacy_policy_agreed,
+      marketing_agreed,
     })
     .select()
     .single();

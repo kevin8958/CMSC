@@ -25,6 +25,8 @@ function Home() {
     name: string;
     position?: string;
     content: string;
+    privacy_policy_agreed: boolean;
+    marketing_agreed: boolean;
   }) => {
     try {
       await sendInquiry({ ...form });
