@@ -51,6 +51,12 @@ const SNB = () => {
                 href: "/inquiry",
                 icon: <LuMailCheck />,
               },
+              {
+                id: "company-intro-management",
+                label: "회사소개서관리",
+                href: "/company-intro-management",
+                icon: <LuMailCheck />,
+              },
             ],
           },
         ]

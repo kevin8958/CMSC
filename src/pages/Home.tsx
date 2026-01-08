@@ -12,13 +12,16 @@ import { useDialog } from "@/hooks/useDialog";
 import InquiryDialogBody from "@/components/home/InquiryDialogBody";
 import { useAlert } from "@/components/AlertProvider";
 import { useInquiryStore } from "@/stores/useInquiryStore";
-import { RiKakaoTalkFill } from "react-icons/ri"; // 카카오 아이콘 추가
+import { RiKakaoTalkFill } from "react-icons/ri";
+import CompanyIntroDialogBody from "@/components/home/CompanyIntroDialogBody";
+import { useCompanyIntroStore } from "@/stores/useCompanyIntroStore";
 
 function Home() {
   const navigate = useNavigate();
   const { openDialog } = useDialog();
   const { showAlert } = useAlert();
   const { sendInquiry } = useInquiryStore();
+  const { sendRequest } = useCompanyIntroStore();
 
   const handleSubmit = async (form: {
     phone: string;
@@ -69,14 +72,33 @@ function Home() {
               <img src={Logo} alt="USP Logo" className="w-[80px]" />
             </a>
 
-            <Button
-              variant="contain"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              회원 로그인
-            </Button>
+            {/* ✅ 버튼 영역 수정 */}
+            <FlexWrapper gap={2}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  openDialog({
+                    title: "회사소개서 요청",
+                    hideBottom: true,
+                    body: (
+                      <CompanyIntroDialogBody
+                        onSubmit={async (data) => {
+                          await sendRequest(data);
+                          showAlert("회사소개서 요청이 완료되었습니다.", {
+                            type: "success",
+                          });
+                        }}
+                      />
+                    ),
+                  });
+                }}
+              >
+                회사소개서
+              </Button>
+              <Button variant="contain" onClick={() => navigate("/login")}>
+                회원 로그인
+              </Button>
+            </FlexWrapper>
           </FlexWrapper>
 
           <div className="flex flex-col gap-4 items-center">

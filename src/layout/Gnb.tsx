@@ -259,6 +259,7 @@ export default function Gnb() {
     { label: "회사관리", path: "/company" },
     { label: "멤버관리", path: "/member" },
     { label: "문의관리", path: "/inquiry" },
+    { label: "회사소개서관리", path: "/company-intro-management" },
   ];
 
   const dropdownItems = companies.map((c) => ({

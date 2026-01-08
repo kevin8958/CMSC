@@ -38,6 +38,7 @@ import UpdatePassword from "./pages/UpdatePassword";
 import UnderConstruction from "./pages/UnderConstruction";
 import ClientManagement from "./pages/ClientManagement";
 import ContractManagement from "./pages/ContractManagement";
+import CompanyIntroManagement from "./pages/CompanyIntroManagement";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -123,6 +124,10 @@ function App() {
                 <Route path="/company/:companyId" element={<CompanyDetail />} />
                 <Route path="/member" element={<Member />} />
                 <Route path="/inquiry" element={<Inquiry />} />
+                <Route
+                  path="/company-intro-management"
+                  element={<CompanyIntroManagement />}
+                />
                 <Route path="/settings" element={<Settings />} />
                 <Route
                   path="/client-management"
