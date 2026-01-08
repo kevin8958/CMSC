@@ -1,10 +1,18 @@
 import FlexWrapper from "@/layout/FlexWrapper";
-import { LuMail, LuDownload } from "react-icons/lu"; // LuDownload 추가
+import { LuMail } from "react-icons/lu";
+import { useDialog } from "@/hooks/useDialog";
+import PrivacyPolicyBody from "./PrivacyPolicyBody";
 
 export default function Footer() {
-  // Supabase에서 생성한 파일의 Public URL (실제 URL로 교체하세요)
-  const PRIVACY_POLICY_URL =
-    "https://yarxdwcbfginxemagfkc.supabase.co/storage/v1/object/public/public-assets/effice_privacy_policy.docx";
+  const { openDialog } = useDialog();
+
+  const handlePrivacyClick = () => {
+    openDialog({
+      title: "개인정보처리방침",
+      hideBottom: true, // 하단 확인/취소 버튼 숨김 (닫기 버튼은 다이얼로그 기본 기능)
+      body: <PrivacyPolicyBody />,
+    });
+  };
   return (
     <footer className="w-full border-t border-gray-200 pb-10 mt-10 pt-6 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-8">
@@ -49,15 +57,13 @@ export default function Footer() {
                 <LuMail className="text-lg text-primary-500" />
                 hello@effice.co.kr
               </a>
-
-              <a
-                href={PRIVACY_POLICY_URL}
-                download="에피스_개인정보처리방침.pdf"
-                className="text-sm text-gray-600 flex items-center gap-1.5 hover:text-primary-600 transition-colors"
+              <button
+                type="button"
+                onClick={handlePrivacyClick}
+                className="text-sm text-gray-500 font-medium hover:text-gray-900 transition-colors border-b border-gray-400"
               >
-                <LuDownload className="text-lg text-primary-500" />
                 개인정보처리방침
-              </a>
+              </button>
             </FlexWrapper>
           </FlexWrapper>
 
