@@ -2,6 +2,8 @@ import { useState } from "react";
 import FlexWrapper from "@/layout/FlexWrapper";
 import TextInput from "@/components/TextInput";
 import Button from "@/components/Button";
+import Checkbox from "@/components/Checkbox"; // ✅ Checkbox 컴포넌트 추가
+import Typography from "@/foundation/Typography"; // ✅ Typography 추가
 import { useAlert } from "@/components/AlertProvider";
 import { useDialog } from "@/hooks/useDialog";
 
@@ -13,6 +15,7 @@ export default function CompanyIntroDialogBody({
   const { showAlert } = useAlert();
   const { close } = useDialog();
   const [loading, setLoading] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false); // ✅ 동의 상태 추가
 
   const [form, setForm] = useState({
     clinic_name: "",
@@ -22,13 +25,11 @@ export default function CompanyIntroDialogBody({
     email: "",
   });
 
-  // 에러 상태 관리
   const [errors, setErrors] = useState({
     email: "",
     phone: "",
   });
 
-  /** 연락처 포맷팅 (010-0000-0000) */
   const formatPhone = (value: string) => {
     const numbers = value.replace(/\D/g, "");
     if (numbers.length < 4) return numbers;
@@ -36,7 +37,6 @@ export default function CompanyIntroDialogBody({
     return numbers.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
   };
 
-  /** 이메일 형식 검증 로직 */
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -57,16 +57,20 @@ export default function CompanyIntroDialogBody({
       }));
       showAlert("이메일 형식을 확인해주세요.", { type: "danger" });
       return;
-    } else {
-      setErrors((prev) => ({ ...prev, email: "" }));
     }
 
-    // 3. 연락처 길이 검증 (최소 12자: 010-000-0000 이상)
+    // 3. 연락처 길이 검증
     if (form.phone.length < 12) {
       setErrors((prev) => ({
         ...prev,
         phone: "연락처를 정확히 입력해주세요.",
       }));
+      return;
+    }
+
+    // ✅ 4. 개인정보 동의 여부 확인
+    if (!isAgreed) {
+      showAlert("개인정보 수집 및 이용에 동의해주세요.", { type: "danger" });
       return;
     }
 
@@ -139,11 +143,24 @@ export default function CompanyIntroDialogBody({
         }}
       />
 
+      {/* ✅ 개인정보 동의 섹션 추가 */}
+      <div className="flex flex-col gap-1.5 mt-2 py-3 border-t border-gray-100">
+        <Checkbox
+          id="intro-agree"
+          checked={isAgreed}
+          onChange={() => setIsAgreed(!isAgreed)}
+          label="(필수) 개인정보 수집 및 이용에 동의합니다"
+        />
+        <Typography variant="B2" classes="text-gray-400 ml-7">
+          * 동의하지 않는 경우 상담이 어려울 수 있습니다
+        </Typography>
+      </div>
+
       <Button
         variant="contain"
         color="green"
         size="lg"
-        classes="w-full mt-2 !py-4 !text-lg"
+        classes="w-full !py-4 !text-lg shadow-md"
         disabled={loading}
         onClick={handleSubmit}
       >
