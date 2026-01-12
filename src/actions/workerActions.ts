@@ -8,26 +8,31 @@ export const fetchWorkers = async (
   companyId: string,
   page: number,
   size: number,
-  sortKey: string = "created_at", // 기본값
-  sortOrder: "asc" | "desc" = "desc" // 기본값
+  sortKey: string = "created_at",
+  sortOrder: "asc" | "desc" = "desc",
+  searchTerm: string = "" // ✅ 검색어 추가
 ) => {
   const from = (page - 1) * size;
   const to = from + size - 1;
 
-  const { data, count, error } = await supabase
+  let query = supabase
     .from("workers")
     .select("*", { count: "exact" })
-    .eq("company_id", companyId)
-    // ✅ 정렬 로직 적용
+    .eq("company_id", companyId);
+
+  // ✅ 글로벌 검색 로직 추가 (텍스트 필드들 전체 검색)
+  if (searchTerm) {
+    query = query.or(
+      `name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%,department.ilike.%${searchTerm}%,position.ilike.%${searchTerm}%,memo.ilike.%${searchTerm}%`
+    );
+  }
+
+  const { data, count, error } = await query
     .order(sortKey, { ascending: sortOrder === "asc" })
     .range(from, to);
 
   if (error) throw error;
-
-  return {
-    list: data,
-    total: count || 0,
-  };
+  return { list: data, total: count || 0 };
 };
 // ----------------------------------------------------------
 // 2) Create Worker

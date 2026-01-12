@@ -20,6 +20,8 @@ interface WorkerStore {
   // ✅ 정렬 상태 추가
   sortKey: string;
   sortOrder: "asc" | "desc";
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
@@ -30,7 +32,8 @@ interface WorkerStore {
     page?: number,
     size?: number,
     sortKey?: string,
-    sortOrder?: "asc" | "desc"
+    sortOrder?: "asc" | "desc",
+    searchTerm?: string
   ) => Promise<void>;
 
   create: (data: Worker.CreateWorkerParams) => Promise<Worker.Worker | null>;
@@ -54,6 +57,8 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   // ✅ 기본 정렬값 설정
   sortKey: "created_at",
   sortOrder: "desc",
+  searchTerm: "",
+  setSearchTerm: (term) => set({ searchTerm: term }),
 
   setPage: (page) => set({ page }),
   setPageSize: (size) => set({ pageSize: size }),
@@ -61,11 +66,12 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   // ----------------------------------------------------------
   // Fetch (정렬 파라미터 적용)
   // ----------------------------------------------------------
-  fetch: async (companyId, page, size, sortKey, sortOrder) => {
+  fetch: async (companyId, page, size, sortKey, sortOrder, searchTerm) => {
     const currentPage = page ?? get().page;
     const currentSize = size ?? get().pageSize;
     const currentSortKey = sortKey ?? get().sortKey;
     const currentSortOrder = sortOrder ?? get().sortOrder;
+    const currentSearch = searchTerm ?? get().searchTerm;
 
     set({ loading: true });
 
@@ -76,7 +82,8 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
         currentPage,
         currentSize,
         currentSortKey,
-        currentSortOrder
+        currentSortOrder,
+        currentSearch
       );
 
       set({
@@ -86,6 +93,7 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
         pageSize: currentSize,
         sortKey: currentSortKey,
         sortOrder: currentSortOrder,
+        searchTerm: currentSearch,
       });
     } catch (err) {
       console.error("❌ fetchWorkers error:", err);

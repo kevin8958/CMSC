@@ -4,7 +4,13 @@ import Table from "@/components/Table";
 import Badge from "@/components/Badge";
 import { useEffect, useState } from "react";
 import { useAlert } from "@/components/AlertProvider";
-import { LuPlus, LuArrowUpDown, LuArrowUp, LuArrowDown } from "react-icons/lu";
+import {
+  LuPlus,
+  LuArrowUpDown,
+  LuArrowUp,
+  LuArrowDown,
+  LuSearch,
+} from "react-icons/lu";
 import dayjs from "dayjs";
 import TableSkeleton from "@/layout/TableSkeleton";
 import Button from "@/components/Button";
@@ -18,13 +24,24 @@ import classNames from "classnames";
 function Worker() {
   const { currentCompanyId } = useCompanyStore();
   const { showAlert } = useAlert();
-  const { workers, loading, total, setPage, fetch, create, update, remove } =
-    useWorkerStore();
+  const {
+    workers,
+    loading,
+    total,
+    setPage,
+    fetch,
+    create,
+    update,
+    remove,
+    searchTerm,
+    setSearchTerm,
+  } = useWorkerStore();
   const { role } = useAuthStore();
 
   const [currentWorker, setCurrentWorker] = useState<any>(null);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
+  const [searchInput, setSearchInput] = useState(""); // 로컬 UI 입력값
 
   const [sortConfig, setSortConfig] = useState<{
     key: string;
@@ -34,16 +51,50 @@ function Worker() {
     order: "desc",
   });
 
+  // 1. 초기 로드 및 정렬 변경 시
   useEffect(() => {
     if (currentCompanyId) {
-      fetch(currentCompanyId, 1, 10, sortConfig.key, sortConfig.order);
+      fetch(
+        currentCompanyId,
+        1,
+        10,
+        sortConfig.key,
+        sortConfig.order,
+        searchTerm
+      );
     }
   }, [currentCompanyId, sortConfig]);
+
+  // 2. 검색어 디바운스 처리 (타이핑 멈추고 500ms 후 fetch)
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (currentCompanyId) {
+        setSearchTerm(searchInput);
+        fetch(
+          currentCompanyId,
+          1,
+          10,
+          sortConfig.key,
+          sortConfig.order,
+          searchInput
+        );
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchInput]);
 
   const fetchWorkers = (page: number, size: number) => {
     if (currentCompanyId) {
       setPage(page);
-      fetch(currentCompanyId, page, size, sortConfig.key, sortConfig.order);
+      fetch(
+        currentCompanyId,
+        page,
+        size,
+        sortConfig.key,
+        sortConfig.order,
+        searchTerm
+      );
     }
   };
 
@@ -93,27 +144,21 @@ function Worker() {
     </button>
   );
 
-  // 공제 상태 뱃지 렌더러
-  const StatusBadge = ({ active }: { active: boolean }) => {
-    return (
-      <span
-        className={classNames(
-          "p-1  flex items-center gap-1 rounded-md text-white text-xs font-semibold w-max",
-          {
-            "bg-green-600 ": active,
-            "bg-gray-100": !active,
-          }
-        )}
-      >
-        <BsCheck
-          className={classNames("text-base", {
-            "text-white": active,
-            "text-gray-300": !active,
-          })}
-        />
-      </span>
-    );
-  };
+  const StatusBadge = ({ active }: { active: boolean }) => (
+    <span
+      className={classNames(
+        "p-1 flex items-center gap-1 rounded-md text-white text-xs font-semibold w-max",
+        { "bg-green-600": active, "bg-gray-100": !active }
+      )}
+    >
+      <BsCheck
+        className={classNames("text-base", {
+          "text-white": active,
+          "text-gray-300": !active,
+        })}
+      />
+    </span>
+  );
 
   const columns = [
     {
@@ -125,12 +170,9 @@ function Worker() {
         </Typography>
       ),
     },
-
     {
       accessorKey: "email",
-
       header: "이메일",
-
       cell: ({ row }: any) => (
         <Typography variant="B2" classes="text-gray-500">
           {row.original.email || "-"}
@@ -139,9 +181,7 @@ function Worker() {
     },
     {
       accessorKey: "birth_date",
-
       header: () => <SortableHeader title="생년월일" sortKey="birth_date" />,
-
       cell: ({ row }: any) => (
         <Typography variant="B2">
           {row.original.birth_date
@@ -150,22 +190,16 @@ function Worker() {
         </Typography>
       ),
     },
-
     {
       accessorKey: "phone",
-
-      header: "연락처", // 정렬이 필요 없는 항목은 텍스트로 유지
-
+      header: "연락처",
       cell: ({ row }: any) => (
         <Typography variant="B2">{row.original.phone || "-"}</Typography>
       ),
     },
-
     {
       accessorKey: "joined_at",
-
       header: () => <SortableHeader title="입사일" sortKey="joined_at" />,
-
       cell: ({ row }: any) => (
         <Typography variant="B2">
           {row.original.joined_at
@@ -188,7 +222,6 @@ function Worker() {
         <Typography variant="B2">{row.original.position || "-"}</Typography>
       ),
     },
-    // --- 신규 추가: 공제 및 등록 상태 컬럼들 ---
     {
       accessorKey: "has_health_insurance_dependent",
       header: () => (
@@ -249,22 +282,36 @@ function Worker() {
           </Badge>
         </FlexWrapper>
 
-        {role === "admin" && (
-          <Button
-            variant="contain"
-            color="green"
-            size="md"
-            classes="gap-1 !px-4 shrink-0 shadow-sm"
-            onClick={() => {
-              setCurrentWorker(null);
-              setDrawerMode("create");
-              setOpenDrawer(true);
-            }}
-          >
-            <LuPlus className="text-lg" />
-            근로자 추가
-          </Button>
-        )}
+        <FlexWrapper gap={4} items="center">
+          {/* ✅ 글로벌 검색창 추가 */}
+          <div className="relative w-[300px]">
+            <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="이름, 부서, 연락처 등 검색..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="bg-white w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 transition-all"
+            />
+          </div>
+
+          {role === "admin" && (
+            <Button
+              variant="contain"
+              color="green"
+              size="md"
+              classes="gap-1 !px-4 shrink-0 shadow-sm"
+              onClick={() => {
+                setCurrentWorker(null);
+                setDrawerMode("create");
+                setOpenDrawer(true);
+              }}
+            >
+              <LuPlus className="text-lg" />
+              근로자 추가
+            </Button>
+          )}
+        </FlexWrapper>
       </FlexWrapper>
 
       {loading ? (
@@ -300,33 +347,21 @@ function Worker() {
         onClose={() => setOpenDrawer(false)}
         onSubmit={async (data) => {
           if (!currentCompanyId) return;
-          try {
-            await create({ company_id: currentCompanyId, ...data });
-            showAlert("근로자가 추가되었습니다.", { type: "success" });
-            setOpenDrawer(false);
-          } catch (err) {
-            showAlert("오류가 발생했습니다.", { type: "danger" });
-          }
+          await create({ company_id: currentCompanyId, ...data });
+          showAlert("근로자가 추가되었습니다.", { type: "success" });
+          setOpenDrawer(false);
         }}
         onEdit={async (data) => {
           if (!currentWorker) return;
-          try {
-            await update(currentWorker.id, data);
-            showAlert("수정되었습니다.", { type: "success" });
-            setOpenDrawer(false);
-          } catch (err) {
-            showAlert("오류가 발생했습니다.", { type: "danger" });
-          }
+          await update(currentWorker.id, data);
+          showAlert("수정되었습니다.", { type: "success" });
+          setOpenDrawer(false);
         }}
         onDelete={async () => {
           if (!currentWorker) return;
-          try {
-            await remove(currentWorker.id);
-            showAlert("삭제되었습니다.", { type: "danger" });
-            setOpenDrawer(false);
-          } catch (err) {
-            showAlert("오류가 발생했습니다.", { type: "danger" });
-          }
+          await remove(currentWorker.id);
+          showAlert("삭제되었습니다.", { type: "danger" });
+          setOpenDrawer(false);
         }}
       />
     </>
