@@ -61,10 +61,10 @@ export default function AttendanceWorkerList({
                         {m.name}
                       </Typography>
                       <Typography variant="C1" classes="!text-gray-500">
-                        {m.duty}
+                        {m.position}
                       </Typography>
                       <Typography variant="C1" classes="!text-gray-500">
-                        {m.position}
+                        {m.department}
                       </Typography>
                     </FlexWrapper>
                     <FlexWrapper gap={1} items="center">

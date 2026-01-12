@@ -18,8 +18,8 @@ export async function fetchMonthlyAttendance(companyId: string, month: string) {
       worker:workers(
         id,
         name,
-        position,
-        duty
+        department,
+        position
       )
     `
     )
@@ -35,15 +35,15 @@ export async function fetchMonthlyAttendance(companyId: string, month: string) {
       const w = r.worker as unknown as {
         id: string;
         name: string;
+        department: string | null;
         position: string | null;
-        duty: string | null;
       } | null;
 
       return {
         id: r.id,
         user_name: w?.name || "-",
+        user_department: w?.department || "",
         user_position: w?.position || "",
-        user_duty: w?.duty || "",
         start_date: r.start_date,
         end_date: r.end_date,
         days: r.days,

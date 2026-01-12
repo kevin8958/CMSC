@@ -71,12 +71,12 @@ export default function AttendanceDrawer({
               <Typography variant="B2">{worker.joined_at || "-"}</Typography>
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-6">
-              <Label text="직급" />
-              <Typography variant="B2">{worker.position || "-"}</Typography>
+              <Label text="부서" />
+              <Typography variant="B2">{worker.department || "-"}</Typography>
             </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="col-span-6">
-              <Label text="직책" />
-              <Typography variant="B2">{worker.duty || "-"}</Typography>
+              <Label text="직급" />
+              <Typography variant="B2">{worker.position || "-"}</Typography>
             </FlexWrapper>
           </div>
         </FlexWrapper>

@@ -90,10 +90,10 @@ export default function AttendanceUsageList({
                         {item.user_name}
                       </Typography>
                       <Typography variant="C1" classes="!text-gray-500">
-                        {item.user_duty}
+                        {item.user_position}
                       </Typography>
                       <Typography variant="C1" classes="!text-gray-500">
-                        {item.user_position}
+                        {item.user_department}
                       </Typography>
                     </FlexWrapper>
                     <Typography variant="B2" classes="!text-gray-500">

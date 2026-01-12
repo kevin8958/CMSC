@@ -28,8 +28,8 @@ namespace Attendance {
   interface MonthlyRecord {
     id: string;
     user_name: string;
-    user_duty: string;
     user_position: string;
+    user_department: string;
     start_date: string;
     end_date: string;
     days: number;
