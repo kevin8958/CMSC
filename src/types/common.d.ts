@@ -47,7 +47,8 @@ namespace Common {
     | "success"
     | "warning"
     | "danger"
-    | "green";
+    | "green"
+    | "white";
   type ButtonIconPosition = "left" | "right";
   type ButtonShape = "rect" | "circle";
   interface ButtonProps {

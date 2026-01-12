@@ -17,7 +17,10 @@ interface WorkerStore {
   total: number;
   page: number;
   pageSize: number;
-  // ✅ 정렬 상태 추가
+  filters: {
+    departments: string[]; // 선택된 부서들
+    deductions: string[]; // 선택된 공제 필드명들 (예: ['has_youth_deduction'])
+  };
   sortKey: string;
   sortOrder: "asc" | "desc";
   searchTerm: string;
@@ -33,7 +36,11 @@ interface WorkerStore {
     size?: number,
     sortKey?: string,
     sortOrder?: "asc" | "desc",
-    searchTerm?: string
+    searchTerm?: string,
+    filters?: {
+      departments: string[];
+      deductions: string[];
+    }
   ) => Promise<void>;
 
   create: (data: Worker.CreateWorkerParams) => Promise<Worker.Worker | null>;
@@ -54,7 +61,10 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   total: 0,
   page: 1,
   pageSize: 10,
-  // ✅ 기본 정렬값 설정
+  filters: {
+    departments: [],
+    deductions: [],
+  },
   sortKey: "created_at",
   sortOrder: "desc",
   searchTerm: "",
@@ -66,24 +76,35 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   // ----------------------------------------------------------
   // Fetch (정렬 파라미터 적용)
   // ----------------------------------------------------------
-  fetch: async (companyId, page, size, sortKey, sortOrder, searchTerm) => {
+  fetch: async (
+    companyId,
+    page,
+    size,
+    sortKey,
+    sortOrder,
+    searchTerm,
+    filters
+  ) => {
+    // 인자가 없으면 현재 스토어의 상태를 가져옴
     const currentPage = page ?? get().page;
     const currentSize = size ?? get().pageSize;
     const currentSortKey = sortKey ?? get().sortKey;
     const currentSortOrder = sortOrder ?? get().sortOrder;
     const currentSearch = searchTerm ?? get().searchTerm;
+    const currentFilters = filters ?? get().filters; // ✅ 필터 상태 할당
 
     set({ loading: true });
 
     try {
-      // ✅ 액션 함수로 정렬 파라미터 전달
+      // ✅ 액션 함수에 필터 포함하여 전달
       const { list, total } = await fetchWorkers(
         companyId,
         currentPage,
         currentSize,
         currentSortKey,
         currentSortOrder,
-        currentSearch
+        currentSearch,
+        currentFilters // ✅ 필터 객체 전달
       );
 
       set({
@@ -94,6 +115,7 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
         sortKey: currentSortKey,
         sortOrder: currentSortOrder,
         searchTerm: currentSearch,
+        filters: currentFilters, // ✅ 스토어 상태 동기화
       });
     } catch (err) {
       console.error("❌ fetchWorkers error:", err);

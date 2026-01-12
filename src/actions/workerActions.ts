@@ -10,29 +10,56 @@ export const fetchWorkers = async (
   size: number,
   sortKey: string = "created_at",
   sortOrder: "asc" | "desc" = "desc",
-  searchTerm: string = "" // ✅ 검색어 추가
+  searchTerm: string = "",
+  filters: { departments: string[]; deductions: string[] } = {
+    departments: [],
+    deductions: [],
+  }
 ) => {
   const from = (page - 1) * size;
   const to = from + size - 1;
 
+  // 1. 기본 쿼리 생성
   let query = supabase
     .from("workers")
     .select("*", { count: "exact" })
     .eq("company_id", companyId);
 
-  // ✅ 글로벌 검색 로직 추가 (텍스트 필드들 전체 검색)
+  // 2. 글로벌 검색 (searchTerm)
   if (searchTerm) {
     query = query.or(
       `name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%,phone.ilike.%${searchTerm}%,department.ilike.%${searchTerm}%,position.ilike.%${searchTerm}%,memo.ilike.%${searchTerm}%`
     );
   }
 
+  // 3. 부서 필터링 (departments)
+  // 선택된 부서가 있을 경우에만 .in() 필터 적용
+  if (filters.departments.length > 0) {
+    query = query.in("department", filters.departments);
+  }
+
+  // 4. 공제 항목 필터링 (deductions)
+  // 선택된 불리언 필드들(has_...)에 대해 true인 데이터만 필터링
+  if (filters.deductions.length > 0) {
+    filters.deductions.forEach((field) => {
+      query = query.eq(field, true);
+    });
+  }
+
+  // 5. 정렬 및 범위 지정 후 실행
   const { data, count, error } = await query
     .order(sortKey, { ascending: sortOrder === "asc" })
     .range(from, to);
 
-  if (error) throw error;
-  return { list: data, total: count || 0 };
+  if (error) {
+    console.error("fetchWorkers DB Error:", error);
+    throw error;
+  }
+
+  return {
+    list: data || [],
+    total: count || 0,
+  };
 };
 // ----------------------------------------------------------
 // 2) Create Worker

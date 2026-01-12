@@ -43,6 +43,7 @@ const Button = forwardRef(
         warning: "text-warning",
         danger: "text-danger",
         green: "text-green-500",
+        white: "text-gray-900",
       };
       return colors[buttonColor];
     };
@@ -55,6 +56,7 @@ const Button = forwardRef(
         warning: "border-warning !text-warning",
         danger: "border-danger !text-danger",
         green: "border-green-500 !text-green-900",
+        white: "border-gray-300 !text-gray-900 bg-white",
       };
       return styles[buttonColor];
     };
@@ -69,6 +71,8 @@ const Button = forwardRef(
         danger: "bg-danger !text-gray-200",
         green:
           "bg-green-600 hover:bg-green-700 active:bg-green-600 disabled:active:!bg-green-500 disabled:hover:!bg-green-500 text-gray-100 !font-semibold",
+        white:
+          "bg-white hover:bg-gray-100 active:bg-gray-100 disabled:active:!bg-white disabled:hover:!bg-white text-gray-600 !font-semibold",
       };
       return styles[buttonColor];
     };
