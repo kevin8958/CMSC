@@ -252,7 +252,13 @@ export default function EducationDrawer({
                 variant="outline"
                 size="sm"
               >
-                전체 선택
+                {eduSexHarassment &&
+                eduPrivacy &&
+                eduDisability &&
+                eduSafety &&
+                eduPension
+                  ? "선택 해제"
+                  : "전체 선택"}
               </Button>
             )}
           </FlexWrapper>
@@ -311,7 +317,13 @@ export default function EducationDrawer({
                 variant="outline"
                 size="sm"
               >
-                전체 선택
+                {eduChildAbuse &&
+                eduElderAbuse &&
+                eduEmergency &&
+                eduDisabilityAbuse &&
+                eduInfection
+                  ? "선택 해제"
+                  : "전체 선택"}
               </Button>
             )}
           </FlexWrapper>
