@@ -307,7 +307,11 @@ function Worker() {
 
   return (
     <>
-      <FlexWrapper justify="between" items="center" classes="w-full mb-6">
+      <FlexWrapper
+        justify="between"
+        items="center"
+        classes="w-full mb-6 flex-wrap"
+      >
         <FlexWrapper gap={2} items="end">
           <Typography variant="H3">근로자 관리</Typography>
           <Badge color="green" size="md">
@@ -315,8 +319,8 @@ function Worker() {
           </Badge>
         </FlexWrapper>
 
-        <FlexWrapper gap={2} items="center">
-          <div className="relative w-[240px]">
+        <FlexWrapper gap={2} items="center" classes="w-full">
+          <div className="relative w-full sm:w-[240px]">
             <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -337,7 +341,7 @@ function Worker() {
             >
               <FlexWrapper gap={1} items="center">
                 <LuFilter />
-                상세 필터
+                <p className="hidden sm:inline">상세 필터</p>
                 {activeFilterCount > 0 && (
                   <span className="bg-green-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
                     {activeFilterCount}
@@ -467,7 +471,8 @@ function Worker() {
               }}
             >
               <LuPlus className="text-lg" />
-              근로자 추가
+
+              <p className="hidden sm:inline">근로자 추가</p>
             </Button>
           )}
         </FlexWrapper>
