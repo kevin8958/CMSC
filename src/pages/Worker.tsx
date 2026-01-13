@@ -319,7 +319,7 @@ function Worker() {
           </Badge>
         </FlexWrapper>
 
-        <FlexWrapper gap={2} items="center" classes="w-full">
+        <FlexWrapper gap={2} items="center" classes="w-full sm:w-max">
           <div className="relative w-full sm:w-[240px]">
             <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
