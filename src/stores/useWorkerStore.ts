@@ -18,8 +18,9 @@ interface WorkerStore {
   page: number;
   pageSize: number;
   filters: {
-    departments: string[]; // 선택된 부서들
-    deductions: string[]; // 선택된 공제 필드명들 (예: ['has_youth_deduction'])
+    departments: string[];
+    positions: string[];
+    deductions: string[];
   };
   sortKey: string;
   sortOrder: "asc" | "desc";
@@ -39,6 +40,7 @@ interface WorkerStore {
     searchTerm?: string,
     filters?: {
       departments: string[];
+      positions: string[];
       deductions: string[];
     }
   ) => Promise<void>;
@@ -63,6 +65,7 @@ export const useWorkerStore = create<WorkerStore>((set, get) => ({
   pageSize: 10,
   filters: {
     departments: [],
+    positions: [],
     deductions: [],
   },
   sortKey: "created_at",

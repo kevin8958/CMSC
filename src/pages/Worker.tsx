@@ -59,14 +59,18 @@ function Worker() {
     order: "desc",
   });
 
+  // ✅ 필터 상태에 positions 추가
   const [filters, setFilters] = useState<{
     departments: string[];
+    positions: string[];
     deductions: string[];
   }>({
     departments: [],
+    positions: [],
     deductions: [],
   });
 
+  // ✅ 외부 클릭 시 필터 닫기
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -80,9 +84,20 @@ function Worker() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [filterRef]);
 
+  // ✅ 부서 목록 추출 ("미지정" 포함)
   const departmentOptions = useMemo(() => {
-    const deps = allList.map((w) => w.department).filter(Boolean);
-    return Array.from(new Set(deps)) as string[];
+    const deps = allList
+      .map((w) => w.department?.trim())
+      .filter(Boolean) as string[];
+    return ["미지정", ...Array.from(new Set(deps))];
+  }, [allList]);
+
+  // ✅ 직급 목록 추출 ("미지정" 포함)
+  const positionOptions = useMemo(() => {
+    const poss = allList
+      .map((w) => w.position?.trim())
+      .filter(Boolean) as string[];
+    return ["미지정", ...Array.from(new Set(poss))];
   }, [allList]);
 
   useEffect(() => {
@@ -252,7 +267,6 @@ function Worker() {
         <Typography variant="B2">{row.original.position || "-"}</Typography>
       ),
     },
-    // ✅ 직무(duty) 컬럼 추가
     {
       accessorKey: "duty",
       header: () => <SortableHeader title="직무" sortKey="duty" />,
@@ -311,7 +325,9 @@ function Worker() {
   ];
 
   const activeFilterCount =
-    filters.departments.length + filters.deductions.length;
+    filters.departments.length +
+    filters.positions.length +
+    filters.deductions.length;
 
   return (
     <>
@@ -357,14 +373,18 @@ function Worker() {
               </FlexWrapper>
             </Button>
             {showFilter && (
-              <div className="absolute right-0 top-12 z-[100] w-[280px] bg-white border border-gray-200 rounded-xl shadow-xl p-5">
+              <div className="absolute right-0 top-12 z-[100] w-[320px] bg-white border border-gray-200 rounded-xl shadow-xl p-5">
                 <FlexWrapper justify="between" items="center" classes="mb-4">
                   <Typography variant="B1" classes="font-bold">
                     상세 필터
                   </Typography>
                   <button
                     onClick={() =>
-                      setFilters({ departments: [], deductions: [] })
+                      setFilters({
+                        departments: [],
+                        positions: [],
+                        deductions: [],
+                      })
                     }
                     className="flex items-center gap-1 text-gray-400 hover:text-gray-600 text-xs transition-colors"
                   >
@@ -372,7 +392,8 @@ function Worker() {
                   </button>
                 </FlexWrapper>
 
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 max-h-[450px] overflow-y-auto pr-1 scroll-thin">
+                  {/* 부서 필터 */}
                   <div>
                     <Typography
                       variant="B2"
@@ -380,7 +401,7 @@ function Worker() {
                     >
                       부서
                     </Typography>
-                    <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto pr-1">
+                    <div className="flex flex-wrap gap-2">
                       {departmentOptions.map((dep) => (
                         <button
                           key={dep}
@@ -406,6 +427,41 @@ function Worker() {
                     </div>
                   </div>
 
+                  {/* 직급 필터 */}
+                  <div>
+                    <Typography
+                      variant="B2"
+                      classes="text-gray-500 mb-2 font-bold"
+                    >
+                      직급
+                    </Typography>
+                    <div className="flex flex-wrap gap-2">
+                      {positionOptions.map((pos) => (
+                        <button
+                          key={pos}
+                          onClick={() => {
+                            const next = filters.positions.includes(pos)
+                              ? filters.positions.filter((p) => p !== pos)
+                              : [...filters.positions, pos];
+                            setFilters({ ...filters, positions: next });
+                          }}
+                          className={classNames(
+                            "px-2.5 py-1 rounded-md text-xs border transition-all",
+                            {
+                              "bg-green-600 border-green-600 text-white":
+                                filters.positions.includes(pos),
+                              "bg-white border-gray-200 text-gray-600":
+                                !filters.positions.includes(pos),
+                            }
+                          )}
+                        >
+                          {pos}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 공제 상태 필터 */}
                   <div>
                     <Typography
                       variant="B2"

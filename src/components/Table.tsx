@@ -39,7 +39,6 @@ const TableComponent = (props: Common.TableProps) => {
     onRowClick,
   } = props;
 
-  // 컨테이너 너비를 측정하여 스크롤 시에도 가시 영역 중앙을 유지하기 위함
   useLayoutEffect(() => {
     const updateWidth = () => {
       if (scrollRef.current) {
@@ -72,6 +71,10 @@ const TableComponent = (props: Common.TableProps) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [table.getState().pagination.pageIndex]);
+
   const dropdownOptions: Common.DropdownItem[] = [
     { type: "item", id: "10", label: "10개 보기" },
     { type: "item", id: "20", label: "20개 보기" },
@@ -79,10 +82,6 @@ const TableComponent = (props: Common.TableProps) => {
     { type: "item", id: "50", label: "50개 보기" },
     { type: "item", id: "100", label: "100개 보기" },
   ];
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: 0 });
-  }, [table.getState().pagination.pageIndex]);
 
   const totalPages = table.getPageCount();
   const currentPage = table.getState().pagination.pageIndex + 1;
@@ -109,7 +108,7 @@ const TableComponent = (props: Common.TableProps) => {
       >
         <table
           className={classNames(
-            "h-max w-full whitespace-nowrap rounded-md bg-white",
+            "h-max w-full whitespace-nowrap rounded-md bg-white border-separate border-spacing-0", // border-separate 권장
             {
               "!h-full": table.getRowModel().rows.length === 0,
             }
@@ -123,26 +122,39 @@ const TableComponent = (props: Common.TableProps) => {
             >
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className={classNames(
-                        "px-4 py-3 text-primary-600 text-left font-normal text-sm",
-                        {
-                          "!text-center": centerAlignHeaders?.includes(
-                            header.id
-                          ),
-                        }
-                      )}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
+                  {headerGroup.headers.map((header) => {
+                    // ✅ 현재 컬럼이 하위 컬럼들을 가지고 있는지 확인 (대분류 여부)
+                    const isGroupHeader = header.column.columns.length > 0;
+
+                    return (
+                      <th
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={classNames(
+                          "text-primary-600 text-left font-normal text-sm border-b border-primary-100",
+                          {
+                            // 1. 대분류 헤더일 때: 패딩을 없애서 배경색이 꽉 차게 함 + 중앙 정렬
+                            "p-0 !text-center": isGroupHeader,
+
+                            // 2. 최하위(Leaf) 헤더일 때: 기존처럼 px-4 py-2 적용
+                            "px-4 py-2": !isGroupHeader,
+
+                            // 3. 사용자가 직접 전달한 중앙 정렬 옵션 (기존 유지)
+                            "!text-center": centerAlignHeaders?.includes(
+                              header.id
+                            ),
+                          }
+                        )}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </th>
+                    );
+                  })}
                 </tr>
               ))}
             </thead>
@@ -171,15 +183,20 @@ const TableComponent = (props: Common.TableProps) => {
                     <td
                       key={cell.id}
                       style={{ width: cell.column.getSize() }}
-                      className={classNames("py-3 px-4 text-left text-sm", {
-                        "bg-gray-50": emphasisColumns?.includes(cell.column.id),
-                        "rounded-t-[16px]":
-                          emphasisColumns?.includes(cell.column.id) &&
-                          index === 0,
-                        "rounded-b-[16px]":
-                          emphasisColumns?.includes(cell.column.id) &&
-                          index === table.getRowModel().rows.length - 1,
-                      })}
+                      className={classNames(
+                        "py-3 px-4 text-left text-sm border-b border-gray-100",
+                        {
+                          "bg-gray-50": emphasisColumns?.includes(
+                            cell.column.id
+                          ),
+                          "rounded-t-[16px]":
+                            emphasisColumns?.includes(cell.column.id) &&
+                            index === 0,
+                          "rounded-b-[16px]":
+                            emphasisColumns?.includes(cell.column.id) &&
+                            index === table.getRowModel().rows.length - 1,
+                        }
+                      )}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -191,10 +208,11 @@ const TableComponent = (props: Common.TableProps) => {
               ))
             ) : (
               <tr>
-                <td className="!border-none p-0" colSpan={columns.length}>
-                  {/* ✅ sticky left-0: 스크롤 영역 안에서 화면 왼쪽에 고정 
-                    ✅ width: containerWidth: 컨테이너의 실제 가시 너비를 강제하여 중앙 정렬 수행
-                  */}
+                {/* ✅ colSpan을 단순 columns.length가 아니라 실제 가시적인 말단 컬럼 개수로 지정 */}
+                <td
+                  className="!border-none p-0"
+                  colSpan={table.getVisibleLeafColumns().length}
+                >
                   <div
                     className="flex flex-col items-center justify-center gap-2 p-10 sticky left-0"
                     style={{
@@ -211,6 +229,7 @@ const TableComponent = (props: Common.TableProps) => {
         </table>
       </div>
 
+      {/* 하단 페이지네이션 영역은 동일 */}
       {!hideSize && (
         <div className="absolute bottom-[30px] left-2 z-50">
           <Dropdown

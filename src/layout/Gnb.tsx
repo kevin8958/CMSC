@@ -76,7 +76,7 @@ export default function Gnb() {
           href: "/attendance",
           icon: <LuCalendarCheck2 />,
         },
-        { id: "education", label: "교육관리", href: "/under-construction" },
+        { id: "education", label: "교육관리", href: "/education" },
         {
           id: "time-management",
           label: "근태관리",
@@ -289,7 +289,6 @@ export default function Gnb() {
             )}
             {role === "admin" && (
               <>
-                <span className="w-[1px] h-4 bg-primary-100 mr-2"></span>
                 <Dropdown
                   buttonVariant="outline"
                   items={dropdownItems}

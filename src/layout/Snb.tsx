@@ -81,7 +81,7 @@ const SNB = () => {
               {
                 id: "education",
                 label: "교육관리",
-                href: "/under-construction",
+                href: "/education",
               },
               {
                 id: "time-management",

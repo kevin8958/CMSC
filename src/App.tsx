@@ -39,6 +39,7 @@ import UnderConstruction from "./pages/UnderConstruction";
 import ClientManagement from "./pages/ClientManagement";
 import ContractManagement from "./pages/ContractManagement";
 import CompanyIntroManagement from "./pages/CompanyIntroManagement";
+import Education from "./pages/Education";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { init, initialized, user } = useAuthStore();
@@ -119,6 +120,7 @@ function App() {
                 <Route path="/salary" element={<Salary />} />
                 <Route path="/attendance" element={<Attendance />} />
                 <Route path="/worker" element={<Worker />} />
+                <Route path="/education" element={<Education />} />
                 <Route path="/document" element={<Document />} />
                 <Route path="/company" element={<Company />} />
                 <Route path="/company/:companyId" element={<CompanyDetail />} />
