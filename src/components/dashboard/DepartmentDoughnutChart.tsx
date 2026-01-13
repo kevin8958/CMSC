@@ -8,9 +8,9 @@ import { LuChartPie } from "react-icons/lu";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface PositionDoughnutChartProps {
+interface DepartmentDoughnutChartProps {
   workers: Worker.Worker[];
-  onClickPosition?: (position: string) => void;
+  onClickDepartment?: (department: string) => void;
 }
 
 const COLORS = [
@@ -37,50 +37,49 @@ const COLORS = [
 ];
 const GRAY = "#E5E7EB";
 
-export default function PositionDoughnutChart({
+export default function DepartmentDoughnutChart({
   workers,
-  onClickPosition,
-}: PositionDoughnutChartProps) {
+  onClickDepartment,
+}: DepartmentDoughnutChartProps) {
   const chartRef = useRef<any>(null);
   const [hovered, setHovered] = useState<string | null>(null);
 
-  const positionData = useMemo(() => {
+  // ✅ 부서(department) 데이터 추출 로직으로 변경
+  const departmentData = useMemo(() => {
     const map: Record<string, number> = {};
     workers.forEach((w) => {
-      const key = w.position?.trim() || "미지정";
+      // position -> department로 변경
+      const key = w.department?.trim() || "미지정";
       map[key] = (map[key] || 0) + 1;
     });
 
-    // 오름차순 정렬 유지
     return Object.entries(map)
-      .map(([position, count], index) => ({
-        position,
+      .map(([department, count], index) => ({
+        department,
         count,
-        color: position === "미지정" ? GRAY : COLORS[index % COLORS.length],
+        color: department === "미지정" ? GRAY : COLORS[index % COLORS.length],
       }))
       .sort((a, b) => b.count - a.count);
   }, [workers]);
 
-  // ✅ 1. 차트 데이터 모양 설정 변경
   const chartData = {
-    labels: positionData.map((p) => p.position),
+    labels: departmentData.map((d) => d.department),
     datasets: [
       {
-        data: positionData.map((p) => p.count),
-        backgroundColor: positionData.map((p) => p.color),
-        hoverOffset: 10, // 호버 시 튀어나오는 정도도 약간 늘림
+        data: departmentData.map((d) => d.count),
+        backgroundColor: departmentData.map((d) => d.color),
+        hoverOffset: 10,
         borderWidth: 0,
-        borderRadius: 20, // ✨ 각 값의 모서리를 둥글게 설정 (값을 높이면 더 둥글어짐)
-        spacing: 3, // ✨ 둥근 모서리가 돋보이도록 각 영역 사이에 간격 추가
+        borderRadius: 20,
+        spacing: 3,
       },
     ],
   };
 
-  // ✅ 2. 차트 옵션 변경 (두께 조절)
   const options: any = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: "40%", // ✨ 기존 70%에서 40%로 변경하여 도넛을 훨씬 두껍게 만듦
+    cutout: "40%",
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -92,21 +91,21 @@ export default function PositionDoughnutChart({
     },
     onHover: (_event: any, elements: any[]) => {
       if (elements.length > 0) {
-        setHovered(positionData[elements[0].index].position);
+        setHovered(departmentData[elements[0].index].department);
       } else {
         setHovered(null);
       }
     },
     layout: {
-      padding: 10, // spacing과 hoverOffset 때문에 잘리지 않도록 약간의 패딩 추가
+      padding: 10,
     },
   };
 
   return (
     <div className="flex flex-col w-full h-full p-4 overflow-hidden bg-white rounded-xl border">
-      {/* Header */}
+      {/* Header: 부서 구성으로 타이틀 변경 가능 */}
       <FlexWrapper gap={2} items="center" classes="mb-4 shrink-0">
-        <Typography variant="H4">멤버 구성</Typography>
+        <Typography variant="H4">부서 구성</Typography>
         <Badge color="green" size="md">
           {workers.length}
         </Badge>
@@ -114,33 +113,31 @@ export default function PositionDoughnutChart({
 
       {workers.length > 0 ? (
         <div className="flex flex-row gap-6 flex-1 min-h-0">
-          {/* Left: Chart Area (차트 컨테이너 크기 약간 조정) */}
+          {/* Left: Chart Area */}
           <div className="w-[40%] h-full flex items-center justify-center shrink-0">
-            {/* max-h를 조금 늘려 두꺼운 차트가 잘 보이게 함 */}
             <div className="w-full aspect-square max-h-[180px]">
               <Doughnut ref={chartRef} data={chartData} options={options} />
             </div>
           </div>
 
           {/* Right: Scrollable List Area */}
-          <div className="flex-1 h-full overflow-y-auto pr-6 scroll-thin">
+          <div className="flex-1 h-full overflow-y-auto pr-2 scroll-thin">
             <div className="flex flex-col gap-0 pb-2">
-              {positionData.map((item) => (
+              {departmentData.map((item) => (
                 <div
-                  key={item.position}
+                  key={item.department}
                   className={`
                     flex items-center gap-2.5 p-2 rounded-lg transition-all cursor-pointer
                     ${
-                      hovered === item.position
+                      hovered === item.department
                         ? "bg-gray-50 translate-x-1"
                         : "hover:bg-gray-50"
                     }
                   `}
-                  onMouseEnter={() => setHovered(item.position)}
+                  onMouseEnter={() => setHovered(item.department)}
                   onMouseLeave={() => setHovered(null)}
-                  onClick={() => onClickPosition?.(item.position)}
+                  onClick={() => onClickDepartment?.(item.department)}
                 >
-                  {/* 리스트 아이콘도 차트 모양에 맞춰 둥근 사각형으로 변경 */}
                   <span
                     className="shrink-0 size-3 rounded-md"
                     style={{ backgroundColor: item.color }}
@@ -148,12 +145,12 @@ export default function PositionDoughnutChart({
                   <Typography
                     variant="B2"
                     classes={`truncate flex-1 ${
-                      hovered === item.position
+                      hovered === item.department
                         ? "font-bold text-primary-900"
                         : "text-gray-600"
                     }`}
                   >
-                    {item.position}
+                    {item.department}
                   </Typography>
                   <Typography
                     variant="C1"
@@ -169,7 +166,7 @@ export default function PositionDoughnutChart({
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center gap-2">
           <LuChartPie className="text-4xl text-gray-200" />
-          <p className="text-gray-400 text-sm">등록된 멤버가 없습니다</p>
+          <p className="text-gray-400 text-sm">데이터가 없습니다</p>
         </div>
       )}
     </div>

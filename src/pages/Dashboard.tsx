@@ -1,6 +1,6 @@
 import CheckList from "@/components/dashboard/CheckList";
 import MonthSchedule from "@/components/dashboard/MonthSchedule";
-import PositionDoughnutChart from "@/components/dashboard/PositionDoughnutChart";
+import DepartmentDoughnutChart from "@/components/dashboard/DepartmentDoughnutChart";
 import YearlyIncomeChart from "@/components/dashboard/YearlyIncomeChart";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useWorkerStore } from "@/stores/useWorkerStore";
@@ -28,7 +28,7 @@ function Dashboard() {
 
       {/* 하단 Row: 높이 40% 차지 */}
       <div className="col-span-12 xl:col-span-4 border rounded-xl bg-white h-full overflow-hidden">
-        <PositionDoughnutChart workers={allList} />
+        <DepartmentDoughnutChart workers={allList} />
       </div>
       <div className="col-span-12 xl:col-span-8 bg-white border rounded-xl h-full overflow-hidden">
         <YearlyIncomeChart />
