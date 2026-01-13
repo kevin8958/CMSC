@@ -2,7 +2,7 @@ import Typography from "@/foundation/Typography";
 import FlexWrapper from "@/layout/FlexWrapper";
 import Table from "@/components/Table";
 import Badge from "@/components/Badge";
-import { useEffect, useState, useMemo, useRef } from "react"; // ✅ useRef 추가
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useAlert } from "@/components/AlertProvider";
 import {
   LuPlus,
@@ -48,9 +48,8 @@ function Worker() {
   const [drawerMode, setDrawerMode] = useState<"create" | "edit">("create");
   const [searchInput, setSearchInput] = useState("");
 
-  // --- 필터 및 정렬 상태 ---
   const [showFilter, setShowFilter] = useState(false);
-  const filterRef = useRef<HTMLDivElement>(null); // ✅ 필터 영역 감지를 위한 Ref
+  const filterRef = useRef<HTMLDivElement>(null);
 
   const [sortConfig, setSortConfig] = useState<{
     key: string;
@@ -68,7 +67,6 @@ function Worker() {
     deductions: [],
   });
 
-  // ✅ 외부 클릭 시 필터 닫기 로직
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -82,7 +80,6 @@ function Worker() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [filterRef]);
 
-  // 부서 목록 추출
   const departmentOptions = useMemo(() => {
     const deps = allList.map((w) => w.department).filter(Boolean);
     return Array.from(new Set(deps)) as string[];
@@ -178,7 +175,10 @@ function Worker() {
     <span
       className={classNames(
         "p-1 flex items-center gap-1 rounded-md text-white text-xs font-semibold w-max",
-        { "bg-green-600": active, "bg-gray-100": !active }
+        {
+          "bg-green-600": active,
+          "bg-gray-100": !active,
+        }
       )}
     >
       <BsCheck
@@ -250,6 +250,14 @@ function Worker() {
       header: () => <SortableHeader title="직급" sortKey="position" />,
       cell: ({ row }: any) => (
         <Typography variant="B2">{row.original.position || "-"}</Typography>
+      ),
+    },
+    // ✅ 직무(duty) 컬럼 추가
+    {
+      accessorKey: "duty",
+      header: () => <SortableHeader title="직무" sortKey="duty" />,
+      cell: ({ row }: any) => (
+        <Typography variant="B2">{row.original.duty || "-"}</Typography>
       ),
     },
     {
@@ -332,7 +340,6 @@ function Worker() {
           </div>
 
           <div className="relative" ref={filterRef}>
-            {/* ✅ Ref 연결 */}
             <Button
               variant="outline"
               color="white"
@@ -407,7 +414,6 @@ function Worker() {
                       공제 상태
                     </Typography>
                     <div className="flex flex-col gap-2.5">
-                      {/* ✅ 5가지 항목으로 확장 */}
                       {[
                         {
                           id: "has_health_insurance_dependent",
@@ -471,14 +477,12 @@ function Worker() {
               }}
             >
               <LuPlus className="text-lg" />
-
               <p className="hidden sm:inline">근로자 추가</p>
             </Button>
           )}
         </FlexWrapper>
       </FlexWrapper>
 
-      {/* 테이블 및 드로어 부분 (변경 없음) */}
       {loading ? (
         <FlexWrapper
           classes="h-[calc(100vh-220px)] rounded-xl border overflow-hidden bg-white shadow-sm"

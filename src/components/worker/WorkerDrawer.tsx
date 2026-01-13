@@ -36,15 +36,19 @@ export default function WorkerDrawer({
   const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [department, setDepartment] = useState<string | null>(null);
   const [position, setPosition] = useState<string | null>(null);
+  const [duty, setDuty] = useState<string | null>(null); // ✅ 직무 상태 추가
   const [joinedAt, setJoinedAt] = useState<Date | null>(dayjs().toDate());
   const [totalLeave, setTotalLeave] = useState<number | null>(null);
   const [usedLeave, setUsedLeave] = useState<number | null>(null);
+
+  // 공제 상태
   const [hasHealthInsuranceDependent, setHasHealthInsuranceDependent] =
     useState(false);
   const [hasDependentDeduction, setHasDependentDeduction] = useState(false);
   const [hasAdditionalDeduction, setHasAdditionalDeduction] = useState(false);
   const [hasStudentLoanDeduction, setHasStudentLoanDeduction] = useState(false);
   const [hasYouthDeduction, setHasYouthDeduction] = useState(false);
+
   const [memo, setMemo] = useState("");
   const [errors, setErrors] = useState({ name: "" });
 
@@ -58,6 +62,7 @@ export default function WorkerDrawer({
       );
       setDepartment(worker.department ?? null);
       setPosition(worker.position ?? null);
+      setDuty(worker.duty ?? null); // ✅ 직무 데이터 매핑
       setJoinedAt(worker.joined_at ? dayjs(worker.joined_at).toDate() : null);
       setTotalLeave(worker.total_leave ?? null);
       setUsedLeave(worker.used_leave ?? null);
@@ -74,6 +79,7 @@ export default function WorkerDrawer({
       setBirthDate(null);
       setDepartment(null);
       setPosition(null);
+      setDuty(null); // ✅ 초기화
       setJoinedAt(dayjs().toDate());
       setTotalLeave(null);
       setUsedLeave(null);
@@ -109,6 +115,7 @@ export default function WorkerDrawer({
       birth_date: birthDate ? dayjs(birthDate).format("YYYY-MM-DD") : null,
       department,
       position,
+      duty, // ✅ 페이로드에 포함
       joined_at: joinedAt ? dayjs(joinedAt).format("YYYY-MM-DD") : null,
       total_leave: totalLeave || 0,
       used_leave: usedLeave || 0,
@@ -146,7 +153,9 @@ export default function WorkerDrawer({
       <div className="flex flex-col px-5 pt-4 pb-12 gap-6">
         {/* 섹션 1: 인적 사항 */}
         <div className="flex flex-col gap-4">
-          <Typography variant="H4">인적 사항</Typography>
+          <Typography variant="H4" classes="!font-extrabold">
+            인적 사항
+          </Typography>
 
           <FlexWrapper items="center" gap={2}>
             <div className="shrink-0 w-[60px]">
@@ -162,7 +171,6 @@ export default function WorkerDrawer({
             />
           </FlexWrapper>
 
-          {/* 이메일 추가 */}
           <FlexWrapper items="center" gap={2}>
             <div className="shrink-0 w-[60px]">
               <Label text="이메일" />
@@ -207,27 +215,30 @@ export default function WorkerDrawer({
           </FlexWrapper>
         </div>
 
+        <hr className="border-gray-100" />
+
         {/* 섹션 2: 인사 정보 */}
         <div className="flex flex-col gap-4">
-          <Typography variant="H4">인사 정보</Typography>
-
-          <FlexWrapper items="center" gap={2}>
-            <div className="shrink-0 w-[60px]">
-              <Label text="입사일" />
-            </div>
-            <CustomDatePicker
-              type="single"
-              size="md"
-              variant="outline"
-              classes="w-full flex-1"
-              dateFormat="YYYY.MM.dd"
-              disabled={disabled}
-              value={joinedAt}
-              onChange={(d) => setJoinedAt(d)}
-            />
-          </FlexWrapper>
+          <Typography variant="H4" classes="!font-extrabold">
+            인사 정보
+          </Typography>
 
           <FlexWrapper gap={2}>
+            <FlexWrapper items="center" gap={2} classes="flex-1">
+              <div className="shrink-0 w-[60px]">
+                <Label text="입사일" />
+              </div>
+              <CustomDatePicker
+                type="single"
+                size="md"
+                variant="outline"
+                classes="w-full flex-1"
+                dateFormat="YYYY.MM.dd"
+                disabled={disabled}
+                value={joinedAt}
+                onChange={(d) => setJoinedAt(d)}
+              />
+            </FlexWrapper>
             <FlexWrapper items="center" gap={2} classes="flex-1">
               <div className="shrink-0 w-[60px]">
                 <Label text="부서" />
@@ -239,6 +250,9 @@ export default function WorkerDrawer({
                 classes="!h-[40px]"
               />
             </FlexWrapper>
+          </FlexWrapper>
+
+          <FlexWrapper gap={2}>
             <FlexWrapper items="center" gap={2} classes="flex-1">
               <div className="shrink-0 w-[60px] text-right">
                 <Label text="직급" />
@@ -250,13 +264,30 @@ export default function WorkerDrawer({
                 classes="!h-[40px]"
               />
             </FlexWrapper>
+            {/* ✅ 직무 필드 추가 */}
+            <FlexWrapper items="center" gap={2} classes="flex-1">
+              <div className="shrink-0 w-[60px]">
+                <Label text="직무" />
+              </div>
+              <TextInput
+                inputProps={{ value: duty ?? "" }}
+                onChange={(e) => setDuty(e.target.value || null)}
+                disabled={disabled}
+                classes="!h-[40px]"
+                placeholder="담당 직무 입력"
+              />
+            </FlexWrapper>
           </FlexWrapper>
         </div>
 
+        <hr className="border-gray-100" />
+
         {/* 섹션 3: 공제 / 보험 설정 */}
         <div className="flex flex-col gap-4">
-          <Typography variant="H4">공제 / 보험 설정</Typography>
-          <div className="flex flex-col gap-3.5 pl-1">
+          <Typography variant="H4" classes="!font-extrabold">
+            공제 / 보험 설정
+          </Typography>
+          <div className="grid grid-cols-1 gap-3.5 pl-1">
             <Checkbox
               id="health"
               label="건강보험 피부양자 등록"
@@ -301,9 +332,13 @@ export default function WorkerDrawer({
           </div>
         </div>
 
+        <hr className="border-gray-100" />
+
         {/* 섹션 4: 메모 */}
         <div className="flex flex-col gap-4">
-          <Typography variant="H4">메모</Typography>
+          <Typography variant="H4" classes="!font-extrabold">
+            메모
+          </Typography>
           <textarea
             value={memo}
             onChange={(e) => setMemo(e.target.value)}

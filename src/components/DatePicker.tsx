@@ -117,8 +117,8 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
 
   return (
     <div
-      className={classNames("relative flex items-center", {
-        "w-fit": isMonthPicker,
+      className={classNames("relative flex items-center w-full", {
+        "!w-fit": isMonthPicker,
       })}
     >
       <DatePicker
@@ -152,7 +152,7 @@ const CustomDatePicker = (props: Common.DatepickerProps) => {
         disabled={disabled}
         startDate={start || null}
         endDate={end || null}
-        wrapperClassName={isRange ? "range" : "single"}
+        wrapperClassName={isRange ? "range" : "single w-full"}
         {...(isRange
           ? { selectsRange: true as const }
           : isMultiple
