@@ -301,7 +301,7 @@ function Education() {
               <SortableHeader
                 title="성희롱"
                 sortKey="edu_sex_harassment"
-                colorClass="text-orange-600"
+                colorClass="!text-orange-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -314,7 +314,7 @@ function Education() {
               <SortableHeader
                 title="개인정보"
                 sortKey="edu_privacy"
-                colorClass="text-orange-600"
+                colorClass="!text-orange-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -327,7 +327,7 @@ function Education() {
               <SortableHeader
                 title="장애인"
                 sortKey="edu_disability"
-                colorClass="text-orange-600"
+                colorClass="!text-orange-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -340,7 +340,7 @@ function Education() {
               <SortableHeader
                 title="산업안전"
                 sortKey="edu_safety"
-                colorClass="text-orange-600"
+                colorClass="!text-orange-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -353,7 +353,7 @@ function Education() {
               <SortableHeader
                 title="퇴직연금"
                 sortKey="edu_pension"
-                colorClass="text-orange-600"
+                colorClass="!text-orange-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -376,7 +376,7 @@ function Education() {
               <SortableHeader
                 title="아동학대"
                 sortKey="edu_child_abuse"
-                colorClass="text-blue-600"
+                colorClass="!text-blue-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -389,7 +389,7 @@ function Education() {
               <SortableHeader
                 title="노인학대"
                 sortKey="edu_elder_abuse"
-                colorClass="text-blue-600"
+                colorClass="!text-blue-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -402,7 +402,7 @@ function Education() {
               <SortableHeader
                 title="긴급복지"
                 sortKey="edu_emergency"
-                colorClass="text-blue-600"
+                colorClass="!text-blue-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -415,7 +415,7 @@ function Education() {
               <SortableHeader
                 title="장애학대"
                 sortKey="edu_disability_abuse"
-                colorClass="text-blue-600"
+                colorClass="!text-blue-600"
               />
             ),
             cell: ({ row }: any) => (
@@ -428,7 +428,7 @@ function Education() {
               <SortableHeader
                 title="감염/안전"
                 sortKey="edu_infection"
-                colorClass="text-blue-600"
+                colorClass="!text-blue-600"
               />
             ),
             cell: ({ row }: any) => (
