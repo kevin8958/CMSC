@@ -133,6 +133,7 @@ export default function TimeDrawer({
                 type="single"
                 size="md"
                 variant="outline"
+                dateFormat="YYYY.MM.dd"
                 classes="flex-1"
                 disabled={disabled}
                 value={workDate}
