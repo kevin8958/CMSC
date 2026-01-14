@@ -80,7 +80,7 @@ export default function Gnb() {
         {
           id: "time-management",
           label: "근태관리",
-          href: "/under-construction",
+          href: "/time-management",
         },
         { id: "welfare", label: "복리후생관리", href: "/under-construction" },
         {
