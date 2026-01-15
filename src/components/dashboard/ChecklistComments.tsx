@@ -104,16 +104,12 @@ export default function ChecklistComments({
                   >
                     {/* 작성자 */}
                     <FlexWrapper gap={1} items="center" direction="col">
-                      <Avatar
-                        size="sm"
-                        type="text"
-                        name={c.display_name || "-"}
-                      />
+                      <Avatar size="sm" type="text" name={c.nickname || "-"} />
                       <Typography
                         variant="C1"
                         classes="!font-normal text-gray-600 w-[60px] truncate text-center"
                       >
-                        {c.display_name || "익명"}
+                        {c.nickname || "익명"}
                       </Typography>
                     </FlexWrapper>
 

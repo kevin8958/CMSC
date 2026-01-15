@@ -17,9 +17,9 @@ export async function createNotice(body: {
   priority: "high" | "mid" | "low";
   start_date: string;
   end_date: string | null;
-  description?: string;
+  content?: string;
 }) {
-  const { company_id, title, priority, start_date, end_date } = body;
+  const { company_id, title, priority, start_date, end_date, content } = body;
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -31,6 +31,7 @@ export async function createNotice(body: {
       priority,
       start_date,
       end_date,
+      content,
       created_by: user?.id, // ★ 추가
     })
     .select()

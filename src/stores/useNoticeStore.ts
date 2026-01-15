@@ -6,20 +6,8 @@ import {
   deleteNotice,
 } from "@/actions/noticeActions";
 
-export type NoticePriority = "high" | "medium" | "low";
-
-export interface Notice {
-  id: string;
-  title: string;
-  start_date: string;
-  end_date: string | null;
-  priority: NoticePriority;
-  content?: string;
-  company_id: number;
-}
-
 interface NoticeStore {
-  list: Notice[];
+  list: Dashboard.Notice[];
   loading: boolean;
 
   fetch: (companyId: string) => Promise<void>;

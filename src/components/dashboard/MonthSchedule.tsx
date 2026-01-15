@@ -1,39 +1,33 @@
+import { useMemo, useState, useEffect } from "react";
+import dayjs from "dayjs";
+import { LuPlus, LuCalendarX } from "react-icons/lu";
+
 import FlexWrapper from "@/layout/FlexWrapper";
 import InlineDatePicker from "@/components/InlineDatePicker";
 import NoticeDrawer from "@/components/dashboard/NoticeDrawer";
-import { useMemo, useState, useEffect } from "react";
-import { LuPlus, LuCalendar, LuCalendarX } from "react-icons/lu"; // 중복 아이콘 정리
-import Typography from "@/foundation/Typography";
-import Badge from "@/components/Badge";
 import Button from "@/components/Button";
-import dayjs from "dayjs";
+import DashboardCard from "@/components/dashboard/DashboardCard";
+import DashboardItemCard from "@/components/dashboard/DashboardItemCard";
+
 import { useAlert } from "@/components/AlertProvider";
 import { useNoticeStore } from "@/stores/useNoticeStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useAuthStore } from "@/stores/authStore";
 
-const priorityColor = {
-  high: "bg-red-500",
-  medium: "bg-yellow-500",
-  low: "bg-green-500",
+const PRIORITY_CONFIG = {
+  high: { color: "bg-red-500", order: 1 },
+  medium: { color: "bg-yellow-500", order: 2 },
+  low: { color: "bg-green-500", order: 3 },
 };
 
-const priorityOrder = {
-  high: 1,
-  medium: 2,
-  low: 3,
-};
-
-// ─── 스켈레톤 아이템 컴포넌트 ───
 const ScheduleSkeleton = () => (
-  <div className="border rounded-md p-2 animate-pulse bg-white">
-    <FlexWrapper items="start" gap={2} classes="h-full">
+  <div className="border rounded-md p-3 animate-pulse bg-white">
+    <FlexWrapper items="start" gap={2}>
       <div className="w-1.5 h-12 rounded-full bg-gray-200" />
-      <FlexWrapper direction="col" gap={2} classes="flex-1">
+      <div className="flex-1 space-y-2">
         <div className="h-4 bg-gray-200 rounded w-3/4" />
         <div className="h-3 bg-gray-100 rounded w-1/2" />
-        <div className="h-3 bg-gray-100 rounded w-1/4" />
-      </FlexWrapper>
+      </div>
     </FlexWrapper>
   </div>
 );
@@ -42,27 +36,26 @@ function MonthSchedule() {
   const { currentCompanyId } = useCompanyStore();
   const { role } = useAuthStore();
   const { list, fetch, create, update, remove, loading } = useNoticeStore();
+  const { showAlert } = useAlert();
 
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
-  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [hoveredNotices, setHoveredNotices] = useState<string[] | null>(null);
-
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [editTarget, setEditTarget] = useState<any | null>(null);
+  const [editTarget, setEditTarget] = useState<Dashboard.Notice | null>(null);
   const [sortMode, setSortMode] = useState<"date" | "priority">("date");
-  const { showAlert } = useAlert();
 
   useEffect(() => {
     if (currentCompanyId) fetch(currentCompanyId);
-  }, [currentCompanyId]);
+  }, [currentCompanyId, fetch]);
 
   const noticeByDate = useMemo(() => {
-    const map: Record<string, any[]> = {};
+    const map: Record<string, Dashboard.Notice[]> = {};
     list.forEach((n) => {
       const start = dayjs(n.start_date);
       const end = dayjs(n.end_date || n.start_date);
       let cur = start;
-      while (cur.isSame(end) || cur.isBefore(end)) {
+      while (cur.isSame(end, "day") || cur.isBefore(end, "day")) {
         const key = cur.format("YYYY-MM-DD");
         if (!map[key]) map[key] = [];
         map[key].push(n);
@@ -72,131 +65,126 @@ function MonthSchedule() {
     return map;
   }, [list]);
 
-  const sortedList = list.slice().sort((a, b) => {
-    if (sortMode === "priority")
-      return priorityOrder[a.priority] - priorityOrder[b.priority];
-    if (sortMode === "date")
+  const sortedList = useMemo(() => {
+    const notices = list as unknown as Dashboard.Notice[];
+    return [...notices].sort((a, b) => {
+      if (sortMode === "priority") {
+        return (
+          PRIORITY_CONFIG[a.priority].order - PRIORITY_CONFIG[b.priority].order
+        );
+      }
       return dayjs(a.start_date).valueOf() - dayjs(b.start_date).valueOf();
-    return 0;
-  });
+    });
+  }, [list, sortMode]);
+
+  const renderDateRange = (item: Dashboard.Notice) => {
+    const start = dayjs(item.start_date).format("MM/DD");
+    const isSameDate =
+      !item.end_date ||
+      dayjs(item.start_date).isSame(dayjs(item.end_date), "day");
+    if (isSameDate) return start;
+    return `${start} - ${dayjs(item.end_date).format("MM/DD")}`;
+  };
+
+  const handleOpenDrawer = (item: Dashboard.Notice | null = null) => {
+    setEditTarget(item);
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerSubmit = async (params: any) => {
+    try {
+      if (editTarget) {
+        await update(editTarget.id, params);
+        showAlert("수정되었습니다.", { type: "success" });
+      } else {
+        await create({ company_id: currentCompanyId!, ...params });
+        showAlert("추가되었습니다.", { type: "success" });
+      }
+      setDrawerOpen(false);
+    } catch (error) {
+      showAlert("오류가 발생했습니다.", { type: "danger" });
+    }
+  };
+
+  // ✅ 공통 카드 헤더에 들어갈 버튼들 정의
+  const HeaderActions = (
+    <>
+      <Button
+        variant="outline"
+        size="sm"
+        classes="!text-gray-500 !border-gray-300"
+        onClick={() =>
+          setSortMode((prev) => (prev === "date" ? "priority" : "date"))
+        }
+      >
+        {sortMode === "date" ? "날짜순" : "중요도순"}
+      </Button>
+      {role === "admin" && (
+        <Button
+          variant="contain"
+          color="green"
+          size="sm"
+          classes="!px-2"
+          onClick={() => handleOpenDrawer()}
+        >
+          <LuPlus className="text-base" />
+        </Button>
+      )}
+    </>
+  );
 
   return (
-    <>
-      <FlexWrapper gap={0} direction="col" classes="sm:flex-row h-full">
-        <div className="shrink-0">
+    <DashboardCard
+      title="중요일정"
+      badgeCount={loading ? "-" : list.length}
+      headerActions={HeaderActions}
+    >
+      <FlexWrapper
+        gap={0}
+        direction="col"
+        classes="h-full overflow-hidden sm:flex-row"
+      >
+        {/* 달력 영역 */}
+        <aside className="shrink-0">
           <InlineDatePicker
             currentMonth={currentMonth}
-            onMonthChange={(date) => setCurrentMonth(date)}
+            onMonthChange={setCurrentMonth}
             noticeByDate={noticeByDate}
             hoveredDate={hoveredDate}
             hoveredNotices={hoveredNotices}
             setHoveredDate={setHoveredDate}
             setHoveredNotices={setHoveredNotices}
           />
-        </div>
+        </aside>
 
-        <div className="flex-1 h-[calc(100%-10px)]">
-          <FlexWrapper justify="between" items="center" classes="p-4 pb-0">
-            <FlexWrapper gap={2} items="center">
-              <Typography variant="H4">중요일정</Typography>
-              <Badge color="green" size="md">
-                {loading ? "-" : list.length}
-              </Badge>
-            </FlexWrapper>
-
-            <FlexWrapper gap={2} items="center">
-              <Button
-                variant="outline"
-                size="sm"
-                classes="!text-gray-500 !border-gray-400"
-                onClick={() =>
-                  setSortMode((prev) => (prev === "date" ? "priority" : "date"))
-                }
-              >
-                {sortMode === "date" ? "날짜순" : "중요도순"}
-              </Button>
-              {role === "admin" && (
-                <Button
-                  variant="contain"
-                  color="green"
-                  size="sm"
-                  classes="gap-1 !px-2"
-                  onClick={() => {
-                    setEditTarget(null);
-                    setDrawerOpen(true);
-                  }}
-                >
-                  <LuPlus className="text-base" />
-                </Button>
-              )}
-            </FlexWrapper>
-          </FlexWrapper>
-
-          <div className="flex flex-col gap-1 overflow-y-auto scroll-thin h-[calc(100%-56px)] mt-2 px-4 pb-8">
-            {/* ─── 로딩 중일 때 스켈레톤 노출 ─── */}
-            {loading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <ScheduleSkeleton key={i} />
-              ))
-            ) : list.length > 0 ? (
-              sortedList.map((item) => {
-                const active = hoveredNotices?.includes(item.id) || false;
-                return (
-                  <div
-                    key={item.id}
-                    className={`border rounded-md p-2 cursor-pointer transition-all duration-300 ${active ? "bg-gray-100" : "hover:bg-gray-50"}`}
-                    onMouseEnter={() => setHoveredNotices([item.id])}
-                    onMouseLeave={() => setHoveredNotices(null)}
-                    onClick={() => {
-                      setEditTarget(item);
-                      setDrawerOpen(true);
-                    }}
-                  >
-                    <FlexWrapper items="start" gap={2} classes="h-full">
-                      <span
-                        className={`w-1.5 h-full rounded-full ${priorityColor[item.priority]}`}
-                      />
-                      <FlexWrapper direction="col" gap={1}>
-                        <Typography
-                          variant="B2"
-                          classes="font-semibold !max-w-[220px] truncate"
-                        >
-                          {item.title}
-                        </Typography>
-                        <Typography
-                          variant="B2"
-                          classes="!text-gray-500 !max-w-[220px] truncate"
-                        >
-                          {item.content}
-                        </Typography>
-                        <FlexWrapper gap={1} items="center">
-                          <LuCalendar className="text-sm text-gray-500" />
-                          <span className="text-xs text-gray-500">
-                            {dayjs(item.start_date).format("MM/DD")}
-                          </span>
-                          {item.start_date !== item.end_date && (
-                            <>
-                              <p className="text-xs text-gray-500">-</p>
-                              <span className="text-xs text-gray-500">
-                                {dayjs(item.end_date).format("MM/DD")}
-                              </span>
-                            </>
-                          )}
-                        </FlexWrapper>
-                      </FlexWrapper>
-                    </FlexWrapper>
-                  </div>
-                );
-              })
-            ) : (
-              /* ─── 데이터가 없을 때 ─── */
-              <div className="h-full flex flex-col items-center justify-center gap-2 p-6">
-                <LuCalendarX className="text-4xl text-gray-300" />
-                <p className="text-gray-400 text-sm">중요일정이 없습니다</p>
-              </div>
-            )}
-          </div>
-        </div>
+        {/* 리스트 영역 */}
+        <section className="flex-1 overflow-y-auto scroll-thin px-4 py-4 space-y-1">
+          {loading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <ScheduleSkeleton key={i} />
+            ))
+          ) : sortedList.length > 0 ? (
+            sortedList.map((item) => (
+              <DashboardItemCard
+                key={item.id}
+                title={item.title}
+                content={item.content}
+                dateRange={renderDateRange(item)}
+                priorityColor={PRIORITY_CONFIG[item.priority].color}
+                isActive={hoveredNotices?.includes(item.id)}
+                commentCount={0} // 실제 데이터가 있다면 연결 (예: item.comment_count)
+                onMouseEnter={() => setHoveredNotices([item.id])}
+                onMouseLeave={() => setHoveredNotices(null)}
+                onClick={() => handleOpenDrawer(item)}
+              />
+            ))
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center gap-2 py-12">
+              <LuCalendarX className="text-4xl text-gray-200" />
+              <p className="text-gray-400 text-sm">중요일정이 없습니다</p>
+            </div>
+          )}
+        </section>
       </FlexWrapper>
 
       <NoticeDrawer
@@ -205,16 +193,7 @@ function MonthSchedule() {
         notice={editTarget}
         disabled={role !== "admin"}
         onClose={() => setDrawerOpen(false)}
-        onSubmit={async (params) => {
-          if (editTarget) {
-            await update(editTarget.id, params);
-            showAlert("수정되었습니다.", { type: "success" });
-          } else {
-            await create({ company_id: currentCompanyId!, ...params });
-            showAlert("추가되었습니다.", { type: "success" });
-          }
-          setDrawerOpen(false);
-        }}
+        onSubmit={handleDrawerSubmit}
         onDelete={
           editTarget
             ? async () => {
@@ -225,7 +204,7 @@ function MonthSchedule() {
             : undefined
         }
       />
-    </>
+    </DashboardCard>
   );
 }
 

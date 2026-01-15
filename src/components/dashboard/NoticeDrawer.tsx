@@ -7,27 +7,10 @@ import TextInput from "@/components/TextInput";
 import Dropdown from "@/components/Dropdown";
 import CustomDatePicker from "@/components/DatePicker";
 import dayjs from "dayjs";
-import type { NoticePriority, Notice } from "@/stores/useNoticeStore";
 import NoticePriorityBadge, { PRIORITY_CONFIG } from "./NoticePriorityBadge";
 import Textarea from "../TextArea";
 
 type PriorityKey = keyof typeof PRIORITY_CONFIG;
-
-interface NoticeDrawerProps {
-  open: boolean;
-  mode: "create" | "edit";
-  notice?: Notice | null;
-  disabled?: boolean;
-  onClose: () => void;
-  onSubmit: (params: {
-    title: string;
-    priority: NoticePriority;
-    start_date: string;
-    end_date: string;
-    content: string;
-  }) => Promise<void> | void;
-  onDelete?: () => Promise<void> | void;
-}
 
 export default function NoticeDrawer({
   open,
@@ -37,9 +20,9 @@ export default function NoticeDrawer({
   onClose,
   onSubmit,
   onDelete,
-}: NoticeDrawerProps) {
+}: Dashboard.NoticeDrawerProps) {
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState<NoticePriority>("medium");
+  const [priority, setPriority] = useState<Dashboard.Priority>("medium");
   const [rangeValue, setRangeValue] = useState<[Date | null, Date | null]>([
     null,
     null,

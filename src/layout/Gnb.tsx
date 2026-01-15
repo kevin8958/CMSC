@@ -298,7 +298,7 @@ export default function Gnb() {
                     companies.find((c) => c.id === currentCompanyId)?.name ??
                     "회사 선택"
                   }
-                  buttonClasses="w-[120px] !font-normal text-primary-900 !h-10 !border-primary-100"
+                  buttonClasses="w-[120px] !font-normal text-primary-900 !h-10 !border-primary-100 ml-3"
                 />
               </>
             )}
