@@ -13,6 +13,7 @@ import { useAlert } from "@/components/AlertProvider";
 import { useNoticeStore } from "@/stores/useNoticeStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useAuthStore } from "@/stores/authStore";
+import { useDialog } from "@/hooks/useDialog";
 
 const PRIORITY_CONFIG = {
   high: { color: "bg-red-500", order: 1 },
@@ -37,6 +38,7 @@ function MonthSchedule() {
   const { role } = useAuthStore();
   const { list, fetch, create, update, remove, loading } = useNoticeStore();
   const { showAlert } = useAlert();
+  const { openDialog } = useDialog();
 
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [hoveredNotices, setHoveredNotices] = useState<string[] | null>(null);
@@ -112,7 +114,6 @@ function MonthSchedule() {
       <Button
         variant="outline"
         size="sm"
-        classes="!text-gray-500 !border-gray-300"
         onClick={() =>
           setSortMode((prev) => (prev === "date" ? "priority" : "date"))
         }
@@ -197,9 +198,21 @@ function MonthSchedule() {
         onDelete={
           editTarget
             ? async () => {
-                await remove(editTarget.id);
-                setDrawerOpen(false);
-                showAlert("삭제되었습니다.", { type: "danger" });
+                await openDialog({
+                  title: "삭제하시겠습니까?",
+                  message: `"${editTarget?.title}" 업무를 제거합니다.`,
+                  confirmText: "삭제",
+                  cancelText: "취소",
+                  state: "danger",
+                  onConfirm: async () => {
+                    if (editTarget) {
+                      await remove(editTarget.id);
+                      showAlert("삭제되었습니다.", { type: "danger" });
+                    }
+                    setDrawerOpen(false);
+                    return true;
+                  },
+                });
               }
             : undefined
         }

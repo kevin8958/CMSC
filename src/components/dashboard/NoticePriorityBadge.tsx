@@ -23,7 +23,7 @@ export const PRIORITY_CONFIG = {
 
 export default function NoticePriorityBadge({
   priority,
-  size = "sm",
+  size = "md",
   classes = "",
 }: NoticePriorityBadgeProps) {
   const cfg = PRIORITY_CONFIG[priority];

@@ -92,7 +92,7 @@ export default function ChecklistDrawer({
       onDelete={onDelete}
       onConfirm={handleSubmit}
     >
-      <FlexWrapper direction="col" gap={6} classes="pt-4 pb-6 px-4">
+      <FlexWrapper direction="col" gap={4} classes="pt-4 pb-6 px-4">
         {/* 제목 */}
         <FlexWrapper items="center" gap={2}>
           <div className="shrink-0 !w-[60px]">
@@ -118,7 +118,7 @@ export default function ChecklistDrawer({
             classes="w-[140px]"
             type="single"
             variant="outline"
-            size="sm"
+            size="md"
             dateFormat="yyyy.MM.dd"
             disabled={disabled}
             value={dueDate}

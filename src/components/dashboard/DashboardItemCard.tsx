@@ -82,7 +82,7 @@ const DashboardItemCard = ({
               <FlexWrapper
                 gap={1}
                 items="center"
-                classes="bg-gray-100 w-max py-1 px-2 rounded-md !text-gray-500"
+                classes="bg-gray-200 w-max py-1 px-2 rounded-md !text-gray-600"
               >
                 <LuCalendar size={14} />
                 <span className="text-xs font-bold">{dateRange}</span>
@@ -94,7 +94,7 @@ const DashboardItemCard = ({
               <FlexWrapper
                 gap={1}
                 items="center"
-                classes="bg-gray-100 w-max py-1 px-2 rounded-md !text-gray-500"
+                classes="bg-gray-200 w-max py-1 px-2 rounded-md !text-gray-600"
               >
                 <LuMessageCircle size={14} />
                 <span className="text-xs font-bold">{commentCount}</span>

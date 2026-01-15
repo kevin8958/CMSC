@@ -130,7 +130,7 @@ export default function NoticeDrawer({
             buttonItem={
               <NoticePriorityBadge
                 priority={priority}
-                classes="px-4 py-1 w-[120px] justify-center"
+                classes="px-4 py-2 w-[120px] justify-center"
               />
             }
             buttonClasses="!font-normal text-primary-900 !h-fit !border-primary-300 hover:!bg-primary-50 !p-0"
@@ -146,7 +146,7 @@ export default function NoticeDrawer({
             variant="outline"
             classes="w-[200px]"
             type="range"
-            size="sm"
+            size="md"
             disabled={disabled}
             value={null}
             isRange
