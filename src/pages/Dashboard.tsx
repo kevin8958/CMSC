@@ -1,20 +1,14 @@
 import CheckList from "@/components/dashboard/CheckList";
 import MonthSchedule from "@/components/dashboard/MonthSchedule";
-import DepartmentDoughnutChart from "@/components/dashboard/DepartmentDoughnutChart";
-import YearlyIncomeChart from "@/components/dashboard/YearlyIncomeChart";
-import { useCompanyStore } from "@/stores/useCompanyStore";
-import { useWorkerStore } from "@/stores/useWorkerStore";
-import { useEffect } from "react";
 
 function Dashboard() {
-  const { allList, fetchAll } = useWorkerStore();
-  const { currentCompanyId } = useCompanyStore();
+  // const { allList, fetchAll } = useWorkerStore();
 
-  useEffect(() => {
-    if (currentCompanyId) {
-      fetchAll(currentCompanyId); // 전체 리스트 (차트)
-    }
-  }, [currentCompanyId]);
+  // useEffect(() => {
+  //   if (currentCompanyId) {
+  //     fetchAll(currentCompanyId); // 전체 리스트 (차트)
+  //   }
+  // }, [currentCompanyId]);
 
   return (
     <div className="grid grid-cols-12 gap-2 pb-2 h-full">
