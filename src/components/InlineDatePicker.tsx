@@ -61,7 +61,7 @@ export default function InlineDatePicker({
         onMonthChange={onMonthChange}
         calendarClassName={classNames(
           "bg-white text-primary-900 overflow-hidden p-2 pt-0",
-          "[&_.react-datepicker__day-names]:hidden"
+          "[&_.react-datepicker__day-names]:hidden",
         )}
         /* ⭐ 날짜 셀 기본 스타일 */
         dayClassName={(d) => {
@@ -79,7 +79,7 @@ export default function InlineDatePicker({
             "transition-colors",
             isSelected && "!bg-green-600 text-white font-semibold",
             !isSelected && isHovered && "bg-gray-200",
-            !isCurrentMonth && "text-gray-400"
+            !isCurrentMonth && "text-gray-400",
           );
         }}
         /* ⭐ 날짜 내부 UI 커스터마이즈 (● 표시) */
@@ -103,7 +103,7 @@ export default function InlineDatePicker({
               onMouseLeave={() => setHoveredDate(null)}
               className={classNames(
                 "relative flex items-center justify-center w-full h-full",
-                highlight && "bg-gray-200 rounded-lg"
+                highlight && "bg-gray-200 rounded-lg",
               )}
             >
               {day}
@@ -126,7 +126,7 @@ export default function InlineDatePicker({
                         key={n.id}
                         className={classNames(
                           "size-2 rounded-full",
-                          priorityColor[n.priority]
+                          priorityColor[n.priority],
                         )}
                       />
                     ))}
@@ -148,7 +148,7 @@ export default function InlineDatePicker({
           return (
             <div className="text-primary-900 flex w-full flex-col">
               {/* Month Header */}
-              <div className="flex items-center justify-between py-2">
+              <div className="flex items-center justify-between pb-2">
                 <Button
                   variant="clear"
                   onClick={decreaseMonth}
@@ -158,7 +158,7 @@ export default function InlineDatePicker({
                   <LuChevronLeft className="text-lg" />
                 </Button>
 
-                <p className="text-base font-semibold">
+                <p className="text-xl font-semibold">
                   {dayjs(date).format("YYYY.MM")}
                 </p>
 

@@ -23,11 +23,11 @@ const DashboardCard = ({
     <div
       className={classNames(
         "flex flex-col h-full overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm",
-        classes
+        classes,
       )}
     >
       {/* 표준 헤더 영역 */}
-      <header className="flex justify-between items-center p-4 shrink-0 pb-2">
+      <header className="flex justify-between items-center p-4 shrink-0 pb-0">
         <FlexWrapper gap={2} items="center">
           <Typography variant="H4">{title}</Typography>
           {badgeCount !== undefined && (

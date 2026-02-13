@@ -140,11 +140,7 @@ function MonthSchedule() {
       badgeCount={loading ? "-" : list.length}
       headerActions={HeaderActions}
     >
-      <FlexWrapper
-        gap={0}
-        direction="col"
-        classes="h-full overflow-hidden sm:flex-row"
-      >
+      <FlexWrapper gap={0} direction="col" classes="h-full overflow-hidden">
         {/* 달력 영역 */}
         <aside className="shrink-0">
           <InlineDatePicker
@@ -159,7 +155,7 @@ function MonthSchedule() {
         </aside>
 
         {/* 리스트 영역 */}
-        <section className="flex-1 overflow-y-auto scroll-thin px-4 py-4 space-y-1">
+        <section className="flex-1 overflow-y-auto sm:max-h-full max-h-[300px] h-full scroll-thin px-4 py-4 space-y-1">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
               <ScheduleSkeleton key={i} />
