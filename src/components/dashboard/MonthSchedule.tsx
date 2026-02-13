@@ -14,6 +14,8 @@ import { useNoticeStore } from "@/stores/useNoticeStore";
 import { useCompanyStore } from "@/stores/useCompanyStore";
 import { useAuthStore } from "@/stores/authStore";
 import { useDialog } from "@/hooks/useDialog";
+import Typography from "@/foundation/Typography";
+import Badge from "../Badge";
 
 const PRIORITY_CONFIG = {
   high: { color: "bg-red-500", order: 1 },
@@ -67,28 +69,79 @@ function MonthSchedule() {
     });
     return map;
   }, [list]);
-
   const sortedList = useMemo(() => {
     const notices = list as unknown as Dashboard.Notice[];
     return [...notices].sort((a, b) => {
       if (sortMode === "priority") {
-        return (
-          PRIORITY_CONFIG[a.priority].order - PRIORITY_CONFIG[b.priority].order
-        );
+        // 1순위: 중요도순 (High -> Medium -> Low)
+        const pDiff =
+          PRIORITY_CONFIG[a.priority].order - PRIORITY_CONFIG[b.priority].order;
+        if (pDiff !== 0) return pDiff;
+        // 2순위: 날짜순
+        return dayjs(a.start_date).valueOf() - dayjs(b.start_date).valueOf();
       }
-      return dayjs(a.start_date).valueOf() - dayjs(b.start_date).valueOf();
+
+      // [날짜순 모드]
+      // 1순위: 날짜순
+      const aTime = dayjs(a.start_date).valueOf();
+      const bTime = dayjs(b.start_date).valueOf();
+      if (aTime !== bTime) return aTime - bTime;
+      // 2순위: 중요도순 (날짜가 같으면 급한 것부터 위로)
+      return (
+        PRIORITY_CONFIG[a.priority].order - PRIORITY_CONFIG[b.priority].order
+      );
     });
   }, [list, sortMode]);
 
-  const renderDateRange = (item: Dashboard.Notice) => {
-    const start = dayjs(item.start_date).format("MM/DD");
-    const isSameDate =
-      !item.end_date ||
-      dayjs(item.start_date).isSame(dayjs(item.end_date), "day");
-    if (isSameDate) return start;
-    return `${start} - ${dayjs(item.end_date).format("MM/DD")}`;
-  };
+  const displayData = useMemo<Dashboard.DisplayGroup[]>(() => {
+    if (sortMode === "date") {
+      const groups: Record<string, Dashboard.Notice[]> = {};
 
+      sortedList.forEach((item) => {
+        const date = item.start_date.split("T")[0];
+        if (!groups[date]) groups[date] = [];
+        groups[date].push(item);
+      });
+
+      return Object.entries(groups).map(
+        ([key, items]): Dashboard.DateGroup => ({
+          type: "date",
+          groupTitle: key,
+          items,
+        }),
+      );
+    } else {
+      const priorityGroups: Record<
+        string,
+        Record<string, Dashboard.Notice[]>
+      > = {};
+
+      sortedList.forEach((item) => {
+        const p = item.priority;
+        const d = item.start_date.split("T")[0];
+        if (!priorityGroups[p]) priorityGroups[p] = {};
+        if (!priorityGroups[p][d]) priorityGroups[p][d] = [];
+        priorityGroups[p][d].push(item);
+      });
+
+      // PRIORITY_CONFIG의 키 순서대로 정렬
+      return (
+        Object.keys(PRIORITY_CONFIG) as Array<keyof typeof PRIORITY_CONFIG>
+      )
+        .filter((p) => priorityGroups[p])
+        .map(
+          (p): Dashboard.PriorityGroup => ({
+            type: "priority",
+            groupTitle: p.toUpperCase(),
+            color: PRIORITY_CONFIG[p].color,
+            // 각 중요도 내의 날짜들도 오름차순 정렬
+            subGroups: Object.entries(priorityGroups[p]).sort(([a], [b]) =>
+              a.localeCompare(b),
+            ),
+          }),
+        );
+    }
+  }, [sortedList, sortMode]);
   const handleOpenDrawer = (item: Dashboard.Notice | null = null) => {
     setEditTarget(item);
     setDrawerOpen(true);
@@ -156,26 +209,91 @@ function MonthSchedule() {
         </aside>
 
         {/* 리스트 영역 */}
-        <section className="flex-1 overflow-y-auto sm:max-h-full max-h-[300px] h-full scroll-thin px-4 py-4 space-y-1">
+        <section className="flex-1 overflow-y-auto sm:max-h-full max-h-[300px] h-full scroll-thin px-4 py-4 space-y-8">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
               <ScheduleSkeleton key={i} />
             ))
-          ) : sortedList.length > 0 ? (
-            sortedList.map((item) => (
-              <DashboardItemCard
-                key={item.id}
-                title={item.title}
-                content={item.content}
-                dateRange={renderDateRange(item)}
-                priorityColor={PRIORITY_CONFIG[item.priority].color}
-                isActive={hoveredNotices?.includes(item.id)}
-                commentCount={0} // 실제 데이터가 있다면 연결 (예: item.comment_count)
-                onMouseEnter={() => setHoveredNotices([item.id])}
-                onMouseLeave={() => setHoveredNotices(null)}
-                onClick={() => handleOpenDrawer(item)}
-              />
-            ))
+          ) : displayData.length > 0 ? (
+            displayData.map((group) => {
+              // 1. 중요도 모드 렌더링
+              if (group.type === "priority") {
+                return (
+                  <div key={group.groupTitle} className="space-y-4">
+                    {group.subGroups.map(([date, items]) => (
+                      <div key={date}>
+                        <FlexWrapper items="center" justify="between">
+                          <FlexWrapper items="center" gap={1}>
+                            <Typography variant="H3">
+                              {dayjs(date).format("D")}
+                            </Typography>
+                            <Badge color="green" size="sm">
+                              {dayjs(date).format("ddd")}
+                            </Badge>
+                          </FlexWrapper>
+                          {dayjs(date).isSame(dayjs(), "day") && (
+                            <Badge color="green" size="sm">
+                              TODAY
+                            </Badge>
+                          )}
+                        </FlexWrapper>
+                        <div className="space-y-1">
+                          {items.map((item) => (
+                            <DashboardItemCard
+                              key={item.id}
+                              title={item.title}
+                              content={item.content}
+                              priorityColor={
+                                PRIORITY_CONFIG[item.priority].color
+                              }
+                              isActive={hoveredNotices?.includes(item.id)}
+                              onMouseEnter={() => setHoveredNotices([item.id])}
+                              onMouseLeave={() => setHoveredNotices(null)}
+                              onClick={() => handleOpenDrawer(item)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
+
+              // 2. 날짜 모드 렌더링
+              return (
+                <div key={group.groupTitle} className="space-y-2">
+                  <FlexWrapper items="center" justify="between">
+                    <FlexWrapper items="center" gap={1}>
+                      <Typography variant="H3">
+                        {dayjs(group.groupTitle).format("D")}
+                      </Typography>
+                      <Badge color="green" size="sm">
+                        {dayjs(group.groupTitle).format("ddd")}
+                      </Badge>
+                    </FlexWrapper>
+                    {dayjs(group.groupTitle).isSame(dayjs(), "day") && (
+                      <Badge color="green" size="sm">
+                        TODAY
+                      </Badge>
+                    )}
+                  </FlexWrapper>
+                  <div className="space-y-1">
+                    {group.items.map((item) => (
+                      <DashboardItemCard
+                        key={item.id}
+                        title={item.title}
+                        content={item.content}
+                        priorityColor={PRIORITY_CONFIG[item.priority].color}
+                        isActive={hoveredNotices?.includes(item.id)}
+                        onMouseEnter={() => setHoveredNotices([item.id])}
+                        onMouseLeave={() => setHoveredNotices(null)}
+                        onClick={() => handleOpenDrawer(item)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })
           ) : (
             <div className="h-full flex flex-col items-center justify-center gap-2 py-12">
               <LuCalendarX className="text-4xl text-gray-200" />
