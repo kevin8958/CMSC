@@ -1,16 +1,23 @@
 import { supabase } from "@/lib/supabase";
 
-export async function fetchNotices(companyId: string) {
+export async function fetchNotices(companyId: string, selectedDate: string) {
+  // selectedDate가 "2024-03-01" 형태로 들어온다고 가정
+  const [year, month] = selectedDate.split("-");
+
+  const start = `${year}-${month}-01`;
+  const end = `${year}-${month}-${new Date(Number(year), Number(month), 0).getDate()}`;
+
   const { data, error } = await supabase
     .from("company_notices")
     .select("*")
     .eq("company_id", companyId)
+    .gte("start_date", start)
+    .lte("start_date", end)
     .order("start_date", { ascending: true });
 
   if (error) throw error;
   return data;
 }
-
 export async function createNotice(body: {
   company_id: number;
   title: string;
@@ -49,7 +56,7 @@ export async function updateNotice(
     start_date: string;
     end_date: string | null;
     description?: string;
-  }>
+  }>,
 ) {
   const { data, error } = await supabase
     .from("company_notices")

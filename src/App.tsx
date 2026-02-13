@@ -68,9 +68,9 @@ function AppLayout() {
           className={classNames(
             "pt-[76px] px-4 flex-1 flex flex-col overflow-scroll bg-[linear-gradient(to_bottom,#F3FCF9_0%,#F3FCF9_90%,white_100%)]",
             {
-              "min-h-screen xl:h-screen": ["/dashboard"].includes(pathname),
+              "min-h-screen sm:h-screen": ["/dashboard"].includes(pathname),
               "h-screen ": !["/dashboard"].includes(pathname),
-            }
+            },
           )}
         >
           <Outlet /> {/* ✅ 여기에 자식 페이지들이 자동으로 렌더 */}

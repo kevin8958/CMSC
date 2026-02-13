@@ -48,8 +48,9 @@ function MonthSchedule() {
   const [sortMode, setSortMode] = useState<"date" | "priority">("date");
 
   useEffect(() => {
-    if (currentCompanyId) fetch(currentCompanyId);
-  }, [currentCompanyId, fetch]);
+    if (currentCompanyId)
+      fetch(currentCompanyId, dayjs(currentMonth).format("YYYY-MM"));
+  }, [currentCompanyId, fetch, currentMonth]);
 
   const noticeByDate = useMemo(() => {
     const map: Record<string, Dashboard.Notice[]> = {};

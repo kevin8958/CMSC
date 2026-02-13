@@ -10,7 +10,7 @@ interface NoticeStore {
   list: Dashboard.Notice[];
   loading: boolean;
 
-  fetch: (companyId: string) => Promise<void>;
+  fetch: (companyId: string, selectedDate: string) => Promise<void>;
   create: (body: any) => Promise<void>;
   update: (id: string, body: any) => Promise<void>;
   remove: (id: string) => Promise<void>;
@@ -20,9 +20,9 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
   list: [],
   loading: false,
 
-  fetch: async (companyId) => {
+  fetch: async (companyId, selectedDate) => {
     set({ loading: true });
-    const data = await fetchNotices(companyId);
+    const data = await fetchNotices(companyId, selectedDate);
     set({ list: data, loading: false });
   },
 
