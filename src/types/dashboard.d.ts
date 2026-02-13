@@ -41,19 +41,4 @@ declare namespace Dashboard {
   }
 
   interface UpdateNoticeParams extends Partial<CreateNoticeParams> {}
-
-  type DateGroup = {
-    type: "date";
-    groupTitle: string;
-    items: Dashboard.Notice[];
-  };
-
-  type PriorityGroup = {
-    type: "priority";
-    groupTitle: string;
-    color: string;
-    subGroups: [string, Dashboard.Notice[]][]; // [date, items][] 형태
-  };
-
-  type DisplayGroup = DateGroup | PriorityGroup;
 }
